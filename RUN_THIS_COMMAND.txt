@@ -1,0 +1,1 @@
+bash /home/taylor/Desktop/ReactLaravel/setup-react-laravel.sh /home/taylor/Desktop/ReactLaravel
