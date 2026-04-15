@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
 Route::get('/home-model', function () {
-    return response()->file(storage_path('assets/FIXEDNOW.glb'), [
+    return response()->file(storage_path('assets/FIXED.glb'), [
         'Content-Type' => 'model/gltf-binary',
         'Cache-Control' => 'public, max-age=3600',
     ]);
