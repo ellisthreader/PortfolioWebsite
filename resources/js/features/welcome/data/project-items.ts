@@ -3,19 +3,21 @@ import type { ProjectItem } from '../types';
 export const PROJECT_ITEMS: ProjectItem[] = [
     {
         index: '01',
-        title: 'Aurora Commerce',
+        title: 'Bear Lane Ecommerce',
         category: 'Luxury E-Commerce',
         description:
-            'A cinematic storefront with tactile motion, editorial spacing, and layered lighting designed to make premium products feel magnetic.',
+            'A luxury e-commerce platform with secure profile login, full order management, and deep product customisation for embroidered or printed shirts, backed by a powerful admin panel with detailed analytics and complete control over the website experience.',
         accent: 'from-fuchsia-400/90 via-pink-400/70 to-rose-300/60',
+        imageUrl: '/BL.png',
     },
     {
         index: '02',
-        title: 'Vector Pulse',
-        category: 'Creative Portfolio',
+        title: 'EPOS Software',
+        category: 'Hospitality System',
         description:
-            'A motion-led portfolio system where typography, parallax, and 3D transitions turn browsing into a guided visual story.',
+            'A fully integrated EPOS platform combining a website, till system, kitchen display, payment integration, automated workflows, and ongoing setup and support, enhanced with phone and website LLM features to streamline service and day-to-day operations.',
         accent: 'from-violet-400/90 via-fuchsia-400/75 to-sky-300/55',
+        imageUrl: '/HKE.png',
     },
     {
         index: '03',

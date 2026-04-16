@@ -8,7 +8,8 @@ import { HeroScene } from './hero-scene';
 import { ProjectsSection } from './projects-section';
 
 export function WelcomePage({ modelUrl }: WelcomePageProps) {
-    const { heroScrollProgressRef, progress, sectionRef } = useExperienceProgress();
+    const { entriesRef, heroScrollProgressRef, progress, sectionRef } =
+        useExperienceProgress();
 
     return (
         <WelcomePageProvider modelUrl={modelUrl}>
@@ -16,7 +17,11 @@ export function WelcomePage({ modelUrl }: WelcomePageProps) {
 
             <div className="bg-black">
                 <HeroScene scrollProgressRef={heroScrollProgressRef} />
-                <ExperienceSection progress={progress} sectionRef={sectionRef} />
+                <ExperienceSection
+                    entriesRef={entriesRef}
+                    progress={progress}
+                    sectionRef={sectionRef}
+                />
                 <ProjectsSection />
             </div>
         </WelcomePageProvider>

@@ -1,56 +1,147 @@
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef } from 'react';
+import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
 
 import { PROJECT_ITEMS } from '../data/project-items';
 import { ProjectCard } from './project-card';
 
+type SceneMetrics = {
+    sectionHeight: number;
+    scrollDistance: number;
+    travelDistance: number;
+    viewportHeight: number;
+};
+
+const INITIAL_SCENE_METRICS: SceneMetrics = {
+    sectionHeight: 0,
+    scrollDistance: 0,
+    travelDistance: 0,
+    viewportHeight: 0,
+};
+
 export function ProjectsSection() {
+    const featuredProjects = PROJECT_ITEMS.slice(0, 10);
     const sectionRef = useRef<HTMLElement | null>(null);
+    const viewportRef = useRef<HTMLDivElement | null>(null);
+    const trackRef = useRef<HTMLDivElement | null>(null);
+    const [sceneMetrics, setSceneMetrics] = useState<SceneMetrics>(
+        INITIAL_SCENE_METRICS,
+    );
+
+    useEffect(() => {
+        let animationFrameId = 0;
+
+        const updateSceneMetrics = () => {
+            const viewport = viewportRef.current;
+            const track = trackRef.current;
+
+            if (!viewport || !track) {
+                return;
+            }
+
+            const viewportHeight = window.innerHeight;
+            const travelDistance = Math.max(track.scrollWidth - viewport.offsetWidth, 0);
+            const scrollDistance = Math.max(
+                travelDistance * 1.45,
+                viewportHeight * 1.2,
+            );
+            const sectionHeight = viewportHeight + scrollDistance;
+
+            setSceneMetrics((current) => {
+                if (
+                    current.sectionHeight === sectionHeight &&
+                    current.scrollDistance === scrollDistance &&
+                    current.travelDistance === travelDistance &&
+                    current.viewportHeight === viewportHeight
+                ) {
+                    return current;
+                }
+
+                return {
+                    sectionHeight,
+                    scrollDistance,
+                    travelDistance,
+                    viewportHeight,
+                };
+            });
+        };
+
+        const scheduleSceneMetricsUpdate = () => {
+            window.cancelAnimationFrame(animationFrameId);
+            animationFrameId = window.requestAnimationFrame(updateSceneMetrics);
+        };
+
+        scheduleSceneMetricsUpdate();
+
+        const resizeObserver = new ResizeObserver(scheduleSceneMetricsUpdate);
+
+        if (viewportRef.current) {
+            resizeObserver.observe(viewportRef.current);
+        }
+
+        if (trackRef.current) {
+            resizeObserver.observe(trackRef.current);
+        }
+
+        window.addEventListener('resize', scheduleSceneMetricsUpdate);
+
+        return () => {
+            window.cancelAnimationFrame(animationFrameId);
+            resizeObserver.disconnect();
+            window.removeEventListener('resize', scheduleSceneMetricsUpdate);
+        };
+    }, []);
+
     const { scrollYProgress } = useScroll({
         target: sectionRef,
         offset: ['start start', 'end end'],
     });
-    const translateX = useTransform(scrollYProgress, [0, 1], ['0%', '-69%']);
+
+    const rawTranslateX = useTransform(
+        scrollYProgress,
+        [0, 1],
+        [0, -sceneMetrics.travelDistance],
+    );
+    const translateX = useSpring(rawTranslateX, {
+        stiffness: 72,
+        damping: 24,
+        mass: 0.9,
+        restDelta: 0.2,
+    });
 
     return (
         <section
             ref={sectionRef}
-            className="relative h-[420vh] overflow-hidden bg-[#030106] text-white"
+            className="relative -mt-8 h-screen bg-[#020104] text-white sm:-mt-10"
+            style={
+                sceneMetrics.sectionHeight > 0
+                    ? { height: `${sceneMetrics.sectionHeight}px` }
+                    : undefined
+            }
         >
-            <div className="sticky top-0 h-screen overflow-hidden">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_20%,_rgba(139,92,246,0.18),_transparent_26%),radial-gradient(circle_at_82%_18%,_rgba(244,114,182,0.16),_transparent_24%),radial-gradient(circle_at_50%_78%,_rgba(217,70,239,0.18),_transparent_34%),linear-gradient(180deg,_#05010a_0%,_#020104_100%)]" />
-                <div className="absolute inset-y-0 left-[8%] w-64 bg-[radial-gradient(circle_at_center,_rgba(217,70,239,0.2),_transparent_68%)] blur-[120px]" />
-                <div className="absolute inset-y-0 right-[10%] w-72 bg-[radial-gradient(circle_at_center,_rgba(125,211,252,0.12),_transparent_70%)] blur-[140px]" />
+            <div className="sticky top-0 h-screen overflow-hidden pt-6 sm:pt-8 lg:pt-10">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_14%_18%,_rgba(139,92,246,0.18),_transparent_24%),radial-gradient(circle_at_84%_16%,_rgba(244,114,182,0.14),_transparent_20%),radial-gradient(circle_at_52%_82%,_rgba(217,70,239,0.16),_transparent_28%),linear-gradient(180deg,_#05010a_0%,_#020104_44%,_#000000_100%)]" />
+                <div className="absolute inset-y-0 left-[6%] w-72 bg-[radial-gradient(circle_at_center,_rgba(217,70,239,0.18),_transparent_68%)] blur-[120px]" />
+                <div className="absolute inset-y-0 right-[8%] w-80 bg-[radial-gradient(circle_at_center,_rgba(125,211,252,0.1),_transparent_72%)] blur-[140px]" />
 
-                <div className="relative flex h-full flex-col justify-center px-6 py-16 sm:px-10 lg:px-16">
-                    <div className="mx-auto w-full max-w-7xl">
-                        <div className="max-w-2xl">
-                            <span className="inline-flex items-center gap-3 text-[0.72rem] font-medium uppercase tracking-[0.4em] text-fuchsia-200/70">
-                                <span className="h-px w-12 bg-gradient-to-r from-transparent via-fuchsia-300/70 to-fuchsia-400/45" />
-                                My Projects
-                            </span>
-                            <h2 className="mt-6 max-w-4xl bg-[linear-gradient(180deg,_rgba(255,255,255,1)_0%,_rgba(250,232,255,0.96)_32%,_rgba(216,180,254,0.86)_70%,_rgba(217,70,239,0.68)_100%)] bg-clip-text text-5xl font-semibold tracking-[-0.08em] text-transparent sm:text-6xl lg:text-[5.8rem]">
-                                Scroll through a crafted strip of immersive project worlds.
-                            </h2>
-                            <p className="mt-6 max-w-xl text-base leading-7 text-white/58 sm:text-lg">
-                                Ten visually rich concepts move across the page as you scroll,
-                                revealing one atmosphere after another with a cinematic rhythm.
-                            </p>
-                        </div>
+                <div className="relative h-full w-full">
+                    <div className="relative z-10 px-6 pb-2 sm:px-10 lg:px-16">
+                        <h2 className="bg-[linear-gradient(180deg,_rgba(255,255,255,1)_0%,_rgba(250,232,255,0.96)_32%,_rgba(216,180,254,0.86)_70%,_rgba(217,70,239,0.68)_100%)] bg-clip-text text-4xl font-semibold leading-[1.08] tracking-[-0.08em] text-transparent sm:text-5xl lg:text-[4.5rem]">
+                            My Projects
+                        </h2>
                     </div>
 
-                    <div className="relative mt-14 overflow-hidden">
-                        <div className="pointer-events-none absolute inset-y-0 left-0 z-20 w-24 bg-gradient-to-r from-[#030106] via-[#030106]/78 to-transparent sm:w-32 lg:w-52" />
-                        <div className="pointer-events-none absolute inset-y-0 right-0 z-20 w-24 bg-gradient-to-l from-[#030106] via-[#030106]/78 to-transparent sm:w-32 lg:w-52" />
-
-                        <motion.div
-                            className="flex gap-6 will-change-transform sm:gap-8 lg:gap-10"
-                            style={{ x: translateX }}
-                        >
-                            {PROJECT_ITEMS.map((project) => (
-                                <ProjectCard key={project.index} project={project} />
-                            ))}
-                        </motion.div>
+                    <div className="absolute inset-x-0 bottom-0">
+                        <div ref={viewportRef} className="relative overflow-hidden">
+                            <motion.div
+                                ref={trackRef}
+                                className="flex w-max will-change-transform"
+                                style={{ x: translateX }}
+                            >
+                                {featuredProjects.map((project) => (
+                                    <ProjectCard key={project.index} project={project} />
+                                ))}
+                            </motion.div>
+                        </div>
                     </div>
                 </div>
             </div>

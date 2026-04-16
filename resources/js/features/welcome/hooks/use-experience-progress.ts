@@ -4,17 +4,17 @@ import { useEffect, useRef, useState } from 'react';
 export function useExperienceProgress() {
     const heroScrollProgressRef = useRef(0);
     const sectionRef = useRef<HTMLElement | null>(null);
+    const entriesRef = useRef<HTMLDivElement | null>(null);
     const targetProgressRef = useRef(0);
-    const smoothProgressRef = useRef(0);
     const [progress, setProgress] = useState(0);
 
     useEffect(() => {
         let animationFrameId = 0;
-        let previousFrameTime = performance.now();
 
         const updateScrollTargets = () => {
             const viewportHeight = Math.max(window.innerHeight, 1);
             const section = sectionRef.current;
+            const entries = entriesRef.current;
 
             heroScrollProgressRef.current = MathUtils.clamp(
                 window.scrollY / viewportHeight,
@@ -22,38 +22,27 @@ export function useExperienceProgress() {
                 1,
             );
 
-            if (!section) {
+            if (!section || !entries) {
                 targetProgressRef.current = 0;
                 return;
             }
 
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.offsetHeight;
-            const scrollableDistance = Math.max(
-                sectionHeight - viewportHeight,
-                viewportHeight,
-            );
+            const entriesTop = window.scrollY + entries.getBoundingClientRect().top;
+            const entriesHeight = entries.offsetHeight;
+            const startScroll = entriesTop - viewportHeight * 0.72;
+            const endScroll = entriesTop + entriesHeight - viewportHeight * 0.38;
+            const progressDistance = Math.max(endScroll - startScroll, viewportHeight);
 
             targetProgressRef.current = MathUtils.clamp(
-                (window.scrollY - sectionTop) / scrollableDistance,
+                (window.scrollY - startScroll) / progressDistance,
                 0,
                 1,
             );
         };
 
-        const animateProgress = (now: number) => {
-            const delta = Math.min((now - previousFrameTime) / 1000, 0.1);
-            previousFrameTime = now;
-
-            smoothProgressRef.current = MathUtils.damp(
-                smoothProgressRef.current,
-                targetProgressRef.current,
-                9,
-                delta,
-            );
-
+        const animateProgress = () => {
             setProgress((current) => {
-                const next = smoothProgressRef.current;
+                const next = targetProgressRef.current;
 
                 return Math.abs(current - next) > 0.0005 ? next : current;
             });
@@ -73,5 +62,5 @@ export function useExperienceProgress() {
         };
     }, []);
 
-    return { heroScrollProgressRef, progress, sectionRef };
+    return { entriesRef, heroScrollProgressRef, progress, sectionRef };
 }

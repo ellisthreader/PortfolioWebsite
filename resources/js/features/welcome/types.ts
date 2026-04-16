@@ -13,6 +13,7 @@ export type ProjectItem = {
     category: string;
     description: string;
     accent: string;
+    imageUrl?: string;
 };
 
 export type WelcomePageProps = {

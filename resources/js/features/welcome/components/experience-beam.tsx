@@ -1,9 +1,9 @@
 export function ExperienceBeam({ progress }: { progress: number }) {
-    const top = progress > 0 ? `calc(${progress * 100}%)` : '-9999px';
+    const top = `calc(${progress * 100}%)`;
     const height = `${progress * 100}%`;
 
     return (
-        <div className="pointer-events-none absolute bottom-0 left-1/2 top-0 hidden -translate-x-1/2 lg:block">
+        <div className="relative h-full w-full">
             <div
                 className="absolute left-1/2 top-0 w-2 -translate-x-1/2 rounded-full bg-gradient-to-b from-white via-fuchsia-100 via-18% via-fuchsia-300 via-45% to-pink-500 shadow-[0_0_34px_rgba(255,255,255,0.92),0_0_82px_rgba(217,70,239,1),0_0_190px_rgba(236,72,153,0.85),0_0_300px_rgba(244,114,182,0.34)] [animation:timeline-beam-breathe_4.6s_ease-in-out_infinite]"
                 style={{ height }}

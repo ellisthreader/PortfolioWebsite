@@ -1,44 +1,74 @@
 import type { ProjectItem } from '../types';
 
 export function ProjectCard({ project }: { project: ProjectItem }) {
+    const isVisualTop = Number.parseInt(project.index, 10) % 2 === 0;
+
     return (
-        <article className="group relative min-h-[30rem] w-[82vw] max-w-[26rem] shrink-0 overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.34)] backdrop-blur-xl sm:w-[68vw] sm:p-7 lg:w-[31vw] lg:max-w-[32rem] lg:p-8">
+        <article
+            className="group relative h-[32rem] w-[78vw] shrink-0 overflow-hidden border border-white/8 bg-[linear-gradient(180deg,rgba(14,8,20,0.96)_0%,rgba(8,4,14,0.94)_100%)] p-6 sm:h-[36rem] sm:w-[52vw] sm:p-7 lg:h-[42rem] lg:w-[33.3333vw] lg:p-8 xl:h-[45rem]"
+        >
             <div
-                className={`absolute inset-0 bg-gradient-to-br ${project.accent} opacity-20 transition-opacity duration-500 group-hover:opacity-30`}
+                className={`absolute inset-0 bg-gradient-to-br ${project.accent} opacity-[0.18] transition-opacity duration-500 group-hover:opacity-[0.28]`}
             />
-            <div className="absolute inset-[1px] rounded-[calc(2rem-1px)] bg-[linear-gradient(180deg,rgba(10,5,16,0.88)_0%,rgba(7,3,13,0.72)_52%,rgba(3,1,6,0.96)_100%)]" />
-            <div className="absolute left-8 right-8 top-8 h-40 rounded-[1.5rem] border border-white/10 bg-[radial-gradient(circle_at_25%_20%,_rgba(255,255,255,0.3),_transparent_26%),linear-gradient(135deg,_rgba(255,255,255,0.14)_0%,_rgba(255,255,255,0.03)_28%,_rgba(255,255,255,0)_52%),radial-gradient(circle_at_78%_28%,_rgba(217,70,239,0.3),_transparent_34%),radial-gradient(circle_at_38%_72%,_rgba(125,211,252,0.24),_transparent_30%),linear-gradient(145deg,_rgba(26,10,36,0.92)_0%,_rgba(14,6,24,0.7)_52%,_rgba(8,2,16,0.95)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_18px_60px_rgba(0,0,0,0.26)]" />
-            <div className="absolute left-12 top-12 h-20 w-20 rounded-full bg-white/10 blur-2xl" />
-            <div className="absolute bottom-10 right-8 h-32 w-32 rounded-full bg-fuchsia-400/18 blur-3xl" />
 
-            <div className="relative flex h-full flex-col justify-between">
-                <div>
-                    <div className="flex items-start justify-between gap-6">
-                        <span className="text-sm font-medium tracking-[0.24em] text-fuchsia-100/78">
-                            {project.index}
-                        </span>
-                        <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[0.68rem] uppercase tracking-[0.3em] text-fuchsia-200/78">
-                            {project.category}
-                        </span>
-                    </div>
+            <div className="relative flex h-full flex-col">
+                {isVisualTop ? <ProjectVisual project={project} /> : null}
 
-                    <div className="mt-56">
-                        <h3 className="max-w-xs text-3xl font-semibold tracking-[-0.06em] text-white sm:text-[2.15rem]">
+                <div className={`flex flex-1 flex-col ${isVisualTop ? 'pt-8' : ''}`}>
+                    <span className="text-sm font-medium tracking-[0.24em] text-fuchsia-100/78">
+                        {project.index}
+                    </span>
+
+                    <div className="mt-6 flex-1">
+                        <h3 className="max-w-[12ch] text-[1.75rem] font-semibold tracking-[-0.06em] text-white sm:text-[2rem] lg:text-[2.25rem] xl:text-[2.5rem]">
                             {project.title}
                         </h3>
-                        <p className="mt-4 max-w-sm text-base leading-7 text-white/62">
+                        <p className="mt-4 max-w-[24rem] text-sm leading-7 text-white/62 sm:text-base lg:text-[1.02rem]">
                             {project.description}
                         </p>
                     </div>
+
+                    <div className="mt-8 flex items-center justify-between">
+                        <div className="h-px w-24 bg-gradient-to-r from-fuchsia-300/90 via-fuchsia-200/55 to-transparent lg:w-32" />
+                        <span className="text-xs uppercase tracking-[0.34em] text-white/45">
+                            Explore
+                        </span>
+                    </div>
                 </div>
 
-                <div className="mt-10 flex items-center justify-between">
-                    <div className="h-px w-24 bg-gradient-to-r from-fuchsia-300/85 to-transparent" />
-                    <span className="text-xs uppercase tracking-[0.34em] text-white/45">
-                        Explore
-                    </span>
-                </div>
+                {!isVisualTop ? <ProjectVisual project={project} /> : null}
             </div>
         </article>
+    );
+}
+
+function ProjectVisual({ project }: { project: ProjectItem }) {
+    if (project.imageUrl) {
+        const imagePositionClass =
+            project.index === '02' ? 'object-[center_18%]' : 'object-center';
+
+        return (
+            <div className="relative mt-8 h-[12rem] overflow-hidden border border-white/10 bg-[linear-gradient(180deg,rgba(13,8,20,0.9)_0%,rgba(8,4,14,0.96)_100%)] sm:h-[13rem] lg:h-[15rem] xl:h-[16rem]">
+                <img
+                    src={project.imageUrl}
+                    alt={project.title}
+                    className={`h-full w-full object-cover ${imagePositionClass}`}
+                />
+                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,4,12,0.12)_0%,rgba(7,4,12,0)_26%,rgba(7,4,12,0.18)_100%)]" />
+            </div>
+        );
+    }
+
+    return (
+        <div className="relative mt-8 h-[12rem] overflow-hidden border border-white/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.02)_18%,rgba(255,255,255,0)_40%),linear-gradient(180deg,rgba(13,8,20,0.9)_0%,rgba(8,4,14,0.96)_100%)] sm:h-[13rem] lg:h-[15rem] xl:h-[16rem]">
+            <div
+                className={`absolute inset-0 bg-gradient-to-br ${project.accent} opacity-[0.24]`}
+            />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_24%_20%,rgba(255,255,255,0.28),transparent_24%),radial-gradient(circle_at_78%_26%,rgba(255,255,255,0.08),transparent_34%),linear-gradient(135deg,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.02)_28%,rgba(255,255,255,0)_56%)]" />
+            <div className="absolute left-6 top-6 h-14 w-14 rounded-full border border-white/12 bg-white/8 backdrop-blur-sm" />
+            <div className="absolute right-6 top-8 h-10 w-24 border border-white/12 bg-white/6 backdrop-blur-sm" />
+            <div className="absolute bottom-6 left-6 h-16 w-20 border border-white/12 bg-white/6 backdrop-blur-sm" />
+            <div className="absolute bottom-6 right-6 h-px w-32 bg-gradient-to-r from-white/60 to-transparent" />
+        </div>
     );
 }
