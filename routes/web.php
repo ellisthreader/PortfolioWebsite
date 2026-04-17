@@ -15,6 +15,8 @@ Route::inertia('/', 'welcome', [
     'modelUrl' => url('/home-model'),
 ])->name('home');
 
+Route::inertia('/projects', 'projects')->name('projects');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
 });

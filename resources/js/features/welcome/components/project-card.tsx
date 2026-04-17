@@ -1,7 +1,47 @@
+import { Link } from '@inertiajs/react';
+
 import type { ProjectItem } from '../types';
 
 export function ProjectCard({ project }: { project: ProjectItem }) {
     const isVisualTop = Number.parseInt(project.index, 10) % 2 === 0;
+
+    if (project.isCta) {
+        return (
+            <article className="group relative h-[32rem] w-[78vw] shrink-0 overflow-hidden border border-white/8 bg-[linear-gradient(180deg,rgba(14,8,20,0.96)_0%,rgba(8,4,14,0.94)_100%)] p-6 sm:h-[36rem] sm:w-[52vw] sm:p-7 lg:h-[42rem] lg:w-[33.3333vw] lg:p-8 xl:h-[45rem]">
+                <div
+                    className={`absolute inset-0 bg-gradient-to-br ${project.accent} opacity-[0.22] transition-opacity duration-500 group-hover:opacity-[0.34]`}
+                />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(255,255,255,0.16),transparent_26%),radial-gradient(circle_at_82%_80%,rgba(255,255,255,0.08),transparent_32%)]" />
+
+                <div className="relative flex h-full flex-col justify-between">
+                    <div>
+                        <span className="text-sm font-medium tracking-[0.24em] text-fuchsia-100/78">
+                            {project.index}
+                        </span>
+
+                        <div className="mt-10">
+                            <h3 className="max-w-[11ch] text-[2rem] font-semibold tracking-[-0.07em] text-white sm:text-[2.3rem] lg:text-[2.7rem] xl:text-[3rem]">
+                                {project.title}
+                            </h3>
+                            <p className="mt-5 max-w-[24rem] text-sm leading-7 text-white/68 sm:text-base lg:text-[1.02rem]">
+                                {project.description}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col items-start gap-6">
+                        <div className="h-px w-full bg-gradient-to-r from-white/70 via-white/18 to-transparent" />
+                        <Link
+                            href={project.href ?? '/projects'}
+                            className="inline-flex items-center justify-center border border-white/18 bg-white/10 px-6 py-3 text-sm font-medium uppercase tracking-[0.24em] text-white transition duration-300 hover:bg-white hover:text-[#140a1f]"
+                        >
+                            {project.buttonLabel ?? 'View more'}
+                        </Link>
+                    </div>
+                </div>
+            </article>
+        );
+    }
 
     return (
         <article
@@ -44,17 +84,61 @@ export function ProjectCard({ project }: { project: ProjectItem }) {
 
 function ProjectVisual({ project }: { project: ProjectItem }) {
     if (project.imageUrl) {
-        const imagePositionClass =
-            project.index === '02' ? 'object-[center_18%]' : 'object-center';
+        const imagePositionClass = 'object-center';
+        const imageFitClass = project.transparentImage ? 'object-contain' : 'object-cover';
+        const imageScaleClass = project.index === '05' ? 'scale-[1.16]' : '';
+        const imageSizingClass =
+            project.index === '04'
+                ? 'h-full w-full max-h-full max-w-full'
+                : project.index === '06'
+                  ? 'h-full w-full scale-[1.24] sm:scale-[1.28] lg:scale-[1.32]'
+                : 'h-full w-full';
+        const wrapperClass = project.transparentImage
+            ? 'bg-transparent'
+            : 'bg-[linear-gradient(180deg,rgba(13,8,20,0.9)_0%,rgba(8,4,14,0.96)_100%)]';
+        const overlayClass = project.transparentImage
+            ? 'bg-transparent'
+            : 'bg-[linear-gradient(180deg,rgba(7,4,12,0.12)_0%,rgba(7,4,12,0)_26%,rgba(7,4,12,0.18)_100%)]';
+        const frameClass = project.transparentImage ? 'border-transparent' : 'border-white/10';
+        const showTillOverlay = project.index === '02';
+        const showUpliftaPair = project.index === '04';
+        const visualHeightClass = showTillOverlay
+            ? 'h-[14rem] sm:h-[15rem] lg:h-[17rem] xl:h-[18rem]'
+            : 'h-[12rem] sm:h-[13rem] lg:h-[15rem] xl:h-[16rem]';
+        const visualOverflowClass = showTillOverlay ? 'overflow-visible' : 'overflow-hidden';
 
         return (
-            <div className="relative mt-8 h-[12rem] overflow-hidden border border-white/10 bg-[linear-gradient(180deg,rgba(13,8,20,0.9)_0%,rgba(8,4,14,0.96)_100%)] sm:h-[13rem] lg:h-[15rem] xl:h-[16rem]">
-                <img
-                    src={project.imageUrl}
-                    alt={project.title}
-                    className={`h-full w-full object-cover ${imagePositionClass}`}
-                />
-                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,4,12,0.12)_0%,rgba(7,4,12,0)_26%,rgba(7,4,12,0.18)_100%)]" />
+            <div
+                className={`relative mt-8 flex items-center justify-center border ${frameClass} ${wrapperClass} ${visualHeightClass} ${visualOverflowClass}`}
+            >
+                {showUpliftaPair ? (
+                    <div className="flex h-full w-full items-center justify-center gap-2 px-2 sm:gap-3 sm:px-3">
+                        <img
+                            src="/Uplifta2.png"
+                            alt="Uplifta app preview"
+                            className="h-full w-[48%] max-h-full max-w-full object-contain object-center"
+                        />
+                        <img
+                            src={project.imageUrl}
+                            alt={project.title}
+                            className="h-full w-[48%] max-h-full max-w-full object-contain object-center"
+                        />
+                    </div>
+                ) : (
+                    <img
+                        src={project.imageUrl}
+                        alt={project.title}
+                        className={`${imageSizingClass} ${imageFitClass} ${imagePositionClass} ${imageScaleClass}`}
+                    />
+                )}
+                {showTillOverlay ? (
+                    <img
+                        src="/Till.png"
+                        alt="Till system"
+                        className="pointer-events-none absolute bottom-0 right-0 z-10 w-[68%] translate-x-[12%] translate-y-[14%] object-contain sm:w-[64%] sm:translate-x-[14%] sm:translate-y-[16%] lg:w-[60%] lg:translate-x-[18%] lg:translate-y-[18%] xl:w-[56%] xl:translate-x-[20%] xl:translate-y-[20%]"
+                    />
+                ) : null}
+                <div className={`absolute inset-0 ${overlayClass}`} />
             </div>
         );
     }

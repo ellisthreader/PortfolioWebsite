@@ -14,6 +14,10 @@ export type ProjectItem = {
     description: string;
     accent: string;
     imageUrl?: string;
+    transparentImage?: boolean;
+    isCta?: boolean;
+    href?: string;
+    buttonLabel?: string;
 };
 
 export type WelcomePageProps = {

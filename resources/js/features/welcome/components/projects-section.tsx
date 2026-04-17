@@ -19,7 +19,7 @@ const INITIAL_SCENE_METRICS: SceneMetrics = {
 };
 
 export function ProjectsSection() {
-    const featuredProjects = PROJECT_ITEMS.slice(0, 10);
+    const featuredProjects = PROJECT_ITEMS;
     const sectionRef = useRef<HTMLElement | null>(null);
     const viewportRef = useRef<HTMLDivElement | null>(null);
     const trackRef = useRef<HTMLDivElement | null>(null);
