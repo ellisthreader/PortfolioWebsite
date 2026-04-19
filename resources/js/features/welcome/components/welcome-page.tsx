@@ -6,6 +6,7 @@ import { useExperienceProgress } from '../hooks/use-experience-progress';
 import { ExperienceSection } from './experience-section';
 import { HeroScene } from './hero-scene';
 import { ProjectsSection } from './projects-section';
+import { TechStackSection } from './tech-stack-section';
 
 export function WelcomePage({ modelUrl }: WelcomePageProps) {
     const { entriesRef, heroScrollProgressRef, progress, sectionRef } =
@@ -15,7 +16,7 @@ export function WelcomePage({ modelUrl }: WelcomePageProps) {
         <WelcomePageProvider modelUrl={modelUrl}>
             <Head title="Home" />
 
-            <div className="bg-black">
+            <div className="overflow-x-clip bg-black">
                 <HeroScene scrollProgressRef={heroScrollProgressRef} />
                 <ExperienceSection
                     entriesRef={entriesRef}
@@ -23,6 +24,7 @@ export function WelcomePage({ modelUrl }: WelcomePageProps) {
                     sectionRef={sectionRef}
                 />
                 <ProjectsSection />
+                <TechStackSection />
             </div>
         </WelcomePageProvider>
     );

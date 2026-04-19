@@ -9,9 +9,9 @@ export function HeroScene({
     scrollProgressRef: MutableNumberRef;
 }) {
     return (
-        <section className="relative h-[200vh] w-screen">
+        <section className="relative h-[200vh] w-full overflow-x-clip">
             <div
-                className="sticky top-0 h-screen w-screen overflow-hidden"
+                className="sticky top-0 h-screen w-full overflow-hidden"
                 style={{ touchAction: 'none' }}
             >
                 <Canvas

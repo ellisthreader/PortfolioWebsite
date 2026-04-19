@@ -19,7 +19,7 @@ const INITIAL_SCENE_METRICS: SceneMetrics = {
 };
 
 export function ProjectsSection() {
-    const featuredProjects = PROJECT_ITEMS;
+    const featuredProjects = PROJECT_ITEMS.filter((project) => !project.hideFromHome);
     const sectionRef = useRef<HTMLElement | null>(null);
     const viewportRef = useRef<HTMLDivElement | null>(null);
     const trackRef = useRef<HTMLDivElement | null>(null);
@@ -111,14 +111,14 @@ export function ProjectsSection() {
     return (
         <section
             ref={sectionRef}
-            className="relative -mt-8 h-screen bg-[#020104] text-white sm:-mt-10"
+            className="relative z-20 -mt-24 h-screen bg-[#020104] text-white sm:-mt-28 lg:-mt-32"
             style={
                 sceneMetrics.sectionHeight > 0
                     ? { height: `${sceneMetrics.sectionHeight}px` }
                     : undefined
             }
         >
-            <div className="sticky top-0 h-screen overflow-hidden pt-6 sm:pt-8 lg:pt-10">
+            <div className="sticky top-0 h-screen overflow-hidden pt-0 sm:pt-2 lg:pt-4">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_14%_18%,_rgba(139,92,246,0.18),_transparent_24%),radial-gradient(circle_at_84%_16%,_rgba(244,114,182,0.14),_transparent_20%),radial-gradient(circle_at_52%_82%,_rgba(217,70,239,0.16),_transparent_28%),linear-gradient(180deg,_#05010a_0%,_#020104_44%,_#000000_100%)]" />
                 <div className="absolute inset-y-0 left-[6%] w-72 bg-[radial-gradient(circle_at_center,_rgba(217,70,239,0.18),_transparent_68%)] blur-[120px]" />
                 <div className="absolute inset-y-0 right-[8%] w-80 bg-[radial-gradient(circle_at_center,_rgba(125,211,252,0.1),_transparent_72%)] blur-[140px]" />

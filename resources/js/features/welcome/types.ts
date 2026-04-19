@@ -12,9 +12,11 @@ export type ProjectItem = {
     title: string;
     category: string;
     description: string;
+    stack: string;
     accent: string;
     imageUrl?: string;
     transparentImage?: boolean;
+    hideFromHome?: boolean;
     isCta?: boolean;
     href?: string;
     buttonLabel?: string;

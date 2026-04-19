@@ -96,7 +96,7 @@ function ProjectVisual({ project }: { project: ProjectItem }) {
                 : isAiAssistant
                   ? 'h-full w-full max-h-full max-w-full'
                 : project.index === '06'
-                  ? 'h-full w-full scale-[1.24] sm:scale-[1.28] lg:scale-[1.32]'
+                  ? 'h-full w-full max-h-full max-w-full'
                 : 'h-full w-full';
         const wrapperClass = isTransparentVisual || isAiAssistant
             ? 'bg-transparent'
@@ -108,38 +108,53 @@ function ProjectVisual({ project }: { project: ProjectItem }) {
             isTransparentVisual || isAiAssistant ? 'border-transparent' : 'border-white/10';
         const showTillOverlay = project.index === '02';
         const showUpliftaPair = project.index === '04';
+        const showChessAi = project.index === '06';
         const visualHeightClass = isAiAssistant
             ? 'h-[16rem] sm:h-[17rem] lg:h-[20rem] xl:h-[21rem]'
             : showUpliftaPair
-            ? 'h-[21rem] sm:h-[22rem] lg:h-[25rem] xl:h-[26rem]'
+            ? 'h-[20rem] sm:h-[22rem] lg:h-[26rem] xl:h-[28rem]'
+            : showChessAi
+            ? 'h-[16rem] sm:h-[18rem] lg:h-[21rem] xl:h-[23rem]'
             : showTillOverlay
             ? 'h-[14rem] sm:h-[15rem] lg:h-[17rem] xl:h-[18rem]'
             : 'h-[12rem] sm:h-[13rem] lg:h-[15rem] xl:h-[16rem]';
         const visualOverflowClass =
-            showTillOverlay || isAiAssistant ? 'overflow-visible' : 'overflow-hidden';
+            showTillOverlay || isAiAssistant || showUpliftaPair || showChessAi
+                ? 'overflow-visible'
+                : 'overflow-hidden';
+        const visualMarginClass = showUpliftaPair
+            ? 'mt-2 -mb-[5.75rem] sm:-mb-[6.75rem] lg:-mb-[8.75rem] xl:-mb-[9.75rem]'
+            : showChessAi
+            ? 'mt-7 -mb-[1.5rem] sm:-mb-[2.25rem] lg:-mb-[3.5rem] xl:-mb-[4rem]'
+            : 'mt-8';
+        const visualAlignmentClass = showUpliftaPair
+            ? 'items-start justify-end border-transparent'
+            : showChessAi
+            ? 'items-center justify-center border-transparent'
+            : 'items-center justify-center';
 
         return (
             <div
-                className={`relative mt-8 flex items-center justify-center border ${frameClass} ${wrapperClass} ${visualHeightClass} ${visualOverflowClass}`}
+                className={`relative flex border ${frameClass} ${wrapperClass} ${visualHeightClass} ${visualOverflowClass} ${visualMarginClass} ${visualAlignmentClass}`}
             >
                 {showUpliftaPair ? (
-                    <div className="flex h-full w-full items-center justify-center gap-1 px-0 sm:gap-2">
+                    <div className="pointer-events-none absolute inset-0">
                         <img
                             src="/Uplifta2.png"
                             alt="Uplifta app preview"
-                            className="h-full w-[50%] max-h-full max-w-full object-contain object-center"
+                            className="absolute left-[16%] top-[-3%] h-auto w-[39%] max-w-none object-contain object-center drop-shadow-[0_24px_42px_rgba(0,0,0,0.42)] sm:left-[15%] sm:top-[-4%] lg:left-[14%] lg:top-[-5%] xl:left-[13%]"
                         />
                         <img
                             src={project.imageUrl}
                             alt={project.title}
-                            className="h-full w-[50%] max-h-full max-w-full object-contain object-center"
+                            className="absolute right-[11%] top-[-3%] h-auto w-[35%] max-w-none object-contain object-center drop-shadow-[0_24px_42px_rgba(0,0,0,0.42)] sm:right-[10%] sm:top-[-4%] lg:right-[9%] lg:top-[-5%] xl:right-[8%]"
                         />
                     </div>
                 ) : (
                     <img
                         src={project.imageUrl}
                         alt={project.title}
-                        className={`${imageSizingClass} ${imageFitClass} ${imagePositionClass} ${imageScaleClass} ${isAiAssistant ? 'drop-shadow-none' : ''}`}
+                        className={`${imageSizingClass} ${imageFitClass} ${imagePositionClass} ${imageScaleClass} ${isAiAssistant ? 'drop-shadow-none' : ''} ${showChessAi ? 'w-[112%] max-w-none sm:w-[118%] lg:w-[124%] xl:w-[128%]' : ''}`}
                     />
                 )}
                 {showTillOverlay ? (
