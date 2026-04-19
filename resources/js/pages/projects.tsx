@@ -59,12 +59,24 @@ export default function Projects() {
                                     </div>
 
                                     {project.imageUrl ? (
-                                        <div className="relative mt-8 flex h-56 items-center justify-center overflow-hidden border border-white/10 bg-[linear-gradient(180deg,rgba(13,8,20,0.72)_0%,rgba(8,4,14,0.78)_100%)]">
+                                        <div
+                                            className={`relative mt-8 flex items-center justify-center ${
+                                                project.index === '03' ? 'h-64 overflow-visible' : 'h-56 overflow-hidden'
+                                            } ${
+                                                project.transparentImage
+                                                    ? 'border-transparent bg-transparent'
+                                                    : 'border border-white/10 bg-[linear-gradient(180deg,rgba(13,8,20,0.72)_0%,rgba(8,4,14,0.78)_100%)]'
+                                            }`}
+                                        >
                                             <img
                                                 src={project.imageUrl}
                                                 alt={project.title}
                                                 className={`h-full w-full ${
-                                                    project.transparentImage ? 'object-contain p-6' : 'object-cover'
+                                                    project.transparentImage
+                                                        ? project.index === '03'
+                                                            ? 'object-contain p-0'
+                                                            : 'object-contain p-6'
+                                                        : 'object-cover'
                                                 }`}
                                             />
                                         </div>

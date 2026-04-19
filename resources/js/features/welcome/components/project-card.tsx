@@ -84,51 +84,62 @@ export function ProjectCard({ project }: { project: ProjectItem }) {
 
 function ProjectVisual({ project }: { project: ProjectItem }) {
     if (project.imageUrl) {
+        const isTransparentVisual = project.transparentImage;
+        const isAiAssistant = project.index === '03';
         const imagePositionClass = 'object-center';
-        const imageFitClass = project.transparentImage ? 'object-contain' : 'object-cover';
+        const imageFitClass =
+            isTransparentVisual || isAiAssistant ? 'object-contain' : 'object-cover';
         const imageScaleClass = project.index === '05' ? 'scale-[1.16]' : '';
         const imageSizingClass =
             project.index === '04'
                 ? 'h-full w-full max-h-full max-w-full'
+                : isAiAssistant
+                  ? 'h-full w-full max-h-full max-w-full'
                 : project.index === '06'
                   ? 'h-full w-full scale-[1.24] sm:scale-[1.28] lg:scale-[1.32]'
                 : 'h-full w-full';
-        const wrapperClass = project.transparentImage
+        const wrapperClass = isTransparentVisual || isAiAssistant
             ? 'bg-transparent'
             : 'bg-[linear-gradient(180deg,rgba(13,8,20,0.9)_0%,rgba(8,4,14,0.96)_100%)]';
-        const overlayClass = project.transparentImage
+        const overlayClass = isTransparentVisual || isAiAssistant
             ? 'bg-transparent'
             : 'bg-[linear-gradient(180deg,rgba(7,4,12,0.12)_0%,rgba(7,4,12,0)_26%,rgba(7,4,12,0.18)_100%)]';
-        const frameClass = project.transparentImage ? 'border-transparent' : 'border-white/10';
+        const frameClass =
+            isTransparentVisual || isAiAssistant ? 'border-transparent' : 'border-white/10';
         const showTillOverlay = project.index === '02';
         const showUpliftaPair = project.index === '04';
-        const visualHeightClass = showTillOverlay
+        const visualHeightClass = isAiAssistant
+            ? 'h-[16rem] sm:h-[17rem] lg:h-[20rem] xl:h-[21rem]'
+            : showUpliftaPair
+            ? 'h-[21rem] sm:h-[22rem] lg:h-[25rem] xl:h-[26rem]'
+            : showTillOverlay
             ? 'h-[14rem] sm:h-[15rem] lg:h-[17rem] xl:h-[18rem]'
             : 'h-[12rem] sm:h-[13rem] lg:h-[15rem] xl:h-[16rem]';
-        const visualOverflowClass = showTillOverlay ? 'overflow-visible' : 'overflow-hidden';
+        const visualOverflowClass =
+            showTillOverlay || isAiAssistant ? 'overflow-visible' : 'overflow-hidden';
 
         return (
             <div
                 className={`relative mt-8 flex items-center justify-center border ${frameClass} ${wrapperClass} ${visualHeightClass} ${visualOverflowClass}`}
             >
                 {showUpliftaPair ? (
-                    <div className="flex h-full w-full items-center justify-center gap-2 px-2 sm:gap-3 sm:px-3">
+                    <div className="flex h-full w-full items-center justify-center gap-1 px-0 sm:gap-2">
                         <img
                             src="/Uplifta2.png"
                             alt="Uplifta app preview"
-                            className="h-full w-[48%] max-h-full max-w-full object-contain object-center"
+                            className="h-full w-[50%] max-h-full max-w-full object-contain object-center"
                         />
                         <img
                             src={project.imageUrl}
                             alt={project.title}
-                            className="h-full w-[48%] max-h-full max-w-full object-contain object-center"
+                            className="h-full w-[50%] max-h-full max-w-full object-contain object-center"
                         />
                     </div>
                 ) : (
                     <img
                         src={project.imageUrl}
                         alt={project.title}
-                        className={`${imageSizingClass} ${imageFitClass} ${imagePositionClass} ${imageScaleClass}`}
+                        className={`${imageSizingClass} ${imageFitClass} ${imagePositionClass} ${imageScaleClass} ${isAiAssistant ? 'drop-shadow-none' : ''}`}
                     />
                 )}
                 {showTillOverlay ? (
