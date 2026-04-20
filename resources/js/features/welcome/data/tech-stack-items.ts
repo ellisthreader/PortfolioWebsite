@@ -1,3 +1,5 @@
+import openAiLogo from '../assets/openai-logo.svg';
+
 export type TechStackItem = {
     accent: string;
     description: string;
@@ -100,7 +102,7 @@ export const TECH_STACK_ITEMS: TechStackItem[] = [
         accent: '#f472b6',
         description: 'Model-powered experiences that feel useful, fast, and human.',
         label: 'OpenAI',
-        logo: 'https://cdn.simpleicons.org/openai/F472B6',
+        logo: openAiLogo,
     },
     {
         accent: '#c084fc',

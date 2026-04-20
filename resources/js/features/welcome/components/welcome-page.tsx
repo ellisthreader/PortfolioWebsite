@@ -16,7 +16,7 @@ export function WelcomePage({ modelUrl }: WelcomePageProps) {
         <WelcomePageProvider modelUrl={modelUrl}>
             <Head title="Home" />
 
-            <div className="overflow-x-clip bg-black">
+            <div className="relative overflow-x-clip bg-black">
                 <HeroScene scrollProgressRef={heroScrollProgressRef} />
                 <ExperienceSection
                     entriesRef={entriesRef}

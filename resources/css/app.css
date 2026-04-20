@@ -254,3 +254,54 @@
         filter: saturate(1);
     }
 }
+
+@keyframes tech-space-drift {
+    0% {
+        transform: scale(1.04) translate3d(-1.5%, -1%, 0);
+        filter: brightness(0.82) saturate(1);
+    }
+
+    50% {
+        transform: scale(1.1) translate3d(1.5%, 1.2%, 0);
+        filter: brightness(1) saturate(1.08);
+    }
+
+    100% {
+        transform: scale(1.04) translate3d(-1.5%, -1%, 0);
+        filter: brightness(0.82) saturate(1);
+    }
+}
+
+@keyframes tech-space-aurora {
+    0% {
+        transform: translate3d(-6%, -4%, 0) scale(0.98);
+        opacity: 0.24;
+    }
+
+    50% {
+        transform: translate3d(5%, 4%, 0) scale(1.06);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: translate3d(-6%, -4%, 0) scale(0.98);
+        opacity: 0.24;
+    }
+}
+
+@keyframes tech-space-shimmer {
+    0% {
+        transform: translate3d(-8%, 0, 0) scaleX(0.96);
+        opacity: 0.08;
+    }
+
+    50% {
+        transform: translate3d(8%, 0, 0) scaleX(1.04);
+        opacity: 0.18;
+    }
+
+    100% {
+        transform: translate3d(-8%, 0, 0) scaleX(0.96);
+        opacity: 0.08;
+    }
+}

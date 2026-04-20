@@ -1,4 +1,4 @@
-import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
+import { motion, useSpring } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
 import { PROJECT_ITEMS } from '../data/project-items';
@@ -23,6 +23,12 @@ export function ProjectsSection() {
     const sectionRef = useRef<HTMLElement | null>(null);
     const viewportRef = useRef<HTMLDivElement | null>(null);
     const trackRef = useRef<HTMLDivElement | null>(null);
+    const translateX = useSpring(0, {
+        stiffness: 72,
+        damping: 24,
+        mass: 0.9,
+        restDelta: 0.2,
+    });
     const [sceneMetrics, setSceneMetrics] = useState<SceneMetrics>(
         INITIAL_SCENE_METRICS,
     );
@@ -91,22 +97,46 @@ export function ProjectsSection() {
         };
     }, []);
 
-    const { scrollYProgress } = useScroll({
-        target: sectionRef,
-        offset: ['start start', 'end end'],
-    });
+    useEffect(() => {
+        let animationFrameId = 0;
 
-    const rawTranslateX = useTransform(
-        scrollYProgress,
-        [0, 1],
-        [0, -sceneMetrics.travelDistance],
-    );
-    const translateX = useSpring(rawTranslateX, {
-        stiffness: 72,
-        damping: 24,
-        mass: 0.9,
-        restDelta: 0.2,
-    });
+        const updateTranslateX = () => {
+            const section = sectionRef.current;
+
+            if (!section || sceneMetrics.sectionHeight <= 0) {
+                translateX.set(0);
+                return;
+            }
+
+            const sectionRect = section.getBoundingClientRect();
+            const maxScrollableDistance = Math.max(
+                sceneMetrics.sectionHeight - window.innerHeight,
+                1,
+            );
+            const consumedScroll = Math.min(
+                Math.max(-sectionRect.top, 0),
+                maxScrollableDistance,
+            );
+            const progress = consumedScroll / maxScrollableDistance;
+
+            translateX.set(-sceneMetrics.travelDistance * progress);
+        };
+
+        const scheduleTranslateUpdate = () => {
+            window.cancelAnimationFrame(animationFrameId);
+            animationFrameId = window.requestAnimationFrame(updateTranslateX);
+        };
+
+        scheduleTranslateUpdate();
+        window.addEventListener('scroll', scheduleTranslateUpdate, { passive: true });
+        window.addEventListener('resize', scheduleTranslateUpdate);
+
+        return () => {
+            window.cancelAnimationFrame(animationFrameId);
+            window.removeEventListener('scroll', scheduleTranslateUpdate);
+            window.removeEventListener('resize', scheduleTranslateUpdate);
+        };
+    }, [sceneMetrics.sectionHeight, sceneMetrics.travelDistance, translateX]);
 
     return (
         <section
