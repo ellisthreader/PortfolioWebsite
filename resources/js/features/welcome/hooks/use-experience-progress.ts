@@ -1,66 +1,176 @@
-import { MathUtils } from 'three';
 import { useEffect, useRef, useState } from 'react';
 
-export function useExperienceProgress() {
+import {
+    LAPTOP_SCROLL_LOCK_PROGRESS,
+    SCROLL_KEYS,
+} from './use-experience-progress/constants';
+import {
+    calculateExperienceMetrics,
+    getEmptyMetrics,
+    haveMetricsChanged,
+} from './use-experience-progress/metrics';
+import type { ExperienceMetrics } from './use-experience-progress/types';
+
+export function useExperienceProgress({
+    laptopVideoEnded,
+}: {
+    laptopVideoEnded: boolean;
+}) {
+    const contentRef = useRef<HTMLDivElement | null>(null);
     const heroScrollProgressRef = useRef(0);
     const sectionRef = useRef<HTMLElement | null>(null);
     const entriesRef = useRef<HTMLDivElement | null>(null);
-    const targetProgressRef = useRef(0);
-    const [progress, setProgress] = useState(0);
+    const laptopVideoEndedRef = useRef(laptopVideoEnded);
+    const scrollLockActiveRef = useRef(false);
+    const scrollLockYRef = useRef(0);
+    const [heroScrollProgress, setHeroScrollProgress] = useState(0);
+    const [metrics, setMetrics] = useState<ExperienceMetrics>(
+        getEmptyMetrics(1),
+    );
+
+    useEffect(() => {
+        laptopVideoEndedRef.current = laptopVideoEnded;
+
+        if (laptopVideoEnded) {
+            scrollLockActiveRef.current = false;
+        }
+    }, [laptopVideoEnded]);
 
     useEffect(() => {
         let animationFrameId = 0;
+        let resizeObserver: ResizeObserver | null = null;
+        let isRestoringLockedScroll = false;
 
-        const updateScrollTargets = () => {
-            const viewportHeight = Math.max(window.innerHeight, 1);
-            const section = sectionRef.current;
-            const entries = entriesRef.current;
-
-            heroScrollProgressRef.current = MathUtils.clamp(
-                window.scrollY / viewportHeight,
-                0,
-                1,
-            );
-
-            if (!section || !entries) {
-                targetProgressRef.current = 0;
+        const restoreLockedScroll = () => {
+            if (
+                !scrollLockActiveRef.current ||
+                isRestoringLockedScroll ||
+                laptopVideoEndedRef.current
+            ) {
                 return;
             }
 
-            const entriesTop = window.scrollY + entries.getBoundingClientRect().top;
-            const entriesHeight = entries.offsetHeight;
-            const startScroll = entriesTop - viewportHeight * 0.72;
-            const endScroll = entriesTop + entriesHeight - viewportHeight * 0.38;
-            const progressDistance = Math.max(endScroll - startScroll, viewportHeight);
-
-            targetProgressRef.current = MathUtils.clamp(
-                (window.scrollY - startScroll) / progressDistance,
-                0,
-                1,
+            isRestoringLockedScroll = true;
+            window.scrollTo({
+                left: window.scrollX,
+                top: scrollLockYRef.current,
+            });
+            isRestoringLockedScroll = false;
+        };
+        const preventLockedScroll = (event: Event) => {
+            if (scrollLockActiveRef.current && !laptopVideoEndedRef.current) {
+                event.preventDefault();
+                restoreLockedScroll();
+            }
+        };
+        const preventLockedKeyScroll = (event: KeyboardEvent) => {
+            if (
+                scrollLockActiveRef.current &&
+                !laptopVideoEndedRef.current &&
+                SCROLL_KEYS.has(event.key)
+            ) {
+                event.preventDefault();
+                restoreLockedScroll();
+            }
+        };
+        const commitMetrics = (nextMetrics: ExperienceMetrics) => {
+            setMetrics((currentMetrics) =>
+                haveMetricsChanged(currentMetrics, nextMetrics)
+                    ? nextMetrics
+                    : currentMetrics,
             );
         };
+        const commitHeroScrollProgress = (nextHeroScrollProgress: number) => {
+            setHeroScrollProgress((currentHeroScrollProgress) =>
+                Math.abs(
+                    currentHeroScrollProgress - nextHeroScrollProgress,
+                ) > 0.001
+                    ? nextHeroScrollProgress
+                    : currentHeroScrollProgress,
+            );
+        };
+        const updateMetrics = () => {
+            animationFrameId = 0;
+            const viewportHeight = Math.max(window.innerHeight, 1);
+            const {
+                heroScrollProgress,
+                metrics: nextMetrics,
+                scrollLockY,
+            } = calculateExperienceMetrics(
+                {
+                    content: contentRef.current,
+                    entries: entriesRef.current,
+                    section: sectionRef.current,
+                },
+                viewportHeight,
+            );
+            const shouldLockLaptopScroll =
+                !laptopVideoEndedRef.current && window.scrollY >= scrollLockY;
 
-        const animateProgress = () => {
-            setProgress((current) => {
-                const next = targetProgressRef.current;
+            if (shouldLockLaptopScroll) {
+                scrollLockActiveRef.current = true;
+                scrollLockYRef.current = scrollLockY;
 
-                return Math.abs(current - next) > 0.0005 ? next : current;
-            });
+                if (window.scrollY !== scrollLockY) {
+                    restoreLockedScroll();
+                }
+            }
 
-            animationFrameId = window.requestAnimationFrame(animateProgress);
+            heroScrollProgressRef.current =
+                scrollLockActiveRef.current && !laptopVideoEndedRef.current
+                    ? LAPTOP_SCROLL_LOCK_PROGRESS
+                    : heroScrollProgress;
+            commitHeroScrollProgress(heroScrollProgressRef.current);
+            commitMetrics(nextMetrics);
+        };
+        const scheduleUpdate = () => {
+            if (!animationFrameId) {
+                animationFrameId = window.requestAnimationFrame(updateMetrics);
+            }
         };
 
-        updateScrollTargets();
-        animationFrameId = window.requestAnimationFrame(animateProgress);
-        window.addEventListener('scroll', updateScrollTargets, { passive: true });
-        window.addEventListener('resize', updateScrollTargets);
+        scheduleUpdate();
+        window.addEventListener('scroll', scheduleUpdate, { passive: true });
+        window.addEventListener('resize', scheduleUpdate);
+        window.addEventListener('wheel', preventLockedScroll, {
+            passive: false,
+        });
+        window.addEventListener('touchmove', preventLockedScroll, {
+            passive: false,
+        });
+        window.addEventListener('keydown', preventLockedKeyScroll);
+
+        if (typeof ResizeObserver !== 'undefined') {
+            resizeObserver = new ResizeObserver(scheduleUpdate);
+
+            if (contentRef.current) resizeObserver.observe(contentRef.current);
+            if (entriesRef.current) resizeObserver.observe(entriesRef.current);
+        }
 
         return () => {
-            window.cancelAnimationFrame(animationFrameId);
-            window.removeEventListener('scroll', updateScrollTargets);
-            window.removeEventListener('resize', updateScrollTargets);
+            if (animationFrameId) window.cancelAnimationFrame(animationFrameId);
+            resizeObserver?.disconnect();
+            window.removeEventListener('scroll', scheduleUpdate);
+            window.removeEventListener('resize', scheduleUpdate);
+            window.removeEventListener('wheel', preventLockedScroll);
+            window.removeEventListener('touchmove', preventLockedScroll);
+            window.removeEventListener('keydown', preventLockedKeyScroll);
         };
     }, []);
 
-    return { entriesRef, heroScrollProgressRef, progress, sectionRef };
+    return {
+        beamProgress: metrics.beamProgress,
+        beamStartOffset: metrics.beamStartOffset,
+        contentRef,
+        contentScrollOffset: metrics.contentScrollOffset,
+        entriesRef,
+        heroBeamEndOffset: metrics.heroBeamEndOffset,
+        heroBeamStartOffset: metrics.heroBeamStartOffset,
+        heroSectionHeight: metrics.heroSectionHeight,
+        heroScrollProgress,
+        heroScrollProgressRef,
+        heroPortalProgress: metrics.heroPortalProgress,
+        progress: metrics.progress,
+        sectionRef,
+    };
 }

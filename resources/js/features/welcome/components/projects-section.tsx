@@ -19,7 +19,9 @@ const INITIAL_SCENE_METRICS: SceneMetrics = {
 };
 
 export function ProjectsSection() {
-    const featuredProjects = PROJECT_ITEMS.filter((project) => !project.hideFromHome);
+    const featuredProjects = PROJECT_ITEMS.filter(
+        (project) => !project.hideFromHome,
+    );
     const sectionRef = useRef<HTMLElement | null>(null);
     const viewportRef = useRef<HTMLDivElement | null>(null);
     const trackRef = useRef<HTMLDivElement | null>(null);
@@ -45,7 +47,10 @@ export function ProjectsSection() {
             }
 
             const viewportHeight = window.innerHeight;
-            const travelDistance = Math.max(track.scrollWidth - viewport.offsetWidth, 0);
+            const travelDistance = Math.max(
+                track.scrollWidth - viewport.offsetWidth,
+                0,
+            );
             const scrollDistance = Math.max(
                 travelDistance * 1.45,
                 viewportHeight * 1.2,
@@ -105,6 +110,7 @@ export function ProjectsSection() {
 
             if (!section || sceneMetrics.sectionHeight <= 0) {
                 translateX.set(0);
+
                 return;
             }
 
@@ -128,7 +134,9 @@ export function ProjectsSection() {
         };
 
         scheduleTranslateUpdate();
-        window.addEventListener('scroll', scheduleTranslateUpdate, { passive: true });
+        window.addEventListener('scroll', scheduleTranslateUpdate, {
+            passive: true,
+        });
         window.addEventListener('resize', scheduleTranslateUpdate);
 
         return () => {
@@ -141,7 +149,7 @@ export function ProjectsSection() {
     return (
         <section
             ref={sectionRef}
-            className="relative z-20 -mt-24 h-screen bg-[#020104] text-white sm:-mt-28 lg:-mt-32"
+            className="relative z-20 h-screen bg-black text-white"
             style={
                 sceneMetrics.sectionHeight > 0
                     ? { height: `${sceneMetrics.sectionHeight}px` }
@@ -149,26 +157,30 @@ export function ProjectsSection() {
             }
         >
             <div className="sticky top-0 h-screen overflow-hidden pt-0 sm:pt-2 lg:pt-4">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_14%_18%,_rgba(139,92,246,0.18),_transparent_24%),radial-gradient(circle_at_84%_16%,_rgba(244,114,182,0.14),_transparent_20%),radial-gradient(circle_at_52%_82%,_rgba(217,70,239,0.16),_transparent_28%),linear-gradient(180deg,_#05010a_0%,_#020104_44%,_#000000_100%)]" />
-                <div className="absolute inset-y-0 left-[6%] w-72 bg-[radial-gradient(circle_at_center,_rgba(217,70,239,0.18),_transparent_68%)] blur-[120px]" />
-                <div className="absolute inset-y-0 right-[8%] w-80 bg-[radial-gradient(circle_at_center,_rgba(125,211,252,0.1),_transparent_72%)] blur-[140px]" />
-
+                <div className="absolute inset-0 bg-black" />
+                <div className="pointer-events-none absolute inset-x-0 top-0 z-20 h-8 bg-black" />
                 <div className="relative h-full w-full">
                     <div className="relative z-10 px-6 pb-2 sm:px-10 lg:px-16">
-                        <h2 className="bg-[linear-gradient(180deg,_rgba(255,255,255,1)_0%,_rgba(250,232,255,0.96)_32%,_rgba(216,180,254,0.86)_70%,_rgba(217,70,239,0.68)_100%)] bg-clip-text text-4xl font-semibold leading-[1.08] tracking-[-0.08em] text-transparent sm:text-5xl lg:text-[4.5rem]">
+                        <h2 className="bg-[linear-gradient(180deg,_rgba(255,255,255,1)_0%,_rgba(250,232,255,0.96)_32%,_rgba(216,180,254,0.86)_70%,_rgba(217,70,239,0.68)_100%)] bg-clip-text text-4xl leading-[1.08] font-semibold tracking-[-0.08em] text-transparent sm:text-5xl lg:text-[4.5rem]">
                             My Projects
                         </h2>
                     </div>
 
                     <div className="absolute inset-x-0 bottom-0">
-                        <div ref={viewportRef} className="relative overflow-hidden">
+                        <div
+                            ref={viewportRef}
+                            className="relative overflow-hidden"
+                        >
                             <motion.div
                                 ref={trackRef}
                                 className="flex w-max will-change-transform"
                                 style={{ x: translateX }}
                             >
                                 {featuredProjects.map((project) => (
-                                    <ProjectCard key={project.index} project={project} />
+                                    <ProjectCard
+                                        key={project.index}
+                                        project={project}
+                                    />
                                 ))}
                             </motion.div>
                         </div>

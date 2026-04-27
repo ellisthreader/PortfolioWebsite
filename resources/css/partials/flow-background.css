@@ -1,0 +1,82 @@
+@layer components {
+    .portfolio-flow-root {
+        position: relative;
+        isolation: isolate;
+        overflow-x: clip;
+        background: #000;
+        color: #fff;
+    }
+
+    .portfolio-flow-background {
+        pointer-events: none;
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        background:
+            radial-gradient(
+                circle at 50% 5%,
+                rgba(255, 214, 248, 0.09),
+                transparent 13%
+            ),
+            radial-gradient(
+                circle at 50% 14%,
+                rgba(236, 72, 153, 0.1),
+                transparent 22%
+            ),
+            radial-gradient(
+                circle at 50% 47%,
+                rgba(217, 70, 239, 0.08),
+                transparent 31%
+            ),
+            radial-gradient(
+                circle at 50% 70%,
+                rgba(217, 70, 239, 0.07),
+                transparent 29%
+            ),
+            linear-gradient(180deg, #030305 0%, #010103 34%, #000 100%);
+    }
+
+    .portfolio-flow-background::before {
+        content: '';
+        position: absolute;
+        inset: -18%;
+        background:
+            radial-gradient(
+                circle at 50% 16%,
+                rgba(255, 214, 248, 0.13),
+                transparent 34%
+            ),
+            radial-gradient(
+                ellipse at 50% 48%,
+                rgba(236, 72, 153, 0.09),
+                transparent 38%
+            ),
+            radial-gradient(
+                ellipse at 50% 78%,
+                rgba(217, 70, 239, 0.075),
+                transparent 42%
+            );
+        filter: blur(56px);
+        opacity: 0.92;
+    }
+
+    .portfolio-flow-background::after {
+        content: '';
+        position: absolute;
+        top: 6%;
+        left: 50%;
+        height: 76%;
+        width: min(72rem, 84vw);
+        transform: translateX(-50%);
+        background: radial-gradient(
+            ellipse at center,
+            rgba(255, 255, 255, 0.045) 0%,
+            rgba(255, 186, 239, 0.055) 18%,
+            rgba(236, 72, 153, 0.05) 30%,
+            rgba(217, 70, 239, 0.032) 46%,
+            transparent 72%
+        );
+        filter: blur(72px);
+        opacity: 0.84;
+    }
+}

@@ -1,76 +1,147 @@
-import { useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { MathUtils, Quaternion, Vector3, type Object3D } from 'three';
-import { useEffect, useRef } from 'react';
+import { useMemo, useRef } from 'react';
+import { Group as ThreeGroup, type Group } from 'three';
 
 import type { MutableNumberRef } from '../types';
-import { useWelcomePageContext } from '../context/welcome-page-context';
+import { updateHeadTrackingScene } from './head-tracking-model/head-tracking-motion';
+import {
+    MODEL_START_ROTATION_Y,
+    MODEL_START_SCALE,
+    MODEL_START_X,
+    MODEL_START_Y,
+    MODEL_START_Z,
+    PORTFOLIO_HERO_DESK_POSITION,
+    PORTFOLIO_HERO_DESK_SCALE,
+    PORTFOLIO_HERO_MODEL_URL,
+    PORTFOLIO_HERO_STAGE_SCALE,
+    PORTFOLIO_HERO_STAGE_X,
+    PORTFOLIO_HERO_STAGE_Y,
+    PORTFOLIO_HERO_STAGE_Z,
+    PORTFOLIO_HERO_SUBJECT_ROTATION_Y,
+    SCROLL_ALL_IN_ONE_POSITION,
+} from './head-tracking-model/layout-constants';
+import { useHeadTrackingScene } from './head-tracking-model/use-head-tracking-scene';
+import { useLaptopVideoTexture } from './head-tracking-model/use-laptop-video-texture';
 
-const HEAD_PITCH_AXIS = new Vector3(1, 0, 0);
-const HEAD_YAW_AXIS = new Vector3(0, 1, 0);
+const ROTATING_MODEL_CHILD_NAMES = new Set(['Armature', 'floating_laptop']);
 
 export function HeadTrackingModel({
+    onLaptopVideoEnded,
+    presentation = 'scroll',
     scrollProgressRef,
 }: {
+    onLaptopVideoEnded?: () => void;
+    presentation?: 'scroll' | 'portfolioHero';
     scrollProgressRef: MutableNumberRef;
 }) {
-    const { modelUrl } = useWelcomePageContext();
-    const { scene } = useGLTF(modelUrl);
-    const headBoneRef = useRef<Object3D | null>(null);
-    const modelGroupRef = useRef<Object3D | null>(null);
-    const baseQuaternionRef = useRef<Quaternion | null>(null);
-    const pointerRef = useRef({ x: 0, y: 0 });
+    const { texture: laptopVideoTexture, video: laptopVideo } =
+        useLaptopVideoTexture();
+    const { rig, scene, screenMaterial } = useHeadTrackingScene({
+        laptopVideo,
+        modelUrl: PORTFOLIO_HERO_MODEL_URL,
+        onLaptopVideoEnded,
+    });
+    const stageGroupRef = useRef<Group | null>(null);
+    const modelRotationGroupRef = useRef<Group | null>(null);
+    const laptopVideoStartedRef = useRef(false);
+    const deskScene = useMemo(() => {
+        const deskScene = new ThreeGroup();
 
-    useEffect(() => {
-        const headBone = scene.getObjectByName('Bone006L');
-        headBoneRef.current = headBone ?? null;
-        baseQuaternionRef.current = headBone ? headBone.quaternion.clone() : null;
+        deskScene.name = 'fixed_desk_scene';
 
-        const handleMouseMove = (event: MouseEvent) => {
-            pointerRef.current = {
-                x: (event.clientX / window.innerWidth) * 2 - 1,
-                y: 1 - (event.clientY / window.innerHeight) * 2,
-            };
-        };
+        for (const child of scene.children) {
+            if (ROTATING_MODEL_CHILD_NAMES.has(child.name)) continue;
 
-        window.addEventListener('mousemove', handleMouseMove);
-        return () => window.removeEventListener('mousemove', handleMouseMove);
+            const fixedChild = child.clone(true);
+
+            child.visible = false;
+            fixedChild.visible = true;
+            deskScene.add(fixedChild);
+        }
+
+        deskScene.traverse((object) => {
+            object.castShadow = true;
+            object.receiveShadow = true;
+            object.frustumCulled = false;
+        });
+
+        return deskScene;
     }, [scene]);
 
-    useFrame((_, delta) => {
-        const headBone = headBoneRef.current;
-        const modelGroup = modelGroupRef.current;
-        const baseQuaternion = baseQuaternionRef.current;
-
-        if (!headBone || !modelGroup || !baseQuaternion) return;
-
-        const scrollProgress = MathUtils.smootherstep(scrollProgressRef.current, 0, 1);
-        const targetY = MathUtils.clamp(pointerRef.current.x * 0.95, -0.85, 0.85);
-        const targetX = MathUtils.clamp(-pointerRef.current.y * 0.9, -0.95, 0.95);
-        const easing = 1 - Math.exp(-8 * delta);
-        const targetQuaternion = baseQuaternion
-            .clone()
-            .multiply(new Quaternion().setFromAxisAngle(HEAD_YAW_AXIS, targetY))
-            .multiply(new Quaternion().setFromAxisAngle(HEAD_PITCH_AXIS, targetX));
-
-        modelGroup.position.x = MathUtils.damp(
-            modelGroup.position.x,
-            MathUtils.lerp(0, -1.1, scrollProgress),
-            7.5,
+    useFrame((state, delta) => {
+        updateHeadTrackingScene({
             delta,
-        );
-        modelGroup.rotation.y = MathUtils.damp(
-            modelGroup.rotation.y,
-            MathUtils.lerp(0, 0.32, scrollProgress),
-            7.5,
-            delta,
-        );
-        headBone.quaternion.slerp(targetQuaternion, easing);
+            elapsedTime: state.clock.elapsedTime,
+            laptopGroup: null,
+            modelRotationGroup: modelRotationGroupRef.current,
+            laptopVideo,
+            laptopVideoStartedRef,
+            laptopVideoTexture,
+            presentation,
+            rawScrollProgress:
+                presentation === 'portfolioHero'
+                    ? 0.88
+                    : scrollProgressRef.current,
+            rig,
+            screenMaterial: presentation === 'scroll' ? screenMaterial : null,
+            stageGroup: stageGroupRef.current,
+        });
     });
 
     return (
-        <group ref={modelGroupRef} position={[0, -3.82, -0.06]} rotation={[0, 0, 0]}>
-            <primitive object={scene} />
+        <group
+            ref={stageGroupRef}
+            position={
+                presentation === 'portfolioHero'
+                    ? [
+                          PORTFOLIO_HERO_STAGE_X,
+                          PORTFOLIO_HERO_STAGE_Y,
+                          PORTFOLIO_HERO_STAGE_Z,
+                      ]
+                    : [MODEL_START_X, MODEL_START_Y, MODEL_START_Z]
+            }
+            rotation={[0, 0, 0]}
+            scale={
+                presentation === 'portfolioHero'
+                    ? PORTFOLIO_HERO_STAGE_SCALE
+                    : MODEL_START_SCALE
+            }
+        >
+            <primitive
+                object={deskScene}
+                position={
+                    presentation === 'portfolioHero'
+                        ? PORTFOLIO_HERO_DESK_POSITION
+                        : SCROLL_ALL_IN_ONE_POSITION
+                }
+                scale={
+                    presentation === 'portfolioHero'
+                        ? PORTFOLIO_HERO_DESK_SCALE
+                        : 1
+                }
+            />
+            <group
+                ref={modelRotationGroupRef}
+                rotation={
+                    presentation === 'portfolioHero'
+                        ? [0, PORTFOLIO_HERO_SUBJECT_ROTATION_Y, 0]
+                        : [0, MODEL_START_ROTATION_Y, 0]
+                }
+            >
+                <primitive
+                    object={scene}
+                    position={
+                        presentation === 'portfolioHero'
+                            ? PORTFOLIO_HERO_DESK_POSITION
+                            : SCROLL_ALL_IN_ONE_POSITION
+                    }
+                    scale={
+                        presentation === 'portfolioHero'
+                            ? PORTFOLIO_HERO_DESK_SCALE
+                            : 1
+                    }
+                />
+            </group>
         </group>
     );
 }
