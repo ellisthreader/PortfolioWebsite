@@ -1,33 +1,49 @@
 import { Head } from '@inertiajs/react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { WelcomePageProvider } from '../context/welcome-page-context';
-import { useExperienceProgress } from '../hooks/use-experience-progress';
 import type { WelcomePageProps } from '../types';
 import { ContactSection } from './contact-section';
+import { ExperienceScrollSection } from './experience-section';
 import { HeroScene } from './hero-scene';
 import { ProjectsSection } from './projects-section';
-import { SiteLoadingScreen } from './site-loading-screen';
 import { SiteFooter } from './site-footer';
+import { SiteLoadingScreen } from './site-loading-screen';
 import { TechStackSection } from './tech-stack-section';
 
 const LOADER_SESSION_KEY = 'ellis-threader-loader-seen';
 
 export function WelcomePage({ modelUrl }: WelcomePageProps) {
-    const [laptopCameraZoomSettled, setLaptopCameraZoomSettled] =
-        useState(false);
-    const [laptopVideoEnded, setLaptopVideoEnded] = useState(false);
     const [showLoadingScreen, setShowLoadingScreen] = useState(true);
-    const laptopSequenceReady = useMemo(
-        () => laptopCameraZoomSettled && laptopVideoEnded,
-        [laptopCameraZoomSettled, laptopVideoEnded],
-    );
-    const handleLaptopCameraZoomSettled = useCallback(() => {
-        setLaptopCameraZoomSettled(true);
-    }, []);
-    const handleLaptopVideoEnded = useCallback(() => {
-        setLaptopVideoEnded(true);
-    }, []);
+    const [lockLoadingScroll, setLockLoadingScroll] = useState(true);
+
+    useEffect(() => {
+        if (!lockLoadingScroll) {
+            return;
+        }
+
+        const scrollY = window.scrollY;
+        const previousHtmlOverflow = document.documentElement.style.overflow;
+        const previousBodyOverflow = document.body.style.overflow;
+        const previousBodyPosition = document.body.style.position;
+        const previousBodyTop = document.body.style.top;
+        const previousBodyWidth = document.body.style.width;
+
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+        document.body.style.position = 'fixed';
+        document.body.style.top = '-' + scrollY + 'px';
+        document.body.style.width = '100%';
+
+        return () => {
+            document.documentElement.style.overflow = previousHtmlOverflow;
+            document.body.style.overflow = previousBodyOverflow;
+            document.body.style.position = previousBodyPosition;
+            document.body.style.top = previousBodyTop;
+            document.body.style.width = previousBodyWidth;
+            window.scrollTo(0, scrollY);
+        };
+    }, [lockLoadingScroll]);
 
     useEffect(() => {
         let disposed = false;
@@ -80,42 +96,18 @@ export function WelcomePage({ modelUrl }: WelcomePageProps) {
         };
     }, []);
 
-    const {
-        beamProgress,
-        beamStartOffset,
-        contentRef,
-        contentScrollOffset,
-        entriesRef,
-        heroBeamEndOffset,
-        heroBeamStartOffset,
-        heroSectionHeight,
-        heroPortalProgress,
-        heroScrollProgress,
-        sectionRef,
-    } = useExperienceProgress({ laptopVideoEnded: laptopSequenceReady });
-
     return (
         <WelcomePageProvider modelUrl={modelUrl}>
             <Head title="Home" />
 
             <div className="portfolio-flow-root">
-                <SiteLoadingScreen visible={showLoadingScreen} />
-                <div className="portfolio-flow-background" aria-hidden />
-                <HeroScene
-                    beamProgress={beamProgress}
-                    beamStartOffset={beamStartOffset}
-                    contentRef={contentRef}
-                    contentScrollOffset={contentScrollOffset}
-                    entriesRef={entriesRef}
-                    heroBeamEndOffset={heroBeamEndOffset}
-                    heroBeamStartOffset={heroBeamStartOffset}
-                    heroSectionHeight={heroSectionHeight}
-                    onLaptopCameraZoomSettled={handleLaptopCameraZoomSettled}
-                    onLaptopVideoEnded={handleLaptopVideoEnded}
-                    portalProgress={heroPortalProgress}
-                    scrollProgress={heroScrollProgress}
-                    sectionRef={sectionRef}
+                <SiteLoadingScreen
+                    visible={showLoadingScreen}
+                    onExitComplete={() => setLockLoadingScroll(false)}
                 />
+                <div className="portfolio-flow-background" aria-hidden />
+                <HeroScene introReady={!showLoadingScreen} />
+                <ExperienceScrollSection />
                 <ProjectsSection />
                 <TechStackSection />
                 <ContactSection />

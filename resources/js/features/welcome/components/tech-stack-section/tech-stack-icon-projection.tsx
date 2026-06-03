@@ -1,6 +1,8 @@
-import { useFrame, type RootState } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
+import type { RootState } from '@react-three/fiber';
 import { useRef } from 'react';
-import { MathUtils, Vector3, type Object3D } from 'three';
+import { MathUtils, Vector3 } from 'three';
+import type { Object3D } from 'three';
 
 import { TECH_STACK_ITEMS } from '../../data/tech-stack-items';
 import { FRONT_VISIBILITY_END, FRONT_VISIBILITY_START } from './constants';
@@ -25,7 +27,9 @@ export function TechStackIconProjection({
         iconAnchorRefs.current.forEach((anchor, index) => {
             const element = iconElementRefs.current[index];
 
-            if (!anchor || !element) return;
+            if (!anchor || !element) {
+                return;
+            }
 
             anchor.getWorldPosition(worldPositionRef.current);
             projectedPositionRef.current
@@ -38,6 +42,7 @@ export function TechStackIconProjection({
             ) {
                 element.style.opacity = '0';
                 element.style.pointerEvents = 'none';
+
                 return;
             }
 
@@ -73,7 +78,11 @@ export function TechStackIconProjection({
             element.style.transform =
                 `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) ` +
                 `translate(-50%, -50%) scale(${scale.toFixed(3)})`;
-            element.style.filter = `grayscale(${grayscale.toFixed(3)}) brightness(${brightness.toFixed(3)})`;
+            element.style.setProperty('--icon-grayscale', grayscale.toFixed(3));
+            element.style.setProperty(
+                '--icon-brightness',
+                brightness.toFixed(3),
+            );
             element.style.pointerEvents =
                 frontVisibility > 0.56 || isActive ? 'auto' : 'none';
             element.style.zIndex = `${isActive ? 50 : Math.round(frontVisibility * 20)}`;

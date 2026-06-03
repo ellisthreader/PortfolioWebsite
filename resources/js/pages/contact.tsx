@@ -53,7 +53,7 @@ export default function ContactPage({ status }: { status?: string }) {
                         </h1>
                     </div>
 
-                    <div className="mx-auto mt-8 w-full max-w-3xl rounded-[2rem] border border-white/10 bg-white/[0.03] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.38)] backdrop-blur-xl sm:p-6 lg:mt-10 lg:p-8">
+                    <div className="mx-auto mt-8 w-full max-w-3xl rounded-[2rem] border border-white/10 bg-black/55 p-5 shadow-[0_24px_80px_rgba(0,0,0,0.38)] sm:p-6 lg:mt-10 lg:p-8">
                         <form className="space-y-5" onSubmit={submit}>
                             {status && (
                                 <div className="rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-100">

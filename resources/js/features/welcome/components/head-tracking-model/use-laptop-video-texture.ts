@@ -28,7 +28,7 @@ function createLaptopVideoTexture({
     video.muted = true;
     video.defaultMuted = true;
     video.playsInline = true;
-    video.preload = 'auto';
+    video.preload = 'metadata';
     video.setAttribute('muted', '');
     video.setAttribute('playsinline', '');
 
@@ -62,7 +62,6 @@ function createLaptopVideoTexture({
     const refreshTexture = () => {
         texture.needsUpdate = true;
     };
-
     video.addEventListener('loadedmetadata', coverScreen);
     video.addEventListener('seeked', refreshTexture);
     video.addEventListener('timeupdate', refreshTexture);
@@ -89,8 +88,8 @@ export function useLaptopVideoTexture() {
 
     useEffect(() => {
         const laptopVideo = createLaptopVideoTexture({
-            loop: false,
-            src: '/VideoLoad.mp4',
+            loop: true,
+            src: '/VideoLoop.mp4',
         });
 
         setVideoState({

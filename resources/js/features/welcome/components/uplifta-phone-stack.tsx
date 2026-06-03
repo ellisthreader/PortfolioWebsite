@@ -1,3 +1,5 @@
+import { publicAsset } from '@/lib/preview-assets';
+
 type UpliftaPhoneStackProps = {
     className?: string;
     variant?: 'archive' | 'home';
@@ -22,28 +24,32 @@ export function UpliftaPhoneStack({
         <div
             className={`pointer-events-auto relative isolate flex h-full w-full items-center justify-center overflow-visible ${className}`}
         >
-            <div className="pointer-events-none absolute top-1/2 left-1/2 h-[68%] w-[58%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(251,113,133,0.34)_0%,rgba(244,114,182,0.18)_38%,rgba(168,85,247,0.08)_56%,transparent_72%)] blur-2xl" />
-            <div className="pointer-events-none absolute inset-x-[22%] bottom-[10%] h-[15%] rounded-full bg-black/50 blur-2xl" />
+            <div className="pointer-events-none absolute top-1/2 left-1/2 h-[80%] w-[70%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(251,113,133,0.4)_0%,rgba(244,114,182,0.22)_38%,rgba(168,85,247,0.11)_60%,transparent_76%)]" />
+            <div className="pointer-events-none absolute inset-x-[20%] bottom-[8%] h-[17%] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.3)_0%,rgba(0,0,0,0.12)_42%,transparent_74%)]" />
 
             <img
-                src="/Uplifta3.png"
+                src={publicAsset('/Uplifta3.webp')}
                 alt="Uplifta app left screen"
-                className={`pointer-events-auto absolute z-10 max-w-none -rotate-[13deg] cursor-pointer object-contain opacity-90 drop-shadow-[0_24px_36px_rgba(0,0,0,0.52)] transition duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform hover:drop-shadow-[0_34px_52px_rgba(0,0,0,0.62)] ${leftImageClass}`}
+                decoding="async"
+                loading="lazy"
+                className={`pointer-events-auto absolute z-10 max-w-none -rotate-[13deg] cursor-pointer object-contain opacity-90 transition duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${leftImageClass}`}
             />
 
             <img
-                src="/Uplifta2.png"
+                src={publicAsset('/Uplifta2.webp')}
                 alt="Uplifta app right screen"
-                className={`pointer-events-auto absolute z-10 max-w-none rotate-[13deg] cursor-pointer object-contain opacity-90 drop-shadow-[0_24px_36px_rgba(0,0,0,0.52)] transition duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform hover:drop-shadow-[0_34px_52px_rgba(0,0,0,0.62)] ${rightImageClass}`}
+                decoding="async"
+                loading="lazy"
+                className={`pointer-events-auto absolute z-10 max-w-none rotate-[13deg] cursor-pointer object-contain opacity-90 transition duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${rightImageClass}`}
             />
 
             <img
-                src="/Uplifta.png"
+                src={publicAsset('/Uplifta.webp')}
                 alt="Uplifta app main screen"
-                className={`pointer-events-auto relative z-20 max-h-[94%] max-w-none cursor-pointer object-contain drop-shadow-[0_32px_54px_rgba(0,0,0,0.58)] transition duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform hover:z-40 hover:drop-shadow-[0_44px_70px_rgba(0,0,0,0.68)] ${mainImageClass}`}
+                decoding="async"
+                loading="lazy"
+                className={`pointer-events-auto relative z-20 max-h-[94%] max-w-none cursor-pointer object-contain transition duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:z-40 ${mainImageClass}`}
             />
-
-            <div className="pointer-events-none absolute inset-x-[28%] top-[10%] z-30 h-px bg-gradient-to-r from-transparent via-white/70 to-transparent opacity-70" />
         </div>
     );
 }

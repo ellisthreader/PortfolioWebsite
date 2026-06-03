@@ -6,4 +6,8 @@
     body {
         @apply bg-background text-foreground;
     }
+
+    body[data-nav-scrolling='true'] .portfolio-flow-root {
+        transform: translateZ(0);
+    }
 }

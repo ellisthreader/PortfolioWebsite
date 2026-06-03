@@ -1,14 +1,12 @@
-import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
+import { useMemo, useRef } from 'react';
 import {
     AdditiveBlending,
     Color,
     IcosahedronGeometry,
     WireframeGeometry,
-    type Group,
-    type LineSegments,
-    type Object3D,
 } from 'three';
+import type { Group, LineSegments, Object3D } from 'three';
 
 import { TECH_STACK_ITEMS } from '../../data/tech-stack-items';
 import {
@@ -40,20 +38,20 @@ export function HolographicSphere({
         [],
     );
     const baseWireframe = useMemo(
-        () => new WireframeGeometry(new IcosahedronGeometry(SPHERE_RADIUS, 6)),
+        () => new WireframeGeometry(new IcosahedronGeometry(SPHERE_RADIUS, 3)),
         [],
     );
     const outerWireframe = useMemo(
         () =>
             new WireframeGeometry(
-                new IcosahedronGeometry(SPHERE_RADIUS * 1.008, 5),
+                new IcosahedronGeometry(SPHERE_RADIUS * 1.008, 2),
             ),
         [],
     );
     const innerWireframe = useMemo(
         () =>
             new WireframeGeometry(
-                new IcosahedronGeometry(SPHERE_RADIUS * 0.992, 4),
+                new IcosahedronGeometry(SPHERE_RADIUS * 0.992, 2),
             ),
         [],
     );
@@ -92,7 +90,7 @@ export function HolographicSphere({
                 <lineBasicMaterial
                     blending={AdditiveBlending}
                     color={new Color('#8b5cf6')}
-                    opacity={0.14}
+                    opacity={0.2}
                     toneMapped={false}
                     transparent
                 />
@@ -105,7 +103,7 @@ export function HolographicSphere({
                 <lineBasicMaterial
                     blending={AdditiveBlending}
                     color={new Color('#c084fc')}
-                    opacity={0.32}
+                    opacity={0.42}
                     toneMapped={false}
                     transparent
                 />
@@ -118,7 +116,7 @@ export function HolographicSphere({
                 <lineBasicMaterial
                     blending={AdditiveBlending}
                     color={new Color('#6d28d9')}
-                    opacity={0.11}
+                    opacity={0.16}
                     toneMapped={false}
                     transparent
                 />

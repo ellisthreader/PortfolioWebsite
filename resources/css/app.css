@@ -5,6 +5,7 @@
 @import './partials/timeline-animations.css';
 @import './partials/tech-animations.css';
 @import './partials/flow-background.css';
+@import './partials/loader-animations.css';
 
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';

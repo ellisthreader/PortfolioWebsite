@@ -25,7 +25,7 @@ export function ExperienceEntry({ item }: { item: ExperienceItem }) {
                     </span>
                     <span className="h-px flex-1 bg-gradient-to-r from-fuchsia-400/0 via-fuchsia-400/45 to-fuchsia-400/0" />
                 </div>
-                <p className="text-lg leading-[1.9] font-medium text-white/66 lg:w-[calc(100%+9rem)] lg:max-w-none xl:w-[calc(100%+14rem)]">
+                <p className="max-w-[44rem] text-lg leading-[1.9] font-medium text-white/66">
                     {item.description}
                 </p>
             </div>

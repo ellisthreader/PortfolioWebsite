@@ -1,4 +1,26 @@
+import awsLogo from '../assets/aws.svg';
+import bootstrapLogo from '../assets/bootstrap.svg';
+import cLogo from '../assets/c.svg';
+import cplusplusLogo from '../assets/cplusplus.svg';
+import cssLogo from '../assets/css.svg';
+import dockerLogo from '../assets/docker.svg';
+import figmaLogo from '../assets/figma.svg';
+import gitLogo from '../assets/git.svg';
+import githubLogo from '../assets/github.svg';
+import bashLogo from '../assets/gnubash.svg';
+import htmlLogo from '../assets/html5.svg';
+import javascriptLogo from '../assets/javascript.svg';
+import linuxLogo from '../assets/linux.svg';
+import mysqlLogo from '../assets/mysql.svg';
+import nextLogo from '../assets/nextdotjs.svg';
+import nodeLogo from '../assets/nodedotjs.svg';
+import numpyLogo from '../assets/numpy.svg';
 import openAiLogo from '../assets/openai-logo.svg';
+import pythonLogo from '../assets/python.svg';
+import reactLogo from '../assets/react.svg';
+import tailwindLogo from '../assets/tailwindcss.svg';
+import typescriptLogo from '../assets/typescript.svg';
+import vscodeLogo from '../assets/vscode.svg';
 
 export type TechStackItem = {
     accent: string;
@@ -10,145 +32,169 @@ export type TechStackItem = {
 export const TECH_STACK_ITEMS: TechStackItem[] = [
     {
         accent: '#3776AB',
-        description: 'Automation, APIs, data workflows, and intelligent application backends.',
+        description:
+            'Automation, APIs, data workflows, and intelligent application backends.',
         label: 'Python',
-        logo: 'https://cdn.simpleicons.org/python/3776AB',
+        logo: pythonLogo,
     },
     {
         accent: '#F7DF1E',
-        description: 'Interactive browser behavior and flexible client-side application logic.',
+        description:
+            'Interactive browser behavior and flexible client-side application logic.',
         label: 'JavaScript',
-        logo: 'https://cdn.simpleicons.org/javascript/F7DF1E',
+        logo: javascriptLogo,
     },
     {
         accent: '#3178C6',
-        description: 'Typed frontend and backend code with stronger safety and maintainability.',
+        description:
+            'Typed frontend and backend code with stronger safety and maintainability.',
         label: 'TypeScript',
-        logo: 'https://cdn.simpleicons.org/typescript/3178C6',
+        logo: typescriptLogo,
     },
     {
         accent: '#A8B9CC',
-        description: 'Low-level systems programming with direct control over memory and performance.',
+        description:
+            'Low-level systems programming with direct control over memory and performance.',
         label: 'C',
-        logo: 'https://cdn.simpleicons.org/c/A8B9CC',
+        logo: cLogo,
     },
     {
         accent: '#00599C',
-        description: 'High-performance native software, algorithms, and systems-oriented engineering.',
+        description:
+            'High-performance native software, algorithms, and systems-oriented engineering.',
         label: 'C++',
-        logo: 'https://cdn.simpleicons.org/cplusplus/00599C',
+        logo: cplusplusLogo,
     },
     {
         accent: '#E34F26',
-        description: 'Semantic page structure and accessible markup for modern web interfaces.',
+        description:
+            'Semantic page structure and accessible markup for modern web interfaces.',
         label: 'HTML',
-        logo: 'https://cdn.simpleicons.org/html5/E34F26',
+        logo: htmlLogo,
     },
     {
         accent: '#1572B6',
-        description: 'Responsive layouts, visual polish, and expressive user interface styling.',
+        description:
+            'Responsive layouts, visual polish, and expressive user interface styling.',
         label: 'CSS',
-        logo: 'https://cdn.simpleicons.org/css/1572B6',
+        logo: cssLogo,
     },
     {
         accent: '#4EAA25',
-        description: 'Command-line automation, scripting, and efficient local development workflows.',
+        description:
+            'Command-line automation, scripting, and efficient local development workflows.',
         label: 'Bash',
-        logo: 'https://cdn.simpleicons.org/gnubash/4EAA25',
+        logo: bashLogo,
     },
     {
         accent: '#61DAFB',
-        description: 'Component-driven interfaces and dynamic frontend experiences.',
+        description:
+            'Component-driven interfaces and dynamic frontend experiences.',
         label: 'React',
-        logo: 'https://cdn.simpleicons.org/react/61DAFB',
+        logo: reactLogo,
     },
     {
         accent: '#FFFFFF',
-        description: 'Fast React applications with routing, hybrid rendering, and modern DX.',
+        description:
+            'Fast React applications with routing, hybrid rendering, and modern DX.',
         label: 'Next.js',
-        logo: 'https://cdn.simpleicons.org/nextdotjs/FFFFFF',
+        logo: nextLogo,
     },
     {
         accent: '#7952B3',
-        description: 'Rapid UI construction with a proven component and utility framework.',
+        description:
+            'Rapid UI construction with a proven component and utility framework.',
         label: 'Bootstrap',
-        logo: 'https://cdn.simpleicons.org/bootstrap/7952B3',
+        logo: bootstrapLogo,
     },
     {
         accent: '#5FA04E',
-        description: 'Server-side JavaScript for APIs, tooling, and realtime product workflows.',
+        description:
+            'Server-side JavaScript for APIs, tooling, and realtime product workflows.',
         label: 'Node.js',
-        logo: 'https://cdn.simpleicons.org/nodedotjs/5FA04E',
+        logo: nodeLogo,
     },
     {
         accent: '#06B6D4',
-        description: 'Utility-first styling for fast visual iteration and consistent design systems.',
+        description:
+            'Utility-first styling for fast visual iteration and consistent design systems.',
         label: 'Tailwind',
-        logo: 'https://cdn.simpleicons.org/tailwindcss/06B6D4',
+        logo: tailwindLogo,
     },
     {
         accent: '#013243',
-        description: 'Numerical computing and performant array-based data processing in Python.',
+        description:
+            'Numerical computing and performant array-based data processing in Python.',
         label: 'NumPy',
-        logo: 'https://cdn.simpleicons.org/numpy/013243',
+        logo: numpyLogo,
     },
     {
         accent: '#4479A1',
-        description: 'Relational data modeling, queries, and production-ready persistence.',
+        description:
+            'Relational data modeling, queries, and production-ready persistence.',
         label: 'MySQL',
-        logo: 'https://cdn.simpleicons.org/mysql/4479A1',
+        logo: mysqlLogo,
     },
     {
         accent: '#2496ED',
-        description: 'Portable containers and consistent local-to-production environments.',
+        description:
+            'Portable containers and consistent local-to-production environments.',
         label: 'Docker',
-        logo: 'https://cdn.simpleicons.org/docker/2496ED',
+        logo: dockerLogo,
     },
     {
         accent: '#F05032',
-        description: 'Version control, branching, and reliable collaboration through clean history.',
+        description:
+            'Version control, branching, and reliable collaboration through clean history.',
         label: 'Git',
-        logo: 'https://cdn.simpleicons.org/git/F05032',
+        logo: gitLogo,
     },
     {
         accent: '#FFFFFF',
-        description: 'Code hosting, reviews, and team-based shipping workflows.',
+        description:
+            'Code hosting, reviews, and team-based shipping workflows.',
         label: 'GitHub',
-        logo: 'https://cdn.simpleicons.org/github/FFFFFF',
+        logo: githubLogo,
     },
     {
         accent: '#FCC624',
-        description: 'Development and deployment on dependable Unix-like environments.',
+        description:
+            'Development and deployment on dependable Unix-like environments.',
         label: 'Linux',
-        logo: 'https://cdn.simpleicons.org/linux/FCC624',
+        logo: linuxLogo,
     },
     {
         accent: '#FF9900',
-        description: 'Cloud infrastructure, deployment services, and scalable application hosting.',
+        description:
+            'Cloud infrastructure, deployment services, and scalable application hosting.',
         label: 'AWS',
-        logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg',
+        logo: awsLogo,
     },
     {
         accent: '#007ACC',
-        description: 'Focused coding workflows with a fast editor and rich extension ecosystem.',
+        description:
+            'Focused coding workflows with a fast editor and rich extension ecosystem.',
         label: 'VS Code',
-        logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg',
+        logo: vscodeLogo,
     },
     {
         accent: '#F24E1E',
-        description: 'Interface design, prototyping, and collaborative product exploration.',
+        description:
+            'Interface design, prototyping, and collaborative product exploration.',
         label: 'Figma',
-        logo: 'https://cdn.simpleicons.org/figma/F24E1E',
+        logo: figmaLogo,
     },
     {
         accent: '#61DAFB',
-        description: 'Cross-platform mobile interfaces built with familiar React patterns.',
+        description:
+            'Cross-platform mobile interfaces built with familiar React patterns.',
         label: 'React Native',
-        logo: 'https://cdn.simpleicons.org/react/61DAFB',
+        logo: reactLogo,
     },
     {
         accent: '#FFFFFF',
-        description: 'Model-powered products, assistants, and AI-enhanced software experiences.',
+        description:
+            'Model-powered products, assistants, and AI-enhanced software experiences.',
         label: 'OpenAI',
         logo: openAiLogo,
     },

@@ -12,14 +12,14 @@ export function TechStackIconOverlay({
     onSelectLabel,
 }: TechStackIconOverlayProps) {
     return (
-        <div className="pointer-events-none absolute inset-0 z-10">
+        <div className="pointer-events-none absolute inset-0 z-10 select-none">
             {TECH_STACK_ITEMS.map((item, index) => {
                 const isActive = activeLabel === item.label;
 
                 return (
                     <div
                         key={item.label}
-                        className="absolute top-0 left-0 flex flex-col items-center gap-2 transition-[opacity,transform,filter] duration-150 will-change-transform"
+                        className="absolute top-0 left-0 flex flex-col items-center gap-2 will-change-transform"
                         onClick={(event) => {
                             event.stopPropagation();
                             onSelectLabel(item.label);
@@ -46,38 +46,40 @@ export function TechStackIconOverlay({
                             <div
                                 className={`absolute rounded-full transition-all duration-150 ${
                                     isActive
-                                        ? 'h-24 w-24 opacity-100'
-                                        : 'h-12 w-12 opacity-0'
+                                        ? 'h-28 w-28 opacity-100'
+                                        : 'h-14 w-14 opacity-0'
                                 }`}
                                 style={{
-                                    background: `radial-gradient(circle, ${item.accent}88 0%, ${item.accent}3d 34%, ${item.accent}14 56%, transparent 78%)`,
-                                    filter: 'blur(14px)',
+                                    background: `radial-gradient(circle, ${item.accent}70 0%, ${item.accent}34 36%, ${item.accent}12 58%, transparent 78%)`,
                                     transform: 'translateZ(0)',
                                 }}
                             />
                             <div
                                 className={`absolute rounded-full transition-all duration-150 ${
                                     isActive
-                                        ? 'h-16 w-16 opacity-100'
-                                        : 'h-8 w-8 opacity-0'
+                                        ? 'h-20 w-20 opacity-100'
+                                        : 'h-10 w-10 opacity-0'
                                 }`}
                                 style={{
-                                    background: `radial-gradient(circle, rgba(255,255,255,0.18) 0%, ${item.accent}1c 45%, transparent 72%)`,
-                                    filter: 'blur(6px)',
+                                    background: `radial-gradient(circle, rgba(255,255,255,0.16) 0%, ${item.accent}18 46%, transparent 74%)`,
                                     transform: 'translateZ(0)',
                                 }}
                             />
                             <img
                                 alt=""
                                 aria-hidden
-                                className={`relative z-10 object-contain transition-all duration-150 select-none ${
+                                className={`relative z-10 object-contain transition-[width,height] duration-150 select-none ${
                                     isActive
                                         ? 'h-11 w-11 sm:h-12 sm:w-12'
                                         : 'h-9 w-9 sm:h-10 sm:w-10'
                                 }`}
+                                decoding="async"
                                 draggable={false}
                                 loading="lazy"
                                 src={item.logo}
+                                style={{
+                                    filter: 'grayscale(var(--icon-grayscale, 1)) brightness(var(--icon-brightness, 0.42))',
+                                }}
                             />
                         </div>
 

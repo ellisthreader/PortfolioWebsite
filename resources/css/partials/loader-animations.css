@@ -1,0 +1,21 @@
+@layer components {
+    /* Compositor-only loops for the loading screen (no JS per frame). */
+    @keyframes loader-beam {
+        0% {
+            transform: translateX(-120%);
+        }
+        100% {
+            transform: translateX(320%);
+        }
+    }
+
+    @keyframes loader-glow {
+        0%,
+        100% {
+            opacity: 0.4;
+        }
+        50% {
+            opacity: 0.85;
+        }
+    }
+}

@@ -18,7 +18,6 @@ import {
     Object3D,
     PointLight,
     Quaternion,
-    Shape,
     Sphere,
     SRGBColorSpace,
     Skeleton,
@@ -120,7 +119,7 @@ const LAPTOP_SCREEN_CAMERA_TARGET = new Vector3();
 const LAPTOP_SCREEN_CAMERA_UP = new Vector3();
 const LAPTOP_SCREEN_CAMERA_VIEW_POSITION = new Vector3();
 const LAPTOP_SCREEN_MODEL_NAME = 'laptop_screen_dark_display';
-const LAPTOP_SCREEN_VIDEO_URL = '/VideoLoad.mp4';
+const LAPTOP_SCREEN_VIDEO_URL = '/VideoLoop.mp4';
 const LAPTOP_SCREEN_VIDEO_START_PROGRESS = 0.985;
 const LAPTOP_SCREEN_ZOOM_MARGIN = 1.08;
 const LAPTOP_SCREEN_ZOOM_DAMPING = 6.4;
@@ -132,17 +131,29 @@ const LAPTOP_SCREEN_VIEWPORT_RIGHT_OFFSET_MULTIPLIER = -0.08;
 const LAPTOP_SCREEN_HEAD_HIDE_PROGRESS = 0.85;
 const DESK_INITIAL_WIDTH_MULTIPLIER = 2.55;
 const DESK_SCROLL_WIDTH_MULTIPLIER = 3.55;
+const DESK_LEFT_EXTENSION_WIDTH_MULTIPLIER = 4.85;
 const TOP_HERO_STAGE_START_X = 2.2;
 const TOP_HERO_STAGE_START_Y = 1.18;
 const TOP_HERO_STAGE_Z = 0.72;
-const TOP_HERO_STAGE_END_X = 0.95;
-const TOP_HERO_STAGE_END_Y = 0.9;
+const TOP_HERO_STAGE_END_X = 1.42;
+const TOP_HERO_STAGE_END_Y = 0.48;
 const SUBJECT_VISIBILITY_ROTATION_Y = MathUtils.degToRad(-25);
 const FINAL_CAMERA_ORBIT_RADIANS = Math.PI;
 const CAMERA_OVERHEAD_LIFT_MULTIPLIER = 0.82;
 const CAMERA_ORBIT_DAMPING = 9.2;
 const CAMERA_LOOK_DAMPING = 8.6;
 const CAMERA_WORLD_UP = new Vector3(0, 1, 0);
+const TOP_HERO_PUFFED_TYPING_ARM_CENTER_Y = 2.7;
+const TOP_HERO_PUFFED_TYPING_ARM_MAX_X = -0.16;
+const TOP_HERO_PUFFED_TYPING_ARM_Y_SCALE = 0.72;
+const TOP_HERO_RIGHT_ARM_DOWN_NUDGE_WORLD_Y = 0;
+const TOP_HERO_RIGHT_ARM_NUDGE_WORLD = new Vector3(
+    0,
+    TOP_HERO_RIGHT_ARM_DOWN_NUDGE_WORLD_Y,
+    0,
+);
+const TOP_HERO_RIGHT_ARM_NUDGE_TARGET = new Vector3();
+const TOP_HERO_RIGHT_ARM_NUDGE_TARGET_WORLD = new Vector3();
 const FRONT_LEFT_WRIST_DOWN_NUDGE_WORLD_Y = -0.018;
 const FRONT_LEFT_WRIST_NUDGE_WORLD = new Vector3(
     0,
@@ -155,11 +166,57 @@ const TOP_HERO_HAND_BONE_NAME_CANDIDATES = {
     handLeft: ['Hand.L', 'HandL'],
     handRight: ['Hand.R', 'HandR'],
 } as const;
+const TOP_HERO_BODY_MESH_NAME = 'Retopo_full_body';
 const TOP_HERO_HAND_MESH_NAME = 'handStylized';
+const TOP_HERO_SKINNED_BODY_MESH_NAME = 'Retopo_full_body_runtime_skinned';
 const TOP_HERO_SKINNED_HAND_MESH_NAME = 'handStylized_runtime_skinned';
 const TOP_HERO_SUBJECT_PIVOT_NAME = 'top_hero_subject_visibility_pivot';
 const TOP_HERO_SUBJECT_PIVOT_BOUNDS = new Box3();
 const TOP_HERO_SUBJECT_PIVOT_CENTER = new Vector3();
+
+const TOP_HERO_BODY_SKIN_BONE_CANDIDATES = [
+    'Stomach',
+    'Chest',
+    'Neck',
+    'Head',
+    'Shoulder.L',
+    'ShoulderL',
+    'Arm.L',
+    'ArmL',
+    'Wrist.L',
+    'WristL',
+    'Hand.L',
+    'HandL',
+    'Shoulder.R',
+    'ShoulderR',
+    'Arm.R',
+    'ArmR',
+    'Wrist.R',
+    'WristR',
+    'Hand.R',
+    'HandR',
+    'Pelvis',
+    'Pelvis.L',
+    'PelvisL',
+    'Thigh.L',
+    'ThighL',
+    'Knee.L',
+    'KneeL',
+    'Calf.L',
+    'CalfL',
+    'Foot.L',
+    'FootL',
+    'Pelvis.R',
+    'PelvisR',
+    'Thigh.R',
+    'ThighR',
+    'Knee.R',
+    'KneeR',
+    'Calf.R',
+    'CalfR',
+    'Foot.R',
+    'FootR',
+] as const;
 
 const TOP_HERO_HAND_SKIN_BONE_CANDIDATES = {
     left: [
@@ -316,6 +373,7 @@ function getTopHeroFingerTypeAxis(fingerKey: FingerChainKey) {
 
 type TopHeroRig = {
     armBones: Record<ArmBoneKey, Object3D | null>;
+    baseArmPositions: Partial<Record<ArmBoneKey, Vector3>>;
     baseArmQuaternions: Partial<Record<ArmBoneKey, import('three').Quaternion>>;
     baseDistalFingerQuaternions: Partial<
         Record<FingerChainKey, import('three').Quaternion>
@@ -347,13 +405,17 @@ type TopHeroRig = {
 type DeskPartKey = keyof typeof DESK_SURFACE_CONFIG;
 
 type DeskPartState = {
-    mesh: Mesh;
+    baseLocalWidth: number;
+    baseLocalRightEdge: number;
+    basePosition: Vector3;
     baseScale: Vector3;
+    mesh: Mesh;
 };
 
 function createTopHeroRig(): TopHeroRig {
     return {
         armBones: { armLeft: null, armRight: null },
+        baseArmPositions: {},
         baseArmQuaternions: {},
         baseDistalFingerQuaternions: {},
         baseFingerQuaternions: {},
@@ -465,11 +527,11 @@ function createLaptopScreenVideo() {
 
     video.src = LAPTOP_SCREEN_VIDEO_URL;
     video.crossOrigin = 'anonymous';
-    video.loop = false;
+    video.loop = true;
     video.muted = true;
     video.defaultMuted = true;
     video.playsInline = true;
-    video.preload = 'auto';
+    video.preload = 'metadata';
     video.setAttribute('muted', '');
     video.setAttribute('playsinline', '');
 
@@ -1095,6 +1157,101 @@ function chooseHandInfluences({
     return scoredInfluences.slice(0, 4);
 }
 
+function skinBodyMeshToCharacterBones(root: Object3D) {
+    const sourceMesh = root.getObjectByName(TOP_HERO_BODY_MESH_NAME);
+
+    if (
+        !(sourceMesh instanceof Mesh) ||
+        sourceMesh instanceof SkinnedMesh ||
+        !sourceMesh.parent ||
+        sourceMesh.parent.getObjectByName(TOP_HERO_SKINNED_BODY_MESH_NAME)
+    ) {
+        return;
+    }
+
+    const parent = sourceMesh.parent;
+    const bones = findUniqueBonesByCandidates(
+        root,
+        TOP_HERO_BODY_SKIN_BONE_CANDIDATES,
+    );
+
+    if (!bones.length || bones.length > 65535) {
+        return;
+    }
+
+    parent.updateWorldMatrix(true, true);
+    sourceMesh.updateMatrix();
+
+    const influences = bones.map((bone, index) => {
+        const position = new Vector3();
+
+        bone.getWorldPosition(position);
+        parent.worldToLocal(position);
+
+        return { index, position };
+    });
+    const geometry = sourceMesh.geometry.clone();
+    const positionAttribute = geometry.getAttribute('position');
+    const skinIndices = new Uint16Array(positionAttribute.count * 4);
+    const skinWeights = new Float32Array(positionAttribute.count * 4);
+    const vertex = new Vector3();
+    const parentSpaceVertex = new Vector3();
+
+    for (let index = 0; index < positionAttribute.count; index += 1) {
+        vertex.fromBufferAttribute(positionAttribute, index);
+        parentSpaceVertex.copy(vertex).applyMatrix4(sourceMesh.matrix);
+
+        const closestInfluences = influences
+            .map((influence) => ({
+                influence,
+                distanceSq: Math.max(
+                    0.00016,
+                    influence.position.distanceToSquared(parentSpaceVertex),
+                ),
+            }))
+            .sort((first, second) => first.distanceSq - second.distanceSq)
+            .slice(0, 4);
+        const rawWeights = closestInfluences.map(
+            ({ distanceSq }) => 1 / distanceSq,
+        );
+        const weightTotal =
+            rawWeights.reduce((total, weight) => total + weight, 0) || 1;
+
+        for (let slot = 0; slot < 4; slot += 1) {
+            const closest = closestInfluences[slot];
+            const attributeIndex = index * 4 + slot;
+
+            skinIndices[attributeIndex] = closest?.influence.index ?? 0;
+            skinWeights[attributeIndex] = closest
+                ? rawWeights[slot] / weightTotal
+                : 0;
+        }
+    }
+
+    geometry.setAttribute(
+        'skinIndex',
+        new Uint16BufferAttribute(skinIndices, 4),
+    );
+    geometry.setAttribute(
+        'skinWeight',
+        new Float32BufferAttribute(skinWeights, 4),
+    );
+
+    const skinnedBodyMesh = new SkinnedMesh(geometry, sourceMesh.material);
+
+    skinnedBodyMesh.name = TOP_HERO_SKINNED_BODY_MESH_NAME;
+    skinnedBodyMesh.castShadow = sourceMesh.castShadow;
+    skinnedBodyMesh.receiveShadow = sourceMesh.receiveShadow;
+    skinnedBodyMesh.frustumCulled = false;
+    skinnedBodyMesh.position.copy(sourceMesh.position);
+    skinnedBodyMesh.quaternion.copy(sourceMesh.quaternion);
+    skinnedBodyMesh.scale.copy(sourceMesh.scale);
+    parent.add(skinnedBodyMesh);
+    skinnedBodyMesh.updateWorldMatrix(true, false);
+    skinnedBodyMesh.bind(new Skeleton(bones));
+    sourceMesh.visible = false;
+}
+
 function skinHandMeshToFingerBones(root: Object3D) {
     const sourceMesh = root.getObjectByName(TOP_HERO_HAND_MESH_NAME);
 
@@ -1190,203 +1347,47 @@ function skinHandMeshToFingerBones(root: Object3D) {
     sourceMesh.visible = false;
 }
 
-function RealisticPlantPot() {
-    const leafShape = useMemo(() => {
-        const shape = new Shape();
+function softenPuffedTypingArm(root: Object3D) {
+    const sourceMesh = root.getObjectByName(TOP_HERO_HAND_MESH_NAME);
 
-        shape.moveTo(0, 0);
-        shape.bezierCurveTo(-0.17, 0.18, -0.16, 0.5, 0, 0.82);
-        shape.bezierCurveTo(0.16, 0.5, 0.17, 0.18, 0, 0);
+    if (
+        !(sourceMesh instanceof Mesh) ||
+        sourceMesh.geometry.userData.topHeroPuffedTypingArmSoftened
+    ) {
+        return;
+    }
 
-        return shape;
-    }, []);
-    const leaves = [
-        {
-            color: '#a61f87',
-            position: [0.01, 0.48, -0.015],
-            rotation: [-0.74, 0.18, -0.04],
-            scale: [0.72, 0.7, 1],
-        },
-        {
-            color: '#7f176f',
-            position: [-0.075, 0.42, 0.005],
-            rotation: [-0.96, -0.44, 0.58],
-            scale: [0.56, 0.58, 1],
-        },
-        {
-            color: '#c92a9e',
-            position: [0.075, 0.44, 0.012],
-            rotation: [-0.92, 0.52, -0.62],
-            scale: [0.6, 0.62, 1],
-        },
-        {
-            color: '#64135f',
-            position: [-0.135, 0.36, 0.018],
-            rotation: [-1.18, -0.76, 0.98],
-            scale: [0.5, 0.5, 1],
-        },
-        {
-            color: '#9b1b82',
-            position: [0.135, 0.37, 0.018],
-            rotation: [-1.16, 0.76, -0.98],
-            scale: [0.52, 0.52, 1],
-        },
-        {
-            color: '#d230a6',
-            position: [0.045, 0.55, -0.005],
-            rotation: [-0.5, 0.64, -0.34],
-            scale: [0.56, 0.74, 1],
-        },
-        {
-            color: '#541052',
-            position: [-0.035, 0.54, -0.005],
-            rotation: [-0.52, -0.58, 0.32],
-            scale: [0.52, 0.68, 1],
-        },
-    ] as const;
-    const stems = [
-        {
-            length: 0.27,
-            position: [-0.038, 0.319, -0.006],
-            radius: [0.009, 0.014],
-            rotation: [0.18, -0.24, -0.34],
-        },
-        {
-            length: 0.31,
-            position: [-0.012, 0.319, 0.006],
-            radius: [0.008, 0.013],
-            rotation: [0.12, -0.08, -0.13],
-        },
-        {
-            length: 0.34,
-            position: [0.014, 0.319, 0.004],
-            radius: [0.008, 0.013],
-            rotation: [0.1, 0.12, 0.16],
-        },
-        {
-            length: 0.28,
-            position: [0.04, 0.319, -0.006],
-            radius: [0.008, 0.012],
-            rotation: [0.2, 0.26, 0.34],
-        },
-    ] as const;
+    const geometry = sourceMesh.geometry.clone();
+    const positionAttribute = geometry.getAttribute('position');
+    const vertex = new Vector3();
 
-    return (
-        <group position={[0.76, 0.028, 0.28]} rotation={[0, -0.2, 0]}>
-            <mesh castShadow receiveShadow position={[0, 0.145, 0]}>
-                <cylinderGeometry args={[0.15, 0.125, 0.255, 96]} />
-                <meshPhysicalMaterial
-                    clearcoat={1}
-                    clearcoatRoughness={0.018}
-                    color={new Color('#020205')}
-                    emissive={new Color('#09010c')}
-                    emissiveIntensity={0.1}
-                    metalness={0.22}
-                    roughness={0.045}
-                    sheen={0.22}
-                    sheenColor={new Color('#d482ff')}
-                    specularIntensity={2.45}
-                />
-            </mesh>
-            <mesh castShadow receiveShadow position={[0, 0.28, 0]}>
-                <cylinderGeometry args={[0.168, 0.152, 0.052, 96]} />
-                <meshPhysicalMaterial
-                    clearcoat={1}
-                    clearcoatRoughness={0.014}
-                    color={new Color('#030306')}
-                    emissive={new Color('#0d0110')}
-                    emissiveIntensity={0.12}
-                    metalness={0.24}
-                    roughness={0.035}
-                    sheen={0.28}
-                    sheenColor={new Color('#ff8cff')}
-                    specularIntensity={2.7}
-                />
-            </mesh>
-            <mesh receiveShadow position={[0, 0.307, 0]}>
-                <cylinderGeometry args={[0.128, 0.136, 0.018, 72]} />
-                <meshPhysicalMaterial
-                    clearcoat={0.35}
-                    clearcoatRoughness={0.3}
-                    color={new Color('#10080d')}
-                    emissive={new Color('#17060d')}
-                    emissiveIntensity={0.16}
-                    metalness={0.02}
-                    roughness={0.78}
-                />
-            </mesh>
-            <mesh
-                castShadow
-                receiveShadow
-                position={[0, 0.321, 0]}
-                scale={[1, 0.22, 0.74]}
-            >
-                <sphereGeometry args={[0.068, 32, 16]} />
-                <meshPhysicalMaterial
-                    clearcoat={0.42}
-                    clearcoatRoughness={0.2}
-                    color={new Color('#130515')}
-                    emissive={new Color('#260826')}
-                    emissiveIntensity={0.18}
-                    metalness={0.03}
-                    roughness={0.42}
-                />
-            </mesh>
-            {stems.map(({ length, position, radius, rotation }, index) => (
-                <group
-                    key={`${position[0]}-${position[2]}`}
-                    position={position}
-                    rotation={rotation}
-                >
-                    <mesh castShadow position={[0, length / 2, 0]}>
-                        <cylinderGeometry
-                            args={[radius[0], radius[1], length, 18]}
-                        />
-                        <meshPhysicalMaterial
-                            clearcoat={0.38}
-                            clearcoatRoughness={0.16}
-                            color={
-                                new Color(
-                                    index % 2 === 0 ? '#18071a' : '#120514',
-                                )
-                            }
-                            emissive={new Color('#2a0828')}
-                            emissiveIntensity={0.18}
-                            metalness={0.04}
-                            roughness={0.36}
-                        />
-                    </mesh>
-                </group>
-            ))}
-            {leaves.map(({ color, position, rotation, scale }, index) => (
-                <mesh
-                    key={`${color}-${index}`}
-                    castShadow
-                    position={position}
-                    receiveShadow
-                    rotation={rotation}
-                    scale={scale}
-                >
-                    <shapeGeometry args={[leafShape, 28]} />
-                    <meshPhysicalMaterial
-                        clearcoat={1}
-                        clearcoatRoughness={0.06}
-                        color={new Color(color)}
-                        emissive={
-                            new Color(index % 2 === 0 ? '#4e0a44' : '#280522')
-                        }
-                        emissiveIntensity={0.22}
-                        metalness={0.03}
-                        roughness={0.2}
-                        sheen={0.82}
-                        sheenColor={new Color('#ff79dc')}
-                        side={DoubleSide}
-                        specularIntensity={2.1}
-                    />
-                </mesh>
-            ))}
-        </group>
-    );
+    for (let index = 0; index < positionAttribute.count; index += 1) {
+        vertex.fromBufferAttribute(positionAttribute, index);
+
+        if (vertex.x > TOP_HERO_PUFFED_TYPING_ARM_MAX_X) {
+            continue;
+        }
+
+        const sideWeight = MathUtils.smootherstep(
+            TOP_HERO_PUFFED_TYPING_ARM_MAX_X - vertex.x,
+            0,
+            0.24,
+        );
+        const targetY =
+            TOP_HERO_PUFFED_TYPING_ARM_CENTER_Y +
+            (vertex.y - TOP_HERO_PUFFED_TYPING_ARM_CENTER_Y) *
+                TOP_HERO_PUFFED_TYPING_ARM_Y_SCALE;
+
+        positionAttribute.setY(
+            index,
+            MathUtils.lerp(vertex.y, targetY, sideWeight),
+        );
+    }
+
+    positionAttribute.needsUpdate = true;
+    geometry.computeVertexNormals();
+    geometry.userData.topHeroPuffedTypingArmSoftened = true;
+    sourceMesh.geometry = geometry;
 }
 
 function GlossyBlackMug() {
@@ -1457,74 +1458,6 @@ function GlossyBlackMug() {
 function DeskAccentProps() {
     return (
         <group scale={1.74}>
-            <group position={[1.58, 0.08, 0.16]} rotation={[0, -0.18, -0.025]}>
-                {[
-                    {
-                        color: '#350c40',
-                        emissive: '#5b1070',
-                        position: [0, 0.0375, 0],
-                        scale: [0.48, 0.075, 0.31],
-                    },
-                    {
-                        color: '#f2e8f6',
-                        emissive: '#2f1638',
-                        position: [0.014, 0.1025, 0.018],
-                        scale: [0.46, 0.055, 0.3],
-                    },
-                    {
-                        color: '#461057',
-                        emissive: '#8a1bb1',
-                        position: [0.032, 0.166, 0.034],
-                        scale: [0.44, 0.072, 0.285],
-                    },
-                    {
-                        color: '#17111d',
-                        emissive: '#461056',
-                        position: [0.052, 0.228, 0.052],
-                        scale: [0.4, 0.052, 0.27],
-                    },
-                ].map(({ color, emissive, position, scale }, index) => (
-                    <mesh
-                        key={color}
-                        castShadow
-                        position={position as [number, number, number]}
-                        receiveShadow
-                        scale={scale as [number, number, number]}
-                    >
-                        <boxGeometry args={[1, 1, 1]} />
-                        <meshPhysicalMaterial
-                            clearcoat={1}
-                            clearcoatRoughness={index === 1 ? 0.18 : 0.055}
-                            color={new Color(color)}
-                            emissive={new Color(emissive)}
-                            emissiveIntensity={index === 1 ? 0.045 : 0.2}
-                            metalness={index === 1 ? 0.02 : 0.24}
-                            roughness={index === 1 ? 0.38 : 0.18}
-                            sheen={0.35}
-                            sheenColor={new Color('#f0a6ff')}
-                            specularIntensity={index === 1 ? 0.7 : 1.65}
-                        />
-                    </mesh>
-                ))}
-                <mesh
-                    castShadow
-                    position={[0.04, 0.26, 0.052]}
-                    rotation={[0.01, 0.02, 0.035]}
-                    scale={[0.36, 0.012, 0.244]}
-                >
-                    <boxGeometry args={[1, 1, 1]} />
-                    <meshPhysicalMaterial
-                        clearcoat={0.85}
-                        clearcoatRoughness={0.1}
-                        color={new Color('#f7eefa')}
-                        emissive={new Color('#4d1b5f')}
-                        emissiveIntensity={0.055}
-                        metalness={0.02}
-                        roughness={0.32}
-                    />
-                </mesh>
-            </group>
-            <RealisticPlantPot />
             <GlossyBlackMug />
         </group>
     );
@@ -1561,6 +1494,28 @@ function DeskCornerModel({
         Partial<Record<DeskPartKey, DeskPartState>>
     >({});
     const rigRef = useRef<TopHeroRig>(createTopHeroRig());
+    const initialRotationProgressRef = useRef(rotationProgress);
+    const initialStagePosition = useMemo(() => {
+        const initialTravelProgress = MathUtils.smootherstep(
+            MathUtils.clamp(travelProgress, 0, 1),
+            0,
+            1,
+        );
+
+        return [
+            MathUtils.lerp(
+                TOP_HERO_STAGE_START_X,
+                TOP_HERO_STAGE_END_X,
+                initialTravelProgress,
+            ),
+            MathUtils.lerp(
+                TOP_HERO_STAGE_START_Y,
+                TOP_HERO_STAGE_END_Y,
+                initialTravelProgress,
+            ),
+            TOP_HERO_STAGE_Z,
+        ] as const;
+    }, [travelProgress]);
 
     useEffect(() => {
         const screen = deskScene.getObjectByName(LAPTOP_SCREEN_MODEL_NAME);
@@ -1609,7 +1564,12 @@ function DeskCornerModel({
             }
 
             replacePhysicalMaterial(deskMesh, surfaceConfig);
+            deskMesh.geometry.computeBoundingBox();
+            const boundingBox = deskMesh.geometry.boundingBox;
             nextDeskPartStates[meshName] = {
+                baseLocalRightEdge: boundingBox?.max.x ?? 0,
+                baseLocalWidth: boundingBox?.getSize(new Vector3()).x ?? 0,
+                basePosition: deskMesh.position.clone(),
                 baseScale: deskMesh.scale.clone(),
                 mesh: deskMesh,
             };
@@ -1624,6 +1584,20 @@ function DeskCornerModel({
         subjectPivotRef.current = subjectPivot;
         baseSubjectPivotQuaternionRef.current =
             subjectPivot?.quaternion.clone() ?? null;
+
+        if (subjectPivot && baseSubjectPivotQuaternionRef.current) {
+            const initialRotationFlipProgress = easeRotationFlipProgress(
+                rotationFlipTargetProgress(initialRotationProgressRef.current),
+            );
+
+            subjectPivot.quaternion.copy(
+                composePoseQuaternion(baseSubjectPivotQuaternionRef.current, [
+                    0,
+                    SUBJECT_VISIBILITY_ROTATION_Y * initialRotationFlipProgress,
+                    0,
+                ]),
+            );
+        }
 
         deskScene.traverse((object: Object3D) => {
             if (object instanceof Mesh) {
@@ -1681,6 +1655,7 @@ function DeskCornerModel({
             rig.armBones[boneKey] = bone;
 
             if (bone) {
+                rig.baseArmPositions[boneKey] = bone.position.clone();
                 rig.baseArmQuaternions[boneKey] = bone.quaternion.clone();
             }
         }
@@ -1733,6 +1708,8 @@ function DeskCornerModel({
             }
         }
 
+        skinBodyMeshToCharacterBones(deskScene);
+        softenPuffedTypingArm(deskScene);
         skinHandMeshToFingerBones(deskScene);
         deskPartStatesRef.current = nextDeskPartStates;
     }, [deskScene]);
@@ -1838,15 +1815,34 @@ function DeskCornerModel({
                     DESK_SCROLL_WIDTH_MULTIPLIER,
                     sceneTravelProgress,
                 );
+            const targetExtendedDeskScaleX =
+                targetDeskScaleX +
+                deskPartState.baseScale.x *
+                    DESK_LEFT_EXTENSION_WIDTH_MULTIPLIER *
+                    sceneTravelProgress;
+            const targetDeskPositionX =
+                deskPartState.basePosition.x -
+                (targetExtendedDeskScaleX - targetDeskScaleX) *
+                    (deskPartState.baseLocalRightEdge ||
+                        deskPartState.baseLocalWidth / 2);
 
-            deskPartState.mesh.scale.x = shouldSnapHeroPlacement
-                ? targetDeskScaleX
-                : MathUtils.damp(
-                      deskPartState.mesh.scale.x,
-                      targetDeskScaleX,
-                      6.6,
-                      delta,
-                  );
+            if (shouldSnapHeroPlacement) {
+                deskPartState.mesh.scale.x = targetExtendedDeskScaleX;
+                deskPartState.mesh.position.x = targetDeskPositionX;
+            } else {
+                deskPartState.mesh.scale.x = MathUtils.damp(
+                    deskPartState.mesh.scale.x,
+                    targetExtendedDeskScaleX,
+                    6.6,
+                    delta,
+                );
+                deskPartState.mesh.position.x = MathUtils.damp(
+                    deskPartState.mesh.position.x,
+                    targetDeskPositionX,
+                    6.6,
+                    delta,
+                );
+            }
         }
 
         (['shoulderLeft', 'shoulderRight'] as ShoulderBoneKey[]).forEach(
@@ -1860,10 +1856,36 @@ function DeskCornerModel({
         );
 
         (['armLeft', 'armRight'] as ArmBoneKey[]).forEach((boneKey) => {
-            rig.armBones[boneKey]?.quaternion.slerp(
-                rig.baseArmQuaternions[boneKey] ??
-                    rig.armBones[boneKey]!.quaternion,
-                1 - Math.exp(-18 * delta),
+            const armBone = rig.armBones[boneKey];
+            const baseArmPosition = rig.baseArmPositions[boneKey];
+            const ease = 1 - Math.exp(-18 * delta);
+
+            if (!armBone) return;
+
+            if (baseArmPosition) {
+                if (boneKey !== 'armRight' || !armBone.parent) {
+                    armBone.position.lerp(baseArmPosition, ease);
+                } else {
+                    armBone.parent.updateWorldMatrix(true, false);
+                    TOP_HERO_RIGHT_ARM_NUDGE_TARGET_WORLD.copy(baseArmPosition)
+                        .applyMatrix4(armBone.parent.matrixWorld)
+                        .add(TOP_HERO_RIGHT_ARM_NUDGE_WORLD);
+                    TOP_HERO_RIGHT_ARM_NUDGE_TARGET.copy(
+                        TOP_HERO_RIGHT_ARM_NUDGE_TARGET_WORLD,
+                    );
+                    armBone.parent.worldToLocal(
+                        TOP_HERO_RIGHT_ARM_NUDGE_TARGET,
+                    );
+                    armBone.position.lerp(
+                        TOP_HERO_RIGHT_ARM_NUDGE_TARGET,
+                        ease,
+                    );
+                }
+            }
+
+            armBone.quaternion.slerp(
+                rig.baseArmQuaternions[boneKey] ?? armBone.quaternion,
+                ease,
             );
         });
 
@@ -2001,14 +2023,7 @@ function DeskCornerModel({
                 onLaptopCameraZoomSettled={onLaptopCameraZoomSettled}
                 rotationProgress={rotationProgress}
             />
-            <group
-                ref={stageGroupRef}
-                position={[
-                    TOP_HERO_STAGE_START_X,
-                    TOP_HERO_STAGE_START_Y,
-                    TOP_HERO_STAGE_Z,
-                ]}
-            >
+            <group ref={stageGroupRef} position={initialStagePosition}>
                 <primitive ref={modelRootRef} object={deskScene} scale={1.74} />
                 <DeskAccentProps />
                 <LaptopFaceGlow rotationProgress={rotationProgress} />
