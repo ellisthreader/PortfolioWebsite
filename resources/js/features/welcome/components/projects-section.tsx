@@ -181,10 +181,10 @@ export function ProjectsSection() {
                         </div>
                     </div>
 
-                    <div className="absolute inset-x-0 bottom-0">
+                    <div className="absolute inset-x-0 top-[12rem] bottom-0 flex items-end sm:top-[13rem] lg:top-[14.5rem]">
                         <div
                             ref={viewportRef}
-                            className="relative overflow-hidden"
+                            className="relative w-full overflow-hidden"
                         >
                             <motion.div
                                 ref={trackRef}

@@ -98,7 +98,7 @@ export const ProjectCard = memo(function ProjectCard({
         return (
             <article
                 style={neonStyle}
-                className="group relative h-[32rem] w-[78vw] shrink-0 overflow-hidden border border-fuchsia-300/10 bg-black p-6 shadow-[0_22px_70px_rgba(0,0,0,0.48)] [contain:layout_paint] sm:h-[36rem] sm:w-[52vw] sm:p-7 lg:h-[42rem] lg:w-[33.3333vw] lg:p-8 xl:h-[45rem]"
+                className="group relative h-[min(32rem,calc(100vh-14rem))] w-[78vw] shrink-0 overflow-hidden border border-fuchsia-300/10 bg-black p-6 shadow-[0_22px_70px_rgba(0,0,0,0.48)] [contain:layout_paint] sm:h-[min(36rem,calc(100vh-15rem))] sm:w-[52vw] sm:p-7 lg:h-[min(42rem,calc(100vh-16rem))] lg:w-[33.3333vw] lg:p-8 xl:h-[min(45rem,calc(100vh-16rem))]"
             >
                 <CardNeonAura />
                 <div className="relative flex h-full flex-col justify-between">
@@ -134,7 +134,7 @@ export const ProjectCard = memo(function ProjectCard({
     return (
         <article
             style={neonStyle}
-            className="group relative h-[32rem] w-[78vw] shrink-0 overflow-hidden border border-fuchsia-300/10 bg-black p-6 shadow-[0_22px_70px_rgba(0,0,0,0.48)] [contain:layout_paint] sm:h-[36rem] sm:w-[52vw] sm:p-7 lg:h-[42rem] lg:w-[33.3333vw] lg:p-8 xl:h-[45rem]"
+            className="group relative h-[min(32rem,calc(100vh-14rem))] w-[78vw] shrink-0 overflow-hidden border border-fuchsia-300/10 bg-black p-6 shadow-[0_22px_70px_rgba(0,0,0,0.48)] [contain:layout_paint] sm:h-[min(36rem,calc(100vh-15rem))] sm:w-[52vw] sm:p-7 lg:h-[min(42rem,calc(100vh-16rem))] lg:w-[33.3333vw] lg:p-8 xl:h-[min(45rem,calc(100vh-16rem))]"
         >
             <CardNeonAura />
             <div className="relative flex h-full flex-col">
