@@ -1,11 +1,15 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/react-starter-kit",
+    "name": "ellisthreader/portfolio-website",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Production portfolio website for Ellis Threader, built with Laravel, React, Inertia, TypeScript, Tailwind CSS, and Three.js.",
     "keywords": [
+        "portfolio",
         "laravel",
-        "framework"
+        "react",
+        "inertia",
+        "typescript",
+        "threejs"
     ],
     "license": "MIT",
     "require": {

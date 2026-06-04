@@ -1,5 +1,7 @@
 {
     "$schema": "https://www.schemastore.org/package.json",
+    "name": "ellis-threader-portfolio",
+    "description": "Production portfolio website for Ellis Threader, built with Laravel, React, Inertia, TypeScript, Tailwind CSS, and Three.js.",
     "private": true,
     "type": "module",
     "engines": {

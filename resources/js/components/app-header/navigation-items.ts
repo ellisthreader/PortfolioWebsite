@@ -12,12 +12,12 @@ export const mainNavItems: NavItem[] = [
 export const rightNavItems: NavItem[] = [
     {
         title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
+        href: 'https://github.com/ellisthreader/PortfolioWebsite',
         icon: null,
     },
     {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
+        title: 'Live Site',
+        href: 'https://ellisthreader.com',
         icon: null,
     },
 ];
