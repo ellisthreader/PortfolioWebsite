@@ -79,6 +79,16 @@ export const PROJECT_ITEMS: ProjectItem[] = [
     },
     {
         index: '08',
+        title: 'Service Priority AI',
+        category: 'Azure MLOps Platform',
+        stack: 'Azure ML, FastAPI, React, scikit-learn, Responsible AI',
+        description:
+            'An Azure-ready MLOps and Responsible AI triage dashboard for service requests, combining synthetic data generation, model training, FastAPI serving, React review workflows, monitoring contracts, and human-in-the-loop governance documentation.',
+        accent: 'from-cyan-300/90 via-sky-400/75 to-violet-300/60',
+        imageUrl: publicAsset('/AzureProject.webp'),
+    },
+    {
+        index: '09',
         title: 'AI Resume Builder',
         category: 'Career AI Tool',
         stack: 'AI Writing, Resume Optimization, React, TypeScript',
@@ -90,7 +100,7 @@ export const PROJECT_ITEMS: ProjectItem[] = [
         hideFromHome: true,
     },
     {
-        index: '09',
+        index: '10',
         title: 'Checkmate AI',
         category: 'Chess Analysis System',
         stack: 'React, TypeScript, Analytics, Chess Engine Tooling',
@@ -102,7 +112,7 @@ export const PROJECT_ITEMS: ProjectItem[] = [
         hideFromHome: true,
     },
     {
-        index: '10',
+        index: '11',
         title: 'Drone Scan Company',
         category: '3D Capture Marketplace',
         stack: 'Drone Mapping, Photogrammetry, 3D Scans, Web Marketplace',
@@ -114,7 +124,7 @@ export const PROJECT_ITEMS: ProjectItem[] = [
         hideFromHome: true,
     },
     {
-        index: '11',
+        index: '12',
         title: 'See more of my work!',
         category: 'Project Archive',
         stack: 'Portfolio, Product Design, Frontend Development',

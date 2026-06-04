@@ -127,8 +127,13 @@ function ProjectCardMedia({ project }: { project: ProjectItem }) {
     const isAccountant = project.title === 'Accountant AI Software';
     const isAiResume = project.title === 'AI Resume Builder';
     const isDroneScan = project.title === 'Drone Scan Company';
+    const isServicePriorityAi = project.title === 'Service Priority AI';
     const isTallMedia =
-        isAiVoiceAssistant || isVibyra || isAccountant || isDroneScan;
+        isAiVoiceAssistant ||
+        isVibyra ||
+        isAccountant ||
+        isDroneScan ||
+        isServicePriorityAi;
 
     if (project.title === 'EPOS Software') {
         return (
@@ -169,13 +174,15 @@ function ProjectCardMedia({ project }: { project: ProjectItem }) {
 
     if (project.imageUrl) {
         const imageClass = isAiVoiceAssistant
-            ? 'object-contain p-1 group-hover:scale-[1.01] hover:scale-[1.04]'
+            ? 'h-[82%] w-[82%] object-contain p-0 group-hover:scale-[1.01] hover:scale-[1.04] sm:h-[80%] sm:w-[80%]'
             : isVibyra
               ? 'object-contain p-0 group-hover:scale-[1.04] hover:scale-[1.08]'
               : isChatora
                 ? 'object-contain p-0 group-hover:scale-[1.07] hover:scale-[1.12]'
                 : isAccountant
                   ? 'h-[72%] w-[72%] object-contain p-0 group-hover:scale-[1.01] hover:scale-[1.02] sm:h-[76%] sm:w-[76%]'
+                  : isServicePriorityAi
+                    ? 'object-contain object-top p-2 group-hover:scale-[1.01] hover:scale-[1.03] sm:p-3'
                   : isDroneScan
                     ? 'object-contain p-0 group-hover:scale-[1.01] hover:scale-[1.04]'
                     : movesFrameOnHover
@@ -190,7 +197,7 @@ function ProjectCardMedia({ project }: { project: ProjectItem }) {
             <div
                 className={`relative flex items-center justify-center overflow-hidden rounded-[1.5rem] ${
                     isTallMedia ? 'h-48' : 'h-44'
-                } ${movesFrameOnHover ? PROJECT_MEDIA_HOVER_CLASS : ''}`}
+                } ${isAiVoiceAssistant ? 'bg-[#ece7ff]' : ''} ${isServicePriorityAi ? 'bg-[#f7fbfa]' : ''} ${movesFrameOnHover ? PROJECT_MEDIA_HOVER_CLASS : ''}`}
             >
                 <img
                     src={project.imageUrl}
