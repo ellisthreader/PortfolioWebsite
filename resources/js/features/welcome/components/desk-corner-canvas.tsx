@@ -1,6 +1,6 @@
 import { useGLTF } from '@react-three/drei';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import {
     ACESFilmicToneMapping,
     Box3,
@@ -600,7 +600,7 @@ function DeskCornerCamera({
     const orbitProgressRef = useRef(0);
     const zoomProgressRef = useRef(0);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const perspectiveCamera = camera as PerspectiveCamera;
         cameraRef.current = perspectiveCamera;
 
@@ -1550,7 +1550,7 @@ function DeskCornerModel({
         };
     }, [deskScene, onLaptopVideoEnded]);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const nextDeskPartStates: Partial<Record<DeskPartKey, DeskPartState>> =
             {};
 

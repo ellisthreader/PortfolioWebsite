@@ -1,5 +1,3 @@
-import { useEffect, useRef, useState } from 'react';
-
 import { DeskCornerCanvas } from '../desk-corner-canvas';
 
 const STATIC_HERO_LAPTOP_ZOOM_PROGRESS = 0;
@@ -11,37 +9,11 @@ const HERO_DESK_INFO_BLUR_MASK =
     'radial-gradient(ellipse at 18% 58%, rgba(0,0,0,0.94) 0%, rgba(0,0,0,0.82) 28%, rgba(0,0,0,0.38) 54%, transparent 78%)';
 const HERO_DESK_MODEL_OFFSET_X = '25vw';
 const HERO_DESK_MODEL_OFFSET_Y = '13vh';
-const HERO_CANVAS_ROOT_MARGIN = '360px 0px';
 
 export function HeroDeskModel() {
-    const containerRef = useRef<HTMLDivElement | null>(null);
-    const [isCanvasMounted, setIsCanvasMounted] = useState(true);
-
-    useEffect(() => {
-        const container = containerRef.current;
-
-        if (!container || !('IntersectionObserver' in window)) {
-            return;
-        }
-
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                setIsCanvasMounted(entry.isIntersecting);
-            },
-            { rootMargin: HERO_CANVAS_ROOT_MARGIN },
-        );
-
-        observer.observe(container);
-
-        return () => {
-            observer.disconnect();
-        };
-    }, []);
-
     return (
         <div
             className="pointer-events-none absolute top-0 bottom-0 z-20 h-screen overflow-visible"
-            ref={containerRef}
             style={{
                 contain: 'layout paint size',
                 left: HERO_DESK_CANVAS_LEFT,
@@ -50,13 +22,11 @@ export function HeroDeskModel() {
             }}
         >
             <div className="h-full w-full [&_canvas]:!h-full [&_canvas]:!w-full">
-                {isCanvasMounted ? (
-                    <DeskCornerCanvas
-                        laptopZoomProgress={STATIC_HERO_LAPTOP_ZOOM_PROGRESS}
-                        rotationProgress={STATIC_HERO_MODEL_ROTATION_PROGRESS}
-                        travelProgress={STATIC_HERO_MODEL_TRAVEL_PROGRESS}
-                    />
-                ) : null}
+                <DeskCornerCanvas
+                    laptopZoomProgress={STATIC_HERO_LAPTOP_ZOOM_PROGRESS}
+                    rotationProgress={STATIC_HERO_MODEL_ROTATION_PROGRESS}
+                    travelProgress={STATIC_HERO_MODEL_TRAVEL_PROGRESS}
+                />
             </div>
             <div
                 aria-hidden="true"
