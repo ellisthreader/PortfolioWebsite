@@ -10,8 +10,23 @@ export function AmbientSectionGlow({
     variant = 'default',
 }: {
     className?: string;
-    variant?: 'default' | 'accountant' | 'chatora';
+    variant?: 'default' | 'accountant' | 'assistant' | 'chatora';
 }) {
+    if (variant === 'assistant') {
+        return (
+            <div
+                aria-hidden="true"
+                className={cn(
+                    'pointer-events-none absolute rounded-full',
+                    className,
+                )}
+            >
+                <div className="absolute inset-[10%] rounded-full bg-[radial-gradient(ellipse_at_center,_rgba(56,189,248,0.2)_0%,_rgba(168,85,247,0.16)_34%,_rgba(217,70,239,0.08)_56%,_transparent_74%)] opacity-80" />
+                <div className="absolute inset-x-[18%] top-[20%] bottom-[12%] rounded-full bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.12)_0%,_rgba(125,211,252,0.1)_30%,_transparent_70%)] opacity-70" />
+            </div>
+        );
+    }
+
     if (variant === 'accountant') {
         return (
             <div

@@ -174,7 +174,7 @@ function ProjectCardMedia({ project }: { project: ProjectItem }) {
 
     if (project.imageUrl) {
         const imageClass = isAiVoiceAssistant
-            ? 'h-[82%] w-[82%] object-contain p-0 group-hover:scale-[1.01] hover:scale-[1.04] sm:h-[80%] sm:w-[80%]'
+            ? 'object-contain p-0 group-hover:scale-[1.01] hover:scale-[1.04]'
             : isVibyra
               ? 'object-contain p-0 group-hover:scale-[1.04] hover:scale-[1.08]'
               : isChatora

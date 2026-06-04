@@ -224,7 +224,7 @@ function ProjectVisual({ project }: { project: ProjectItem }) {
         const imageSizingClass = isUplifta
             ? 'h-full w-full max-h-full max-w-full'
             : isAiAssistant
-              ? 'h-[82%] w-[82%] max-h-[82%] max-w-[82%] sm:h-[80%] sm:w-[80%] sm:max-h-[80%] sm:max-w-[80%] lg:h-[78%] lg:w-[78%] lg:max-h-[78%] lg:max-w-[78%]'
+              ? 'h-full w-full max-h-full max-w-full'
               : isAccountantAi
                 ? 'h-[70%] w-[70%] max-h-[70%] max-w-[70%] sm:h-[74%] sm:w-[74%] sm:max-h-[74%] sm:max-w-[74%] lg:h-[76%] lg:w-[76%] lg:max-h-[76%] lg:max-w-[76%]'
                 : isVibyra
@@ -263,6 +263,7 @@ function ProjectVisual({ project }: { project: ProjectItem }) {
                         : 'h-[12rem] sm:h-[13rem] lg:h-[15rem] xl:h-[16rem]';
         const visualOverflowClass =
             isEpos ||
+            isAiAssistant ||
             isUplifta ||
             isVibyra ||
             isChatoraAi ||
@@ -297,8 +298,15 @@ function ProjectVisual({ project }: { project: ProjectItem }) {
                   : isVibyra
                     ? 'left-1/2 top-[54%] h-[92%] w-[88%] -translate-x-1/2 -translate-y-1/2'
                     : isAiAssistant
-                      ? 'left-1/2 top-[54%] h-[88%] w-[80%] -translate-x-1/2 -translate-y-1/2'
+                      ? 'left-1/2 top-[55%] h-[74%] w-[76%] -translate-x-1/2 -translate-y-1/2'
                       : 'left-1/2 top-[52%] h-[84%] w-[78%] -translate-x-1/2 -translate-y-1/2';
+        const primaryAuraClass = isAiAssistant
+            ? 'h-[86%] w-[92%] opacity-[0.28]'
+            : 'h-[120%] w-[104%] opacity-[0.84]';
+        const secondaryAuraClass = isAiAssistant
+            ? 'top-[28%] h-[54%] w-[62%] opacity-[0.16]'
+            : 'top-[20%] h-[86%] w-[74%] opacity-[0.38]';
+        const reflectionAuraClass = isAiAssistant ? 'opacity-0' : 'opacity-100';
 
         return (
             <div
@@ -306,24 +314,26 @@ function ProjectVisual({ project }: { project: ProjectItem }) {
             >
                 <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute top-1/2 left-1/2 h-[120%] w-[104%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,var(--project-neon-primary)_0%,var(--project-neon-tertiary)_34%,transparent_74%)] opacity-[0.84]"
+                    className={`pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,var(--project-neon-primary)_0%,var(--project-neon-tertiary)_34%,transparent_74%)] ${primaryAuraClass}`}
                 />
                 <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute top-[20%] left-1/2 h-[86%] w-[74%] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,var(--project-neon-secondary)_0%,transparent_70%)] opacity-[0.38]"
+                    className={`pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,var(--project-neon-secondary)_0%,transparent_70%)] ${secondaryAuraClass}`}
                 />
                 <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute bottom-[-3%] left-1/2 h-[26%] w-[86%] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,var(--project-neon-reflection)_0%,rgba(0,0,0,0.12)_48%,transparent_80%)]"
+                    className={`pointer-events-none absolute bottom-[-3%] left-1/2 h-[26%] w-[86%] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,var(--project-neon-reflection)_0%,rgba(0,0,0,0.12)_48%,transparent_80%)] ${reflectionAuraClass}`}
                 />
                 <AmbientSectionGlow
                     className={glowSizeClass}
                     variant={
-                        isAccountantAi
-                            ? 'accountant'
-                            : isChatoraAi
-                              ? 'chatora'
-                              : 'default'
+                        isAiAssistant
+                            ? 'assistant'
+                            : isAccountantAi
+                              ? 'accountant'
+                              : isChatoraAi
+                                ? 'chatora'
+                                : 'default'
                     }
                 />
                 {isUplifta ? (
