@@ -182,28 +182,32 @@ function ProjectCardMedia({ project }: { project: ProjectItem }) {
                 : isAccountant
                   ? 'h-[72%] w-[72%] object-contain p-0 group-hover:scale-[1.01] hover:scale-[1.02] sm:h-[76%] sm:w-[76%]'
                   : isServicePriorityAi
-                    ? 'object-contain object-top p-2 group-hover:scale-[1.01] hover:scale-[1.03] sm:p-3'
-                  : isDroneScan
-                    ? 'object-contain p-0 group-hover:scale-[1.01] hover:scale-[1.04]'
-                    : movesFrameOnHover
-                      ? 'object-cover'
-                      : project.transparentImage
-                        ? isAiResume
-                            ? 'object-contain p-0 group-hover:scale-[1.04] hover:scale-[1.09]'
-                            : 'object-contain p-3 group-hover:scale-[1.03] hover:scale-[1.08]'
-                        : 'object-cover group-hover:scale-[1.05] hover:scale-[1.1]';
+                    ? 'object-contain p-0 group-hover:scale-[1.01] hover:scale-[1.03]'
+                    : isDroneScan
+                      ? 'object-contain p-0 group-hover:scale-[1.01] hover:scale-[1.04]'
+                      : movesFrameOnHover
+                        ? 'object-cover'
+                        : project.transparentImage
+                          ? isAiResume
+                              ? 'object-contain p-0 group-hover:scale-[1.04] hover:scale-[1.09]'
+                              : 'object-contain p-3 group-hover:scale-[1.03] hover:scale-[1.08]'
+                          : 'object-cover group-hover:scale-[1.05] hover:scale-[1.1]';
 
         return (
             <div
                 className={`relative flex items-center justify-center overflow-hidden rounded-[1.5rem] ${
                     isTallMedia ? 'h-48' : 'h-44'
-                } ${isAiVoiceAssistant ? 'bg-[#ece7ff]' : ''} ${isServicePriorityAi ? 'bg-[#f7fbfa]' : ''} ${movesFrameOnHover ? PROJECT_MEDIA_HOVER_CLASS : ''}`}
+                } ${isAiVoiceAssistant && !project.transparentImage ? 'bg-[#ece7ff]' : ''} ${isServicePriorityAi && !project.transparentImage ? 'bg-[#f7fbfa]' : ''} ${movesFrameOnHover ? PROJECT_MEDIA_HOVER_CLASS : ''}`}
             >
                 <img
                     src={project.imageUrl}
                     alt={project.title}
                     decoding="async"
-                    loading="lazy"
+                    loading={
+                        isAiVoiceAssistant || isServicePriorityAi
+                            ? 'eager'
+                            : 'lazy'
+                    }
                     className={`h-full w-full ${imageClass} ${movesFrameOnHover ? '' : PROJECT_MEDIA_HOVER_CLASS}`}
                 />
             </div>

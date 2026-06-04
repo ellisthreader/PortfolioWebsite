@@ -31,7 +31,8 @@ export const PROJECT_ITEMS: ProjectItem[] = [
         description:
             'An elegant voice assistant platform that turns spoken requests into fast, natural conversations by combining speech-to-text, LLM reasoning, and text-to-speech in a polished real-time experience. Built with Pico and supporting electronics, it delivers responses in around three seconds while maintaining a refined, premium interface.',
         accent: 'from-indigo-400/90 via-fuchsia-400/70 to-cyan-300/60',
-        imageUrl: publicAsset('/AIAssistant.webp'),
+        imageUrl: publicAsset('/AIAssistantCutout.webp'),
+        transparentImage: true,
     },
     {
         index: '04',
@@ -50,7 +51,7 @@ export const PROJECT_ITEMS: ProjectItem[] = [
         category: 'AI Workflow Command Center',
         stack: 'React Native, Expo, Laravel, Desktop Bridge, AI Agents',
         description:
-            "A phone-first coding command center for building whenever, wherever, pairing with a desktop bridge to browse projects, start previews, send AI prompts, review code changes, and apply or discard agent work.",
+            'A phone-first coding command center for building whenever, wherever, pairing with a desktop bridge to browse projects, start previews, send AI prompts, review code changes, and apply or discard agent work.',
         accent: 'from-violet-400/90 via-fuchsia-400/75 to-cyan-300/60',
         imageUrl: publicAsset('/VibyraApp.webp'),
         transparentImage: true,
@@ -85,7 +86,8 @@ export const PROJECT_ITEMS: ProjectItem[] = [
         description:
             'An Azure-ready MLOps and Responsible AI triage dashboard for service requests, combining synthetic data generation, model training, FastAPI serving, React review workflows, monitoring contracts, and human-in-the-loop governance documentation.',
         accent: 'from-cyan-300/90 via-sky-400/75 to-violet-300/60',
-        imageUrl: publicAsset('/AzureProject.webp'),
+        imageUrl: publicAsset('/ServicePriorityAI.webp'),
+        transparentImage: true,
     },
     {
         index: '09',

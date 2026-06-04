@@ -206,9 +206,7 @@ function ProjectVisual({ project }: { project: ProjectItem }) {
         const isAccountantAi = project.title === 'Accountant AI Software';
         const isServicePriorityAi = project.title === 'Service Priority AI';
         const isTransparentVisual = project.transparentImage;
-        const imagePositionClass = isServicePriorityAi
-            ? 'object-top'
-            : 'object-center';
+        const imagePositionClass = 'object-center';
         const imageFitClass =
             isTransparentVisual || isAiAssistant || isServicePriorityAi
                 ? 'object-contain'
@@ -232,23 +230,21 @@ function ProjectVisual({ project }: { project: ProjectItem }) {
                 : isVibyra
                   ? 'h-full w-full max-h-full max-w-full'
                   : 'h-full w-full';
-        const wrapperClass =
-            isTransparentVisual
-                ? 'bg-transparent'
-                : isAiAssistant
-                  ? 'bg-[#ece7ff]'
-                : isServicePriorityAi
-                  ? 'bg-[#f7fbfa]'
+        const wrapperClass = isTransparentVisual
+            ? 'bg-transparent'
+            : isAiAssistant
+              ? 'bg-[#ece7ff]'
+              : isServicePriorityAi
+                ? 'bg-[#f7fbfa]'
                 : 'bg-black';
         const overlayClass =
             isTransparentVisual || isAiAssistant ? 'bg-transparent' : '';
-        const frameClass =
-            isTransparentVisual
-                ? 'border-transparent'
-                : isAiAssistant
-                  ? 'border-fuchsia-100/20'
-                : isServicePriorityAi
-                  ? 'border-cyan-200/20'
+        const frameClass = isTransparentVisual
+            ? 'border-transparent'
+            : isAiAssistant
+              ? 'border-fuchsia-100/20'
+              : isServicePriorityAi
+                ? 'border-cyan-200/20'
                 : 'border-fuchsia-300/10';
         const visualHeightClass = isAiAssistant
             ? 'h-[16rem] sm:h-[17rem] lg:h-[20rem] xl:h-[21rem]'
@@ -262,9 +258,9 @@ function ProjectVisual({ project }: { project: ProjectItem }) {
                     ? 'h-[14rem] sm:h-[15.5rem] lg:h-[18rem] xl:h-[19rem]'
                     : isServicePriorityAi
                       ? 'h-[14rem] sm:h-[15.5rem] lg:h-[18rem] xl:h-[19rem]'
-                    : isEpos
-                      ? 'h-[14rem] sm:h-[15rem] lg:h-[17rem] xl:h-[18rem]'
-                      : 'h-[12rem] sm:h-[13rem] lg:h-[15rem] xl:h-[16rem]';
+                      : isEpos
+                        ? 'h-[14rem] sm:h-[15rem] lg:h-[17rem] xl:h-[18rem]'
+                        : 'h-[12rem] sm:h-[13rem] lg:h-[15rem] xl:h-[16rem]';
         const visualOverflowClass =
             isEpos ||
             isUplifta ||
@@ -282,9 +278,9 @@ function ProjectVisual({ project }: { project: ProjectItem }) {
                 ? 'mt-4 mb-0'
                 : isServicePriorityAi
                   ? 'mt-5 mb-0'
-                : isChatoraAi
-                  ? 'mt-4 -mb-[0.25rem] sm:-mb-[0.5rem] lg:-mb-[0.75rem] xl:-mb-[1rem]'
-                  : 'mt-8';
+                  : isChatoraAi
+                    ? 'mt-4 -mb-[0.25rem] sm:-mb-[0.5rem] lg:-mb-[0.75rem] xl:-mb-[1rem]'
+                    : 'mt-8';
         const visualAlignmentClass = isUplifta
             ? 'items-start justify-end border-transparent'
             : isVibyra || isAccountantAi || isChatoraAi
@@ -298,11 +294,11 @@ function ProjectVisual({ project }: { project: ProjectItem }) {
                 ? 'left-1/2 top-[46%] h-[76%] w-[84%] -translate-x-1/2 -translate-y-1/2'
                 : isServicePriorityAi
                   ? 'left-1/2 top-[52%] h-[72%] w-[84%] -translate-x-1/2 -translate-y-1/2'
-                : isVibyra
-                  ? 'left-1/2 top-[54%] h-[92%] w-[88%] -translate-x-1/2 -translate-y-1/2'
-                  : isAiAssistant
-                    ? 'left-1/2 top-[54%] h-[88%] w-[80%] -translate-x-1/2 -translate-y-1/2'
-                    : 'left-1/2 top-[52%] h-[84%] w-[78%] -translate-x-1/2 -translate-y-1/2';
+                  : isVibyra
+                    ? 'left-1/2 top-[54%] h-[92%] w-[88%] -translate-x-1/2 -translate-y-1/2'
+                    : isAiAssistant
+                      ? 'left-1/2 top-[54%] h-[88%] w-[80%] -translate-x-1/2 -translate-y-1/2'
+                      : 'left-1/2 top-[52%] h-[84%] w-[78%] -translate-x-1/2 -translate-y-1/2';
 
         return (
             <div
@@ -339,7 +335,11 @@ function ProjectVisual({ project }: { project: ProjectItem }) {
                         src={project.imageUrl}
                         alt={project.title}
                         decoding="async"
-                        loading="lazy"
+                        loading={
+                            isAiAssistant || isServicePriorityAi
+                                ? 'eager'
+                                : 'lazy'
+                        }
                         className={`relative z-10 ${imageSizingClass} ${imageFitClass} ${imagePositionClass} ${imageScaleClass} ${imageHoverClass} ${isAiAssistant ? 'drop-shadow-none' : ''} ${isVibyra ? 'w-[104%] max-w-none sm:w-[110%] lg:w-[116%] xl:w-[120%]' : ''}`}
                     />
                 )}
