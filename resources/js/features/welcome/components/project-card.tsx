@@ -1,9 +1,11 @@
 import { Link } from '@inertiajs/react';
-import { memo, type CSSProperties } from 'react';
+import { memo } from 'react';
+import type { CSSProperties } from 'react';
 
 import { publicAsset } from '@/lib/preview-assets';
 import type { ProjectItem } from '../types';
 import { AmbientSectionGlow } from './ambient-section-glow';
+import { PropertyDigitalTwinSteps } from './property-digital-twin-steps';
 import { UpliftaPhoneStack } from './uplifta-phone-stack';
 import { VibyraDeviceStack } from './vibyra-device-stack';
 
@@ -51,19 +53,19 @@ const PROJECT_NEON_STYLES: Record<string, ProjectNeonStyle> = {
         '--project-neon-reflection': 'rgba(139,92,246,0.26)',
         '--project-neon-haze': 'rgba(139,92,246,0.13)',
     },
-    'Chatora AI': {
-        '--project-neon-primary': 'rgba(168,85,247,0.56)',
-        '--project-neon-secondary': 'rgba(251,146,60,0.3)',
-        '--project-neon-tertiary': 'rgba(236,72,153,0.34)',
-        '--project-neon-reflection': 'rgba(168,85,247,0.24)',
-        '--project-neon-haze': 'rgba(236,72,153,0.12)',
+    RelayClarity: {
+        '--project-neon-primary': 'rgba(34,211,238,0.5)',
+        '--project-neon-secondary': 'rgba(59,130,246,0.34)',
+        '--project-neon-tertiary': 'rgba(20,184,166,0.25)',
+        '--project-neon-reflection': 'rgba(34,211,238,0.22)',
+        '--project-neon-haze': 'rgba(14,165,233,0.12)',
     },
-    'Accountant AI Software': {
-        '--project-neon-primary': 'rgba(168,85,247,0.46)',
-        '--project-neon-secondary': 'rgba(217,70,239,0.28)',
-        '--project-neon-tertiary': 'rgba(244,114,182,0.2)',
-        '--project-neon-reflection': 'rgba(168,85,247,0.2)',
-        '--project-neon-haze': 'rgba(168,85,247,0.11)',
+    'Property Digital Twin': {
+        '--project-neon-primary': 'rgba(251,191,36,0.5)',
+        '--project-neon-secondary': 'rgba(245,158,11,0.3)',
+        '--project-neon-tertiary': 'rgba(214,211,209,0.2)',
+        '--project-neon-reflection': 'rgba(251,191,36,0.22)',
+        '--project-neon-haze': 'rgba(245,158,11,0.11)',
     },
     'Service Priority AI': {
         '--project-neon-primary': 'rgba(34,211,238,0.42)',
@@ -98,7 +100,9 @@ export const ProjectCard = memo(function ProjectCard({
 }: {
     project: ProjectItem;
 }) {
-    const isVisualTop = Number.parseInt(project.index, 10) % 2 === 0;
+    const isVisualTop =
+        Number.parseInt(project.index, 10) % 2 === 0 ||
+        project.title === 'Property Digital Twin';
     const neonStyle = getProjectNeonStyle(project);
 
     if (project.isCta) {
@@ -202,13 +206,17 @@ function ProjectVisual({ project }: { project: ProjectItem }) {
         const isAiAssistant = project.title === 'AI Voice Assistant';
         const isUplifta = project.title === 'Uplifta App';
         const isVibyra = project.title === 'Vibyra App';
-        const isChatoraAi = project.title === 'Chatora AI';
-        const isAccountantAi = project.title === 'Accountant AI Software';
+        const isRelayClarity = project.title === 'RelayClarity';
+        const isPropertyDigitalTwin = project.title === 'Property Digital Twin';
         const isServicePriorityAi = project.title === 'Service Priority AI';
         const isTransparentVisual = project.transparentImage;
         const imagePositionClass = 'object-center';
         const imageFitClass =
-            isTransparentVisual || isAiAssistant || isServicePriorityAi
+            isTransparentVisual ||
+            isAiAssistant ||
+            isPropertyDigitalTwin ||
+            isRelayClarity ||
+            isServicePriorityAi
                 ? 'object-contain'
                 : 'object-cover';
         // Single-screenshot cards stay static. Only true multi-image scenes
@@ -216,8 +224,8 @@ function ProjectVisual({ project }: { project: ProjectItem }) {
         // scales below are for sizing, not animation.
         const imageScaleClass = isVibyra
             ? 'scale-[1.06]'
-            : isChatoraAi
-              ? 'scale-[1.24]'
+            : isRelayClarity
+              ? 'scale-[0.96]'
               : '';
         const imageHoverClass = '';
         const frameHoverClass = '';
@@ -225,7 +233,7 @@ function ProjectVisual({ project }: { project: ProjectItem }) {
             ? 'h-full w-full max-h-full max-w-full'
             : isAiAssistant
               ? 'h-full w-full max-h-full max-w-full'
-              : isAccountantAi
+              : isPropertyDigitalTwin
                 ? 'h-[70%] w-[70%] max-h-[70%] max-w-[70%] sm:h-[74%] sm:w-[74%] sm:max-h-[74%] sm:max-w-[74%] lg:h-[76%] lg:w-[76%] lg:max-h-[76%] lg:max-w-[76%]'
                 : isVibyra
                   ? 'h-full w-full max-h-full max-w-full'
@@ -243,18 +251,22 @@ function ProjectVisual({ project }: { project: ProjectItem }) {
             ? 'border-transparent'
             : isAiAssistant
               ? 'border-fuchsia-100/20'
-              : isServicePriorityAi
+              : isRelayClarity
                 ? 'border-cyan-200/20'
-                : 'border-fuchsia-300/10';
+                : isPropertyDigitalTwin
+                  ? 'border-amber-200/20'
+                  : isServicePriorityAi
+                    ? 'border-cyan-200/20'
+                    : 'border-fuchsia-300/10';
         const visualHeightClass = isAiAssistant
             ? 'h-[16rem] sm:h-[17rem] lg:h-[20rem] xl:h-[21rem]'
             : isUplifta
               ? 'h-[20rem] sm:h-[22rem] lg:h-[26rem] xl:h-[28rem]'
               : isVibyra
                 ? 'h-[16rem] sm:h-[17.5rem] lg:h-[21rem] xl:h-[22rem]'
-                : isAccountantAi
-                  ? 'h-[16rem] sm:h-[17.5rem] lg:h-[21rem] xl:h-[22rem]'
-                  : isChatoraAi
+                : isPropertyDigitalTwin
+                  ? 'h-[14rem] sm:h-[15.5rem] lg:h-[18rem] xl:h-[19rem]'
+                  : isRelayClarity
                     ? 'h-[14rem] sm:h-[15.5rem] lg:h-[18rem] xl:h-[19rem]'
                     : isServicePriorityAi
                       ? 'h-[14rem] sm:h-[15.5rem] lg:h-[18rem] xl:h-[19rem]'
@@ -266,8 +278,8 @@ function ProjectVisual({ project }: { project: ProjectItem }) {
             isAiAssistant ||
             isUplifta ||
             isVibyra ||
-            isChatoraAi ||
-            isAccountantAi ||
+            isRelayClarity ||
+            isPropertyDigitalTwin ||
             isServicePriorityAi
                 ? 'overflow-visible'
                 : 'overflow-hidden';
@@ -275,23 +287,23 @@ function ProjectVisual({ project }: { project: ProjectItem }) {
             ? 'mt-2 -mb-[3.75rem] sm:-mb-[4.5rem] lg:-mb-[6.25rem] xl:-mb-[7rem]'
             : isVibyra
               ? 'mt-4 -mb-[1.25rem] sm:-mb-[1.75rem] lg:-mb-[2.75rem] xl:-mb-[3.25rem]'
-              : isAccountantAi
+              : isPropertyDigitalTwin
                 ? 'mt-4 mb-0'
                 : isServicePriorityAi
                   ? 'mt-5 mb-0'
-                  : isChatoraAi
-                    ? 'mt-4 -mb-[0.25rem] sm:-mb-[0.5rem] lg:-mb-[0.75rem] xl:-mb-[1rem]'
+                  : isRelayClarity
+                    ? 'mt-4 mb-0'
                     : 'mt-8';
         const visualAlignmentClass = isUplifta
             ? 'items-start justify-end border-transparent'
-            : isVibyra || isAccountantAi || isChatoraAi
+            : isVibyra || isPropertyDigitalTwin || isRelayClarity
               ? 'items-center justify-center border-transparent'
               : 'items-center justify-center';
         const glowSizeClass = isUplifta
             ? 'left-1/2 top-[56%] h-[80%] w-[82%] -translate-x-1/2 -translate-y-1/2'
-            : isAccountantAi
+            : isPropertyDigitalTwin
               ? 'left-1/2 top-[52%] h-[76%] w-[78%] -translate-x-1/2 -translate-y-1/2'
-              : isChatoraAi
+              : isRelayClarity
                 ? 'left-1/2 top-[46%] h-[76%] w-[84%] -translate-x-1/2 -translate-y-1/2'
                 : isServicePriorityAi
                   ? 'left-1/2 top-[52%] h-[72%] w-[84%] -translate-x-1/2 -translate-y-1/2'
@@ -329,10 +341,10 @@ function ProjectVisual({ project }: { project: ProjectItem }) {
                     variant={
                         isAiAssistant
                             ? 'assistant'
-                            : isAccountantAi
-                              ? 'accountant'
-                              : isChatoraAi
-                                ? 'chatora'
+                            : isPropertyDigitalTwin
+                              ? 'property'
+                              : isRelayClarity
+                                ? 'relay'
                                 : 'default'
                     }
                 />
@@ -340,6 +352,8 @@ function ProjectVisual({ project }: { project: ProjectItem }) {
                     <UpliftaPhoneStack />
                 ) : isVibyra ? (
                     <VibyraDeviceStack />
+                ) : isPropertyDigitalTwin ? (
+                    <PropertyDigitalTwinSteps />
                 ) : (
                     <img
                         src={project.imageUrl}

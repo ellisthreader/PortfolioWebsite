@@ -16,8 +16,10 @@ const FILES = [
     'Uplifta2.png',
     'Uplifta3.png',
     'VibyraApp.png',
-    'ChatoraAI.png',
-    'AccountantAI.png',
+    'RelayClarity-transparent.png',
+    'PropertyDigitalTwinApp.png',
+    'PropertyDigitalTwinAgent.png',
+    'PropertyDigitalTwinDesktop.png',
     'ChessAI.png',
     'DroneScanAI.png',
     'Till.png',
@@ -32,6 +34,7 @@ let afterTotal = 0;
 
 for (const name of FILES) {
     const pngPath = join(PUBLIC, name);
+
     if (!existsSync(pngPath)) {
         console.log(`SKIP  ${name} (not found)`);
         continue;
@@ -39,7 +42,10 @@ for (const name of FILES) {
 
     // Pristine source: prefer the backup; otherwise back up the current file now.
     const backup = join(BACKUP, name);
-    if (!existsSync(backup)) copyFileSync(pngPath, backup);
+
+    if (!existsSync(backup)) {
+        copyFileSync(pngPath, backup);
+    }
 
     // Restore the PNG in public from the pristine backup (undo earlier in-place resize).
     copyFileSync(backup, pngPath);
@@ -49,7 +55,12 @@ for (const name of FILES) {
     const beforeSize = statSync(pngPath).size;
 
     await sharp(backup)
-        .resize({ fit: 'inside', height: MAX, width: MAX, withoutEnlargement: true })
+        .resize({
+            fit: 'inside',
+            height: MAX,
+            width: MAX,
+            withoutEnlargement: true,
+        })
         .webp({ alphaQuality: 100, effort: 6, quality: 86 })
         .toFile(webpPath);
 
