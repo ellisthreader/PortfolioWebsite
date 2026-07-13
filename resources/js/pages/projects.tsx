@@ -2,6 +2,7 @@ import { Head, Link } from '@inertiajs/react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { memo, useMemo } from 'react';
 
+import { PropertyDigitalTwinSteps } from '@/features/welcome/components/property-digital-twin-steps';
 import { UpliftaPhoneStack } from '@/features/welcome/components/uplifta-phone-stack';
 import { VibyraDeviceStack } from '@/features/welcome/components/vibyra-device-stack';
 import { PROJECT_ITEMS } from '@/features/welcome/data/project-items';
@@ -64,7 +65,7 @@ export default function Projects() {
                                                       project.title ===
                                                           'EPOS Software' ||
                                                       project.title ===
-                                                          'Chatora AI'
+                                                          'RelayClarity'
                                                           ? -2
                                                           : 2,
                                                   scale: 1.025,
@@ -123,15 +124,15 @@ function ProjectCardMedia({ project }: { project: ProjectItem }) {
     const isAiVoiceAssistant = project.title === 'AI Voice Assistant';
     const isUplifta = project.title === 'Uplifta App';
     const isVibyra = project.title === 'Vibyra App';
-    const isChatora = project.title === 'Chatora AI';
-    const isAccountant = project.title === 'Accountant AI Software';
+    const isRelayClarity = project.title === 'RelayClarity';
+    const isPropertyDigitalTwin = project.title === 'Property Digital Twin';
     const isAiResume = project.title === 'AI Resume Builder';
     const isDroneScan = project.title === 'Drone Scan Company';
     const isServicePriorityAi = project.title === 'Service Priority AI';
     const isTallMedia =
         isAiVoiceAssistant ||
         isVibyra ||
-        isAccountant ||
+        isPropertyDigitalTwin ||
         isDroneScan ||
         isServicePriorityAi;
 
@@ -172,15 +173,23 @@ function ProjectCardMedia({ project }: { project: ProjectItem }) {
         );
     }
 
+    if (isPropertyDigitalTwin) {
+        return (
+            <div className="relative h-48 overflow-visible rounded-[1.5rem]">
+                <PropertyDigitalTwinSteps variant="archive" />
+            </div>
+        );
+    }
+
     if (project.imageUrl) {
         const imageClass = isAiVoiceAssistant
             ? 'object-contain p-0 group-hover:scale-[1.01] hover:scale-[1.04]'
             : isVibyra
               ? 'object-contain p-0 group-hover:scale-[1.04] hover:scale-[1.08]'
-              : isChatora
-                ? 'object-contain p-0 group-hover:scale-[1.07] hover:scale-[1.12]'
-                : isAccountant
-                  ? 'h-[72%] w-[72%] object-contain p-0 group-hover:scale-[1.01] hover:scale-[1.02] sm:h-[76%] sm:w-[76%]'
+              : isRelayClarity
+                ? 'object-contain p-0 group-hover:scale-[1.04] hover:scale-[1.08]'
+                : isPropertyDigitalTwin
+                  ? 'object-contain p-0 group-hover:scale-[1.02] hover:scale-[1.05]'
                   : isServicePriorityAi
                     ? 'object-contain p-0 group-hover:scale-[1.01] hover:scale-[1.03]'
                     : isDroneScan

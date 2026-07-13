@@ -38,7 +38,7 @@ This repository powers the public portfolio, project archive, contact flow, auth
 | AI Voice Assistant | Voice AI system | Python, speech-to-text, LLMs, text-to-speech, Pico |
 | Uplifta App | Wellness platform | React Native, TypeScript, UX design, habit tracking |
 | Vibyra App | AI workflow command center | React Native, Expo, Laravel, desktop bridge, AI agents |
-| Chatora AI | Business LLM platform | LLMs, voice AI, dashboards, automation, telephony |
+| RelayClarity | Voice agent deployment platform | React, TypeScript, voice AI, enterprise integrations, evaluation |
 
 ## Tech Stack
 

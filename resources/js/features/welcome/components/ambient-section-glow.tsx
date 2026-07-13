@@ -10,7 +10,7 @@ export function AmbientSectionGlow({
     variant = 'default',
 }: {
     className?: string;
-    variant?: 'default' | 'accountant' | 'assistant' | 'chatora';
+    variant?: 'default' | 'assistant' | 'property' | 'relay';
 }) {
     if (variant === 'assistant') {
         return (
@@ -27,7 +27,7 @@ export function AmbientSectionGlow({
         );
     }
 
-    if (variant === 'accountant') {
+    if (variant === 'property') {
         return (
             <div
                 aria-hidden="true"
@@ -36,14 +36,14 @@ export function AmbientSectionGlow({
                     className,
                 )}
             >
-                <div className="absolute inset-[-4%] rounded-full bg-[radial-gradient(ellipse_at_center,_rgba(168,85,247,0.38)_0%,_rgba(217,70,239,0.26)_34%,_rgba(244,114,182,0.13)_56%,_transparent_76%)] opacity-100" />
-                <div className="absolute inset-[8%] rounded-full bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.2)_0%,_rgba(232,121,249,0.18)_28%,_rgba(124,58,237,0.1)_54%,_transparent_72%)] opacity-95" />
-                <div className="absolute inset-[26%] rounded-full bg-[radial-gradient(circle,_rgba(232,121,249,0.26)_0%,_rgba(244,114,182,0.13)_44%,_transparent_70%)] opacity-85" />
+                <div className="absolute inset-[-4%] rounded-full bg-[radial-gradient(ellipse_at_center,_rgba(251,191,36,0.34)_0%,_rgba(245,158,11,0.22)_34%,_rgba(120,53,15,0.11)_56%,_transparent_76%)] opacity-100" />
+                <div className="absolute inset-[8%] rounded-full bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.18)_0%,_rgba(253,230,138,0.16)_28%,_rgba(180,83,9,0.09)_54%,_transparent_72%)] opacity-95" />
+                <div className="absolute inset-[26%] rounded-full bg-[radial-gradient(circle,_rgba(252,211,77,0.23)_0%,_rgba(217,119,6,0.12)_44%,_transparent_70%)] opacity-85" />
             </div>
         );
     }
 
-    if (variant === 'chatora') {
+    if (variant === 'relay') {
         return (
             <div
                 aria-hidden="true"
@@ -52,9 +52,9 @@ export function AmbientSectionGlow({
                     className,
                 )}
             >
-                <div className="absolute inset-[-3%] rounded-full bg-[radial-gradient(ellipse_at_center,_rgba(168,85,247,0.4)_0%,_rgba(217,70,239,0.24)_34%,_rgba(76,29,149,0.12)_58%,_transparent_76%)] opacity-100" />
-                <div className="absolute inset-[10%] rounded-full bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.22)_0%,_rgba(192,132,252,0.19)_28%,_rgba(217,70,239,0.1)_54%,_transparent_72%)] opacity-95" />
-                <div className="absolute inset-x-[16%] top-[6%] bottom-[18%] rounded-full bg-[radial-gradient(ellipse_at_center,_rgba(236,72,153,0.24)_0%,_rgba(124,58,237,0.13)_48%,_transparent_72%)] opacity-90" />
+                <div className="absolute inset-[-3%] rounded-full bg-[radial-gradient(ellipse_at_center,_rgba(34,211,238,0.34)_0%,_rgba(59,130,246,0.22)_34%,_rgba(15,118,110,0.1)_58%,_transparent_76%)] opacity-100" />
+                <div className="absolute inset-[10%] rounded-full bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.18)_0%,_rgba(125,211,252,0.16)_28%,_rgba(20,184,166,0.09)_54%,_transparent_72%)] opacity-95" />
+                <div className="absolute inset-x-[16%] top-[6%] bottom-[18%] rounded-full bg-[radial-gradient(ellipse_at_center,_rgba(14,165,233,0.21)_0%,_rgba(13,148,136,0.12)_48%,_transparent_72%)] opacity-90" />
             </div>
         );
     }
