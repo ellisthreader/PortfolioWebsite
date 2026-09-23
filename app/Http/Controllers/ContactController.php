@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ContactRequest;
 use App\Mail\ContactMessageMail;
+use App\Support\Portfolio\Seo;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
@@ -14,23 +15,31 @@ class ContactController extends Controller
     public function create(): Response
     {
         return Inertia::render('contact', [
-            'status' => session('status'),
-        ]);
+            'topics' => ContactRequest::TOPICS,
+            'sentTo' => session('sentTo'),
+        ])->withViewData('meta', Seo::page(
+            title: 'Contact',
+            description: 'Get in touch with Ellis Threader about a freelance project or a full-time role.',
+        ));
     }
 
     public function store(ContactRequest $request): RedirectResponse
     {
+        // Bots fill every field; people never see this one.
+        if ($request->filled('website')) {
+            return to_route('contact.create')->with('sentTo', $request->string('email')->toString());
+        }
+
         $validated = $request->validated();
 
-        Mail::to('ellis.threader3001@gmail.com')->send(new ContactMessageMail(
-            title: $validated['title'],
-            email: $validated['email'],
+        Mail::to(config('portfolio.email'))->send(new ContactMessageMail(
+            senderName: $validated['name'],
+            senderEmail: $validated['email'],
+            topic: ContactRequest::TOPICS[$validated['topic']],
             body: $validated['message'],
-            attachments: $request->file('attachments', []),
+            files: $request->file('attachments', []),
         ));
 
-        return redirect()
-            ->route('contact.create')
-            ->with('status', 'Your message has been sent successfully.');
+        return to_route('contact.create')->with('sentTo', $validated['email']);
     }
 }

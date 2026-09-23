@@ -1,0 +1,132 @@
+{
+    "ai-voice-assistant/screen-idle": {
+        "width": 1600,
+        "height": 960,
+        "widths": [480, 960, 1440, 1600]
+    },
+    "ai-voice-assistant/screen-listening": {
+        "width": 1600,
+        "height": 960,
+        "widths": [480, 960, 1440, 1600]
+    },
+    "ai-voice-assistant/screen-speaking": {
+        "width": 1600,
+        "height": 960,
+        "widths": [480, 960, 1440, 1600]
+    },
+    "ai-voice-assistant/screen-thinking": {
+        "width": 1600,
+        "height": 960,
+        "widths": [480, 960, 1440, 1600]
+    },
+    "bear-lane/desktop-1": {
+        "width": 2880,
+        "height": 1800,
+        "widths": [480, 960, 1440, 1920, 2560]
+    },
+    "bear-lane/desktop-2": {
+        "width": 2880,
+        "height": 1800,
+        "widths": [480, 960, 1440, 1920, 2560]
+    },
+    "bear-lane/desktop-3": {
+        "width": 2880,
+        "height": 1800,
+        "widths": [480, 960, 1440, 1920, 2560]
+    },
+    "bear-lane/mobile-1": {
+        "width": 1170,
+        "height": 2532,
+        "widths": [480, 960, 1170]
+    },
+    "bear-lane/mobile-2": {
+        "width": 1170,
+        "height": 2532,
+        "widths": [480, 960, 1170]
+    },
+    "capabilities/ai-systems": {
+        "width": 1024,
+        "height": 1024,
+        "widths": [480, 960, 1024]
+    },
+    "capabilities/apps-devices": {
+        "width": 1024,
+        "height": 1024,
+        "widths": [480, 960, 1024]
+    },
+    "capabilities/web-platforms": {
+        "width": 1024,
+        "height": 1024,
+        "widths": [480, 960, 1024]
+    },
+    "hke-epos/desktop-1": {
+        "width": 2880,
+        "height": 1800,
+        "widths": [480, 960, 1440, 1920, 2560]
+    },
+    "hke-epos/desktop-2": {
+        "width": 2880,
+        "height": 1800,
+        "widths": [480, 960, 1440, 1920, 2560]
+    },
+    "hke-epos/desktop-3": {
+        "width": 2880,
+        "height": 1800,
+        "widths": [480, 960, 1440, 1920, 2560]
+    },
+    "hke-epos/mobile-1": {
+        "width": 1170,
+        "height": 2532,
+        "widths": [480, 960, 1170]
+    },
+    "hke-epos/mobile-2": {
+        "width": 1170,
+        "height": 2532,
+        "widths": [480, 960, 1170]
+    },
+    "relayclarity/console-calls": {
+        "width": 2880,
+        "height": 1800,
+        "widths": [480, 960, 1440, 1920, 2560]
+    },
+    "relayclarity/console-conversations": {
+        "width": 2880,
+        "height": 1800,
+        "widths": [480, 960, 1440, 1920, 2560]
+    },
+    "relayclarity/console-followups": {
+        "width": 2880,
+        "height": 1800,
+        "widths": [480, 960, 1440, 1920, 2560]
+    },
+    "relayclarity/console-integrations": {
+        "width": 2880,
+        "height": 1800,
+        "widths": [480, 960, 1440, 1920, 2560]
+    },
+    "relayclarity/site-home": {
+        "width": 2880,
+        "height": 1800,
+        "widths": [480, 960, 1440, 1920, 2560]
+    },
+    "vibyra/desktop-1": {
+        "width": 2880,
+        "height": 1800,
+        "widths": [480, 960, 1440, 1920, 2560]
+    },
+    "vibyra/desktop-2": {
+        "width": 2880,
+        "height": 1800,
+        "widths": [480, 960, 1440, 1920, 2560]
+    },
+    "vibyra/mobile-1": {
+        "width": 1170,
+        "height": 2532,
+        "widths": [480, 960, 1170]
+    },
+    "vibyra/mobile-2": {
+        "width": 1170,
+        "height": 2532,
+        "widths": [480, 960, 1170]
+    }
+}

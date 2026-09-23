@@ -1,2 +1,0 @@
-export const HERO_DESK_FLIP_TRIGGER_PROGRESS = 0.001;
-export const HERO_DESK_TURN_DAMPING = 7.2;

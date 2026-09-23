@@ -1,187 +1,365 @@
-import { Head, Link, useForm } from '@inertiajs/react';
-import type { FormEvent } from 'react';
-import InputError from '@/components/input-error';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Spinner } from '@/components/ui/spinner';
+import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import type { FormEvent, ReactNode } from 'react';
+import { useId, useRef } from 'react';
+import { Availability } from '@/components/availability';
+import { Button } from '@/components/button';
+import { Container } from '@/components/container';
+import { CopyEmail } from '@/components/copy-email';
+import { PaperclipIcon } from '@/components/icons';
+import { SocialChannels } from '@/components/social-links';
+import { cn } from '@/lib/utils';
 
-export default function ContactPage({ status }: { status?: string }) {
-    const { data, errors, post, processing, reset, setData } = useForm({
-        attachments: [] as File[],
-        email: '',
-        message: '',
-        title: '',
-    });
+type ContactProps = {
+    topics: Record<string, string>;
+    sentTo?: string | null;
+};
 
-    const submit = (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+const fieldClasses =
+    'block w-full rounded-[10px] border border-rule-strong bg-paper px-3.5 text-[1rem] text-ink transition-colors placeholder:text-muted/70 hover:border-muted focus:border-accent focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent aria-[invalid=true]:border-danger';
 
-        post('/contact', {
-            forceFormData: true,
-            preserveScroll: true,
-            onSuccess: () => reset(),
-        });
-    };
+export default function Contact({ topics, sentTo }: ContactProps) {
+    const { site } = usePage().props;
 
     return (
         <>
             <Head title="Contact" />
 
-            <div className="portfolio-flow-root h-screen overflow-hidden">
-                <div className="portfolio-flow-background" aria-hidden />
+            <Container className="pt-14 pb-28 sm:pt-20 sm:pb-40">
+                <h1 className="type-title">Contact</h1>
+                <p className="type-lead mt-5 max-w-[38ch] text-muted">
+                    Tell me what you’re building, or about the role.
+                </p>
 
-                <div className="relative mx-auto flex h-screen max-w-4xl flex-col px-6 py-6 sm:px-10 sm:py-8 lg:px-16 lg:py-10">
-                    <div className="flex items-center justify-between">
-                        <Link
-                            className="text-[0.74rem] font-medium tracking-[0.28em] text-white/56 uppercase transition hover:text-white"
-                            href="/"
-                        >
-                            Back Home
-                        </Link>
-                        <div className="flex items-center gap-3 text-sm text-emerald-300">
-                            <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_14px_rgba(74,222,128,0.9)]" />
-                            <span className="font-medium text-emerald-200">
-                                Available for work
-                            </span>
-                        </div>
-                    </div>
+                <div className="mt-14 grid gap-14 lg:grid-cols-12 lg:gap-8">
+                    <aside className="lg:col-span-4">
+                        <div className="space-y-10">
+                            <Availability className="font-[500]" />
 
-                    <div className="mx-auto mt-10 w-full max-w-3xl text-center lg:mt-12">
-                        <h1 className="bg-[linear-gradient(180deg,_rgba(255,255,255,1)_0%,_rgba(250,232,255,0.96)_34%,_rgba(216,180,254,0.84)_72%,_rgba(217,70,239,0.68)_100%)] bg-clip-text text-4xl leading-[1.06] font-semibold tracking-[-0.08em] text-transparent sm:text-5xl lg:text-[4.2rem]">
-                            Let&apos;s Start The Conversation
-                        </h1>
-                    </div>
+                            <div>
+                                <h2 className="type-meta">Email</h2>
+                                <CopyEmail className="mt-2" />
+                            </div>
 
-                    <div className="mx-auto mt-8 w-full max-w-3xl rounded-[2rem] border border-white/10 bg-black/55 p-5 shadow-[0_24px_80px_rgba(0,0,0,0.38)] sm:p-6 lg:mt-10 lg:p-8">
-                        <form className="space-y-5" onSubmit={submit}>
-                            {status && (
-                                <div className="rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-100">
-                                    {status}
+                            <div>
+                                <h2 className="type-meta">Replies</h2>
+                                <p className="mt-2">
+                                    Within one working day. I’m based in{' '}
+                                    {site.location}.
+                                </p>
+                            </div>
+
+                            {(site.links.github || site.links.linkedin) && (
+                                <div>
+                                    <h2 className="type-meta">Elsewhere</h2>
+                                    <div className="channels-panel mt-3">
+                                        <SocialChannels exclude={['Gmail']} />
+                                    </div>
                                 </div>
                             )}
+                        </div>
+                    </aside>
 
-                            <div className="grid gap-6 sm:grid-cols-2">
-                                <div className="grid gap-2">
-                                    <Label
-                                        className="text-white/72"
-                                        htmlFor="title"
-                                    >
-                                        Title
-                                    </Label>
-                                    <Input
-                                        id="title"
-                                        name="title"
-                                        value={data.title}
-                                        onChange={(event) =>
-                                            setData('title', event.target.value)
-                                        }
-                                        placeholder="What would you like to discuss?"
-                                        className="h-11 rounded-2xl border-white/10 bg-black/20 px-4 text-white placeholder:text-white/30"
-                                    />
-                                    <InputError
-                                        className="mt-1"
-                                        message={errors.title}
-                                    />
-                                </div>
-
-                                <div className="grid gap-2">
-                                    <Label
-                                        className="text-white/72"
-                                        htmlFor="email"
-                                    >
-                                        Your email
-                                    </Label>
-                                    <Input
-                                        id="email"
-                                        name="email"
-                                        type="email"
-                                        value={data.email}
-                                        onChange={(event) =>
-                                            setData('email', event.target.value)
-                                        }
-                                        placeholder="name@example.com"
-                                        className="h-11 rounded-2xl border-white/10 bg-black/20 px-4 text-white placeholder:text-white/30"
-                                    />
-                                    <InputError
-                                        className="mt-1"
-                                        message={errors.email}
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="grid gap-2">
-                                <Label
-                                    className="text-white/72"
-                                    htmlFor="message"
-                                >
-                                    Message
-                                </Label>
-                                <textarea
-                                    id="message"
-                                    name="message"
-                                    value={data.message}
-                                    onChange={(event) =>
-                                        setData('message', event.target.value)
-                                    }
-                                    placeholder="Tell me a little about the project, role, or idea."
-                                    className="min-h-32 w-full rounded-[1.5rem] border border-white/10 bg-black/20 px-4 py-3 text-base text-white shadow-xs transition outline-none placeholder:text-white/30 focus-visible:border-fuchsia-300/40 focus-visible:ring-4 focus-visible:ring-fuchsia-300/10 md:text-sm"
-                                />
-                                <InputError
-                                    className="mt-1"
-                                    message={errors.message}
-                                />
-                            </div>
-
-                            <div className="grid gap-2">
-                                <Label
-                                    className="text-white/72"
-                                    htmlFor="attachments"
-                                >
-                                    Attach photos
-                                </Label>
-                                <Input
-                                    id="attachments"
-                                    name="attachments[]"
-                                    type="file"
-                                    accept="image/*"
-                                    multiple
-                                    onChange={(event) =>
-                                        setData(
-                                            'attachments',
-                                            Array.from(
-                                                event.target.files ?? [],
-                                            ),
-                                        )
-                                    }
-                                    className="h-auto rounded-2xl border-white/10 bg-black/20 px-4 py-2.5 text-white file:mr-4 file:rounded-full file:border-0 file:bg-fuchsia-300/12 file:px-4 file:py-2 file:text-sm file:text-white"
-                                />
-                                <p className="text-xs text-white/42">
-                                    Up to 5 images, 5MB each.
-                                </p>
-                                <InputError
-                                    className="mt-1"
-                                    message={errors.attachments}
-                                />
-                                <InputError
-                                    className="mt-1"
-                                    message={errors['attachments.0']}
-                                />
-                            </div>
-
-                            <div className="flex justify-end">
-                                <Button
-                                    type="submit"
-                                    className="h-11 rounded-full border border-fuchsia-300/30 bg-fuchsia-300/10 px-6 text-white hover:bg-fuchsia-300/16"
-                                >
-                                    {processing && <Spinner />}
-                                    Send Message
-                                </Button>
-                            </div>
-                        </form>
+                    <div className="lg:col-span-7 lg:col-start-6">
+                        {sentTo ? (
+                            <Sent email={sentTo} />
+                        ) : (
+                            <ContactForm topics={topics} />
+                        )}
                     </div>
                 </div>
-            </div>
+            </Container>
         </>
+    );
+}
+
+function Sent({ email }: { email: string }) {
+    return (
+        <div
+            role="status"
+            className="rounded-[18px] bg-paper px-6 py-12 shadow-[var(--shadow-plate)] sm:px-10 sm:py-14"
+        >
+            <span className="inline-flex size-10 items-center justify-center rounded-full bg-accent-soft text-accent">
+                <svg
+                    viewBox="0 0 20 20"
+                    width="20"
+                    height="20"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden
+                >
+                    <path d="m4.5 10.5 3.5 3.5 7.5-8" />
+                </svg>
+            </span>
+            <h2 className="type-heading mt-6">Message sent</h2>
+            <p className="type-lead mt-3 max-w-[40ch] text-muted">
+                I’ll reply to {email} within one working day.
+            </p>
+            <Link href="/work" className="link mt-8 inline-block font-[550]">
+                Look at my work in the meantime
+            </Link>
+        </div>
+    );
+}
+
+function ContactForm({ topics }: { topics: Record<string, string> }) {
+    const fileInput = useRef<HTMLInputElement>(null);
+    const { data, setData, post, processing, errors, progress } = useForm({
+        name: '',
+        email: '',
+        topic: '',
+        message: '',
+        attachments: [] as File[],
+        website: '',
+    });
+
+    const submit = (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        post('/contact', { forceFormData: true, preserveScroll: true });
+    };
+
+    const attachmentError = Object.entries(errors).find(([key]) =>
+        key.startsWith('attachments'),
+    )?.[1];
+
+    return (
+        <form onSubmit={submit} noValidate className="grid gap-6">
+            <div className="grid gap-6 sm:grid-cols-2">
+                <Field label="Name" error={errors.name}>
+                    {(props) => (
+                        <input
+                            {...props}
+                            type="text"
+                            autoComplete="name"
+                            value={data.name}
+                            onChange={(event) =>
+                                setData('name', event.target.value)
+                            }
+                            className={cn(fieldClasses, 'h-12')}
+                        />
+                    )}
+                </Field>
+                <Field label="Email" error={errors.email}>
+                    {(props) => (
+                        <input
+                            {...props}
+                            type="email"
+                            autoComplete="email"
+                            inputMode="email"
+                            value={data.email}
+                            onChange={(event) =>
+                                setData('email', event.target.value)
+                            }
+                            className={cn(fieldClasses, 'h-12')}
+                        />
+                    )}
+                </Field>
+            </div>
+
+            <Field label="What’s it about?" error={errors.topic}>
+                {(props) => (
+                    <div className="relative">
+                        <select
+                            {...props}
+                            value={data.topic}
+                            onChange={(event) =>
+                                setData('topic', event.target.value)
+                            }
+                            className={cn(
+                                fieldClasses,
+                                'h-12 appearance-none pr-10',
+                                !data.topic && 'text-muted',
+                            )}
+                        >
+                            <option value="" disabled>
+                                Choose one
+                            </option>
+                            {Object.entries(topics).map(([value, label]) => (
+                                <option key={value} value={value}>
+                                    {label}
+                                </option>
+                            ))}
+                        </select>
+                        <svg
+                            viewBox="0 0 20 20"
+                            width="16"
+                            height="16"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.6"
+                            aria-hidden
+                            className="pointer-events-none absolute top-1/2 right-3.5 -translate-y-1/2 text-muted"
+                        >
+                            <path
+                                d="m6 8 4 4 4-4"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                        </svg>
+                    </div>
+                )}
+            </Field>
+
+            <Field
+                label="Message"
+                hint="What you need, rough timings, and anything I should read first."
+                error={errors.message}
+            >
+                {(props) => (
+                    <textarea
+                        {...props}
+                        rows={7}
+                        value={data.message}
+                        onChange={(event) =>
+                            setData('message', event.target.value)
+                        }
+                        className={cn(
+                            fieldClasses,
+                            'min-h-44 resize-y py-3 leading-relaxed',
+                        )}
+                    />
+                )}
+            </Field>
+
+            <div>
+                <input
+                    ref={fileInput}
+                    id="attachments"
+                    type="file"
+                    multiple
+                    accept="image/jpeg,image/png,image/webp,image/gif,application/pdf"
+                    className="sr-only"
+                    aria-describedby={
+                        attachmentError
+                            ? 'attachments-error'
+                            : 'attachments-hint'
+                    }
+                    onChange={(event) =>
+                        setData(
+                            'attachments',
+                            Array.from(event.target.files ?? []),
+                        )
+                    }
+                />
+                <label
+                    htmlFor="attachments"
+                    className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-dashed border-rule-strong px-3.5 text-[0.9375rem] font-[500] text-ink transition-colors hover:border-ink [input:focus-visible+&]:outline-2 [input:focus-visible+&]:outline-offset-2 [input:focus-visible+&]:outline-accent"
+                >
+                    <PaperclipIcon />
+                    {data.attachments.length > 0
+                        ? `${data.attachments.length} file${data.attachments.length > 1 ? 's' : ''} attached`
+                        : 'Attach files'}
+                </label>
+                {data.attachments.length > 0 && (
+                    <button
+                        type="button"
+                        className="link type-meta ml-4"
+                        onClick={() => {
+                            setData('attachments', []);
+
+                            if (fileInput.current) {
+                                fileInput.current.value = '';
+                            }
+                        }}
+                    >
+                        Remove
+                    </button>
+                )}
+                <p id="attachments-hint" className="type-meta mt-2">
+                    Optional. Up to 5 images or PDFs, 5 MB each.
+                </p>
+                {attachmentError && (
+                    <p
+                        id="attachments-error"
+                        className="mt-1.5 text-[0.875rem] text-danger"
+                    >
+                        {attachmentError}
+                    </p>
+                )}
+            </div>
+
+            {/* Honeypot: hidden from people and assistive tech. */}
+            <div
+                aria-hidden
+                className="absolute -left-[9999px] h-px w-px overflow-hidden"
+            >
+                <label>
+                    Website
+                    <input
+                        type="text"
+                        tabIndex={-1}
+                        autoComplete="off"
+                        value={data.website}
+                        onChange={(event) =>
+                            setData('website', event.target.value)
+                        }
+                    />
+                </label>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-4 pt-2">
+                <Button
+                    type="submit"
+                    disabled={processing}
+                    className="min-w-40"
+                >
+                    {processing ? 'Sending…' : 'Send message'}
+                </Button>
+                {progress && (
+                    <span className="type-meta tabular-nums">
+                        Uploading {progress.percentage}%
+                    </span>
+                )}
+            </div>
+        </form>
+    );
+}
+
+type FieldProps = {
+    label: string;
+    hint?: string;
+    error?: string;
+    children: (props: {
+        id: string;
+        'aria-invalid': boolean;
+        'aria-describedby'?: string;
+    }) => ReactNode;
+};
+
+function Field({ label, hint, error, children }: FieldProps) {
+    const id = useId();
+    const describedBy = [hint && `${id}-hint`, error && `${id}-error`]
+        .filter(Boolean)
+        .join(' ');
+
+    return (
+        <div>
+            <label
+                htmlFor={id}
+                className="mb-2 block text-[0.9375rem] font-[550]"
+            >
+                {label}
+            </label>
+            {hint && (
+                <p id={`${id}-hint`} className="type-meta -mt-1 mb-2">
+                    {hint}
+                </p>
+            )}
+            {children({
+                id,
+                'aria-invalid': Boolean(error),
+                'aria-describedby': describedBy || undefined,
+            })}
+            {error && (
+                <p
+                    id={`${id}-error`}
+                    className="mt-1.5 text-[0.875rem] text-danger"
+                >
+                    {error}
+                </p>
+            )}
+        </div>
     );
 }

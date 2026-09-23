@@ -1,0 +1,724 @@
+[
+    {
+        "slug": "hke-epos",
+        "title": "Hong Kong Express EPOS",
+        "summary": "Ordering website, iPhone app, till, kitchen display and delivery dispatch for a Chinese takeaway, all run from one backend.",
+        "type": "client",
+        "category": "Restaurant EPOS",
+        "year": "2026",
+        "role": "Full-stack engineer",
+        "client": "Hong Kong Express, Broomfield, Chelmsford",
+        "stack": [
+            "Rust",
+            "Laravel",
+            "React",
+            "TypeScript",
+            "React Native",
+            "Tauri"
+        ],
+        "links": {
+            "live": "https://web-production-40aa8.up.railway.app",
+            "liveLabel": "Visit the ordering site"
+        },
+        "caseStudy": {
+            "brief": [
+                "Hong Kong Express is a Chinese takeaway in Broomfield, Chelmsford. It needed one system to take orders from a website, a phone app and the counter, get them to the kitchen and out to drivers, and give the manager a view of the whole shop.",
+                "I built it in four parts: a customer ordering website, an iPhone app with a separate mode for staff and drivers, the in-shop software (till, kitchen display, dispatch map and manager dashboard), and a single backend that serves all of them."
+            ],
+            "built": [
+                {
+                    "title": "Counter till",
+                    "body": "Staff take counter and phone orders on the till, charge cards through a Stripe Terminal reader and print receipts on the shop’s Epson printers. Dish names print in English and Chinese: I render the Chinese text as raster images because the printers can’t print Unicode."
+                },
+                {
+                    "title": "Kitchen display",
+                    "body": "New orders appear as tickets on the kitchen screen, split into Live, Ready, Later and Done, and can be filtered by waiting or cooking and by collection or delivery. Cooks can sort oldest first or push late and priority tickets to the top, and the screen chimes when a new order arrives."
+                },
+                {
+                    "title": "Delivery dispatch",
+                    "body": "Drivers use the staff mode in the mobile app to see their jobs, get directions and clock in and out, sharing their location while on shift. The manager sees every driver on a live map and assigns orders to them from there."
+                },
+                {
+                    "title": "Ordering website and iPhone app",
+                    "body": "Customers browse the live menu with allergen filters, pay with Stripe or Apple Pay, collect loyalty rewards and track their order. On iPhone, order progress also shows as a Live Activity on the lock screen."
+                },
+                {
+                    "title": "AI phone assistant",
+                    "body": "I built a voice assistant on the OpenAI Realtime API that answers calls about the menu, prices, opening hours, delivery postcodes and collection times, pulling each answer from live backend data through tool calls. It can’t take payment or change orders, so it points callers to the website or the staff, and the till shows who is ringing by matching the number against past orders. The same assistant is available by voice on the website’s support page."
+                }
+            ],
+            "architecture": [
+                "One Rust backend (Axum and SQLx) serves the website, the mobile app and the in-shop software, and supervises background workers for orders, payments, notifications, delivery and loyalty.",
+                "Laravel handles migrations, seeding and part of the test suite. MySQL is the hosted database; the in-shop software can run against a local SQLite database.",
+                "The staff desktop app is a Tauri shell that starts the backend as a sidecar and only allows staff routes. An Electron build is kept as a fallback.",
+                "Calls reach the public site through an OpenAI Realtime webhook. The till in the shop pulls ringing calls from the live site and looks the caller up in its own customer records.",
+                "CI runs Rust formatting, Clippy and tests, PHP tests on SQLite and MySQL, dependency audits, a secret scan, and the mobile and Tauri checks on every push."
+            ],
+            "outcome": ["The customer ordering website is live on Railway."]
+        },
+        "toConfirm": [
+            "No custom domain found. hongkongexpress.co.uk belongs to an unrelated Isle of Wight restaurant, and orders.hke.co.uk only appears in test fixtures, so the Railway URL is used.",
+            "The live site responds as PHP/Laravel (x-powered-by: PHP/8.3, and /health/ready isn’t served), but the repo’s railway.json starts the Rust backend. The live deployment is probably an older build than the code described here.",
+            "The repo is private under the LunaTMT GitHub account and has commits from a second author ('taylor'). Confirm the role wording.",
+            "Whether the AI phone line is switched on for real calls at the restaurant.",
+            "Whether the iOS app is on the App Store. The repo has a 1.0.0 candidate prepared for App Review in September 2026; not claimed here.",
+            "Whether the Stripe card reader and Epson printers are in daily use in the shop, and whether you still provide ongoing setup and support (the old description said so).",
+            "Deliveroo integration code exists with a simulator, but your plan marks it as test-only, so it’s left out."
+        ],
+        "featured": 1
+    },
+    {
+        "slug": "relayclarity",
+        "title": "RelayClarity",
+        "summary": "Web platform for setting up, testing and launching AI voice agents for customer support, with CRM, helpdesk and phone integrations.",
+        "type": "product",
+        "category": "Voice agent platform",
+        "year": "2026",
+        "role": "Solo engineer and designer",
+        "stack": [
+            "React",
+            "TypeScript",
+            "Express",
+            "SQLite",
+            "OpenAI API",
+            "ElevenLabs"
+        ],
+        "links": {
+            "live": "https://relayclarity.com",
+            "repo": "https://github.com/ellisthreader/test-zoom-project"
+        },
+        "caseStudy": {
+            "brief": [
+                "Companies trialling AI phone agents often get stuck between a working pilot and a real launch. The agent has to be connected to their CRM, helpdesk and phone system, tested, and signed off. RelayClarity is a product for that step.",
+                "I designed and built it as a working product with its own backend, not only a landing page."
+            ],
+            "built": [
+                {
+                    "title": "Support agent with real lookups",
+                    "body": "The agent looks the customer up in the CRM, searches the knowledge base and opens a helpdesk ticket when it can’t resolve something. Each turn returns a reply along with the detected intent, a confidence score and whether to escalate to a person."
+                },
+                {
+                    "title": "Voice and phone calls",
+                    "body": "Browser voice sessions use the OpenAI Realtime API, with short-lived keys issued by the server. Demo outbound calls go through Twilio, with the agent’s speech generated by ElevenLabs and Twilio’s own voice as a fallback."
+                },
+                {
+                    "title": "Integrations",
+                    "body": "A workspace can connect and test CRM, helpdesk and knowledge-base providers from an integrations catalogue, and a Zoom Contact Center webhook receives call events."
+                },
+                {
+                    "title": "Accounts and billing",
+                    "body": "Email and Google sign-in, onboarding, saved projects, and Stripe Checkout for monthly or annual plans."
+                }
+            ],
+            "architecture": [
+                "React 19 and Vite front end; TypeScript Express 5 API; SQLite through better-sqlite3.",
+                "An orchestrator combines CRM, knowledge-base and helpdesk adapters with structured JSON responses from OpenAI. Each adapter can run against mock data or a live provider.",
+                "OpenAI Realtime handles browser voice, ElevenLabs generates speech, and Twilio places phone calls.",
+                "The launch video is rendered from code with Remotion."
+            ],
+            "outcome": ["Live at relayclarity.com."]
+        },
+        "toConfirm": [
+            "The public repo is named 'test-zoom-project' and has about 80 dev log files committed at the root. Consider renaming and cleaning it before linking.",
+            "The old copy listed 'scripted and adversarial evaluation gates' and 'handoff reporting'. These only appear in the front end, not as backend features, so they’re left out.",
+            "Your notes say production sign-in, payments and integrations weren’t verified. Confirm what works on relayclarity.com today.",
+            "Your notes record a Lighthouse mobile score going from 40 to 79 but mark it 'rerun before using externally', so it’s not included.",
+            "GitHub was last updated on 9 July 2026; newer code may be on another machine."
+        ],
+        "featured": 2
+    },
+    {
+        "slug": "bear-lane",
+        "title": "Bear Lane",
+        "summary": "Online shop for custom printed clothing, with a design tool where customers place their own text, clipart and images on a garment.",
+        "type": "client",
+        "category": "E-commerce",
+        "year": "2025–2026",
+        "role": "Solo full-stack engineer",
+        "client": "Bear Lane",
+        "stack": [
+            "Laravel",
+            "React",
+            "TypeScript",
+            "Inertia.js",
+            "Tailwind CSS",
+            "Stripe"
+        ],
+        "links": {
+            "live": "https://bear-lane.com",
+            "repo": "https://github.com/ellisthreader/Bear-Lane-Project"
+        },
+        "caseStudy": {
+            "brief": [
+                "Bear Lane sells printed clothing. The owner wanted customers to design their own garments online and pay, with each order landing in an admin panel that has everything needed to print and ship it. Products, prices and the homepage also had to be editable without touching code.",
+                "I built the shop, the design tool, checkout and shipping, customer accounts and the admin panel."
+            ],
+            "built": [
+                {
+                    "title": "Design tool",
+                    "body": "Customers pick a garment and colour, then add text, clipart and their own uploaded images to the front, back or either sleeve. Each element can be moved, resized and cropped inside a marked print area, and designs can be saved to the customer’s account to finish later."
+                },
+                {
+                    "title": "Checkout and shipping",
+                    "body": "Checkout takes card and wallet payments through Stripe, as well as PayPal, and applies discount codes. Shipping rates come from Shippo, using a parcel size estimated from what’s in the basket, and the admin can buy the postage label for an order without leaving the panel."
+                },
+                {
+                    "title": "Admin panel",
+                    "body": "The owner manages products, categories, prices, delivery options, discount codes, tax settings, the size guide and the homepage layout. The same panel handles orders and returns, and shows sales, refunds, best-selling products and reviews for a chosen date range."
+                },
+                {
+                    "title": "Accounts, chat and moderation",
+                    "body": "Customers sign in with email or with Google, Apple or Facebook, and keep addresses, saved designs, a wishlist and order history. Live chat with the shop runs over Pusher, and chat messages and any text added to a design are checked with OpenAI’s moderation API before they’re accepted."
+                }
+            ],
+            "architecture": [
+                "Laravel 12 serves a React and TypeScript front end through Inertia.js.",
+                "The design tool is a React canvas; the finished design is exported as an image with html2canvas and stored with the order.",
+                "Stripe and PayPal take payments, Shippo provides rates and labels, and Pusher with Laravel Echo carries live chat.",
+                "Deployed on Railway from a Dockerfile. Shell scripts back up and restore the live database and uploaded files, and a pre-push check guards against losing them."
+            ],
+            "outcome": ["Live at bear-lane.com."]
+        },
+        "toConfirm": [
+            "Embroidery was removed in September 2026 (commit 'print-only customisation'). The old description and the GitHub repo description still say embroidery; this content says printed only.",
+            "The live site’s page title is 'Laravel' (the framework default). Worth fixing for search results and link previews.",
+            "The GitHub README is out of date (it lists HTML, CSS and JavaScript, plus 'Optional: Node.js / Express if used'). Tidy it before linking the repo.",
+            "Production database engine not confirmed (the Dockerfile installs pdo_mysql, .env.example uses SQLite), so it’s left out of the stack.",
+            "Whether the shop is taking real orders. Live Stripe keys were added in March 2026, but no order volume is claimed.",
+            "The old description called it 'luxury' and mentioned 'detailed analytics'. Both are toned down to what’s in the code.",
+            "Confirm Bear Lane is happy to be named as a client."
+        ],
+        "featured": 3
+    },
+    {
+        "slug": "vibyra",
+        "title": "Vibyra",
+        "summary": "Desktop workspace and iPhone app for running AI coding agents like Claude Code and Codex on your own computer, even from your phone.",
+        "type": "product",
+        "category": "Developer tools",
+        "year": "2026",
+        "role": "Solo engineer and designer",
+        "stack": [
+            "Rust",
+            "Tauri",
+            "React",
+            "TypeScript",
+            "React Native",
+            "Laravel"
+        ],
+        "links": {
+            "live": "https://vibyra-production.up.railway.app",
+            "repo": "https://github.com/ellisthreader/Vibyra",
+            "liveLabel": "Visit the Vibyra site"
+        },
+        "caseStudy": {
+            "brief": [
+                "Coding agents like Claude Code and Codex run in a terminal on your own machine, which ties you to your desk. Vibyra puts several of them in one desktop workspace and lets you check on or continue that work from a phone.",
+                "It has three parts: Vibyra Desktop, a terminal workspace for running agents side by side; Vibyra Host, a Rust service that pairs a phone with a computer; and an iPhone app that connects to it."
+            ],
+            "built": [
+                {
+                    "title": "Terminal grid",
+                    "body": "Vibyra Desktop runs Claude Code, Codex, Gemini or any other command-line agent side by side in a grid of real terminals, with a file browser, SSH sessions and start, stop and restart for each terminal."
+                },
+                {
+                    "title": "Many terminals without lag",
+                    "body": "I gave each terminal its own reader thread in Rust and one shared flusher thread that batches output for all of them. A keystroke echoes straight away while heavy output is grouped into 16 ms batches; hidden terminals update every 250 ms, and hibernated ones buffer into a 4 MB scrollback that replays when you come back."
+                },
+                {
+                    "title": "Phone pairing",
+                    "body": "The Host pairs a phone through a one-time invitation or local network discovery, and nothing is trusted until you approve the device’s key on the computer. Sessions open read-only; 'Take control' asks for an exclusive input lease, so only one device types into a terminal at a time."
+                },
+                {
+                    "title": "Encrypted relay",
+                    "body": "When the phone isn’t on the same network, the computer connects out to a relay and the phone joins through it. Every frame is encrypted end to end with the Noise protocol, so the relay forwards traffic it can’t read and only reports which computers are online."
+                },
+                {
+                    "title": "Previews, memory and routines",
+                    "body": "Desktop works out how a project runs, starts its dev server and shows it in a device frame. Agent 'teammates' keep a brief, approved memory notes and assigned skills that carry into new chats, and scheduled routines run while the app is open."
+                }
+            ],
+            "architecture": [
+                "Vibyra Desktop: a Tauri 2 shell with a React 19 and xterm.js interface. The native logic (terminal sessions, agent detection, file watching, previews) lives in a Rust crate with no webview dependency.",
+                "Vibyra Host: a Rust workspace (transport, server and engine crates) that runs terminals and agent sessions on the computer. The transport is also compiled to WebAssembly for the phone app.",
+                "Relay: a small Node.js WebSocket service that matches phones to the computers they name and forwards Noise-encrypted frames without reading them.",
+                "Backend: a Laravel app for the website, accounts and the API that issues relay access.",
+                "iPhone app: Expo and React Native, using xterm.js for terminal output and keeping device keys in SecureStore."
+            ],
+            "outcome": [
+                "Vibyra Desktop 0.6.3 is published on GitHub Releases for Windows (installer) and Linux (AppImage and .deb), with signed in-app updates.",
+                "The website and downloads page are live on Railway."
+            ]
+        },
+        "toConfirm": [
+            "The live site presents Vibyra as a desktop workspace with an 'upcoming phone companion', while the repo’s main branch now centres on the iPhone app. The summary covers both; confirm which to lead with.",
+            "The iPhone app runs in Expo Go and development builds; the README says App Store delivery is still open, so it isn’t described as released.",
+            "macOS isn’t a published desktop target (per the 0.6.3 release notes).",
+            "The old description mentioned reviewing code changes and applying or discarding agent work. I couldn’t find that on main, so it’s left out.",
+            "Six local worktrees (Vibyra-web, -phone, -launch, -attachments, -terminal-fullscreen) are on unmerged branches. This content is based on main and the latest release."
+        ],
+        "featured": 4
+    },
+    {
+        "slug": "ai-voice-assistant",
+        "title": "AI Voice Assistant",
+        "summary": "Raspberry Pi desk assistant written in Rust: say the wake word, ask something, and it answers out loud, checks the weather or sets timers.",
+        "type": "ai-system",
+        "category": "Voice assistant",
+        "year": "2026",
+        "role": "Solo engineer",
+        "stack": [
+            "Rust",
+            "Raspberry Pi",
+            "OpenAI API",
+            "rustpotter",
+            "egui",
+            "Tokio"
+        ],
+        "links": {
+            "repo": "https://github.com/ellisthreader/LLM-Assistant"
+        },
+        "caseStudy": {
+            "brief": [
+                "A voice assistant that sits on a desk: a Raspberry Pi with a touchscreen, a microphone and speakers. I wanted something that wakes on its own name, starts answering quickly, does a few useful things, and says plainly when a request is beyond it.",
+                "I built the first version in Python, then rewrote it in Rust in August 2026."
+            ],
+            "built": [
+                {
+                    "title": "Offline wake word",
+                    "body": "Wake-word detection runs on the Pi with rustpotter, so no audio leaves the device until you say the phrase. A train-wake command records six samples of your own voice to build the model, and tapping the on-screen orb also wakes it."
+                },
+                {
+                    "title": "Listening",
+                    "body": "After a chime it records with an adaptive energy gate that stops after a stretch of silence. It keeps listening for a few seconds after each answer so you can carry on talking, and tapping the screen while it speaks cuts it off."
+                },
+                {
+                    "title": "Streaming replies",
+                    "body": "Speech is transcribed with gpt-4o-mini-transcribe and answered by gpt-4o-mini. I split the reply into sentences as it streams in and send each one to text-to-speech straight away, so it starts talking before the full answer has arrived."
+                },
+                {
+                    "title": "Tools",
+                    "body": "The model can call tools for weather (Open-Meteo), timers that chime and count down on screen, volume control and the local time and date. For things it can’t do, such as music or smart-home control, it says so."
+                },
+                {
+                    "title": "Touchscreen interface",
+                    "body": "A fullscreen egui app shows an animated orb that reacts to your voice, a clock, running timers and a live transcript. A systemd user service starts it when the Pi boots."
+                }
+            ],
+            "architecture": [
+                "Microphone audio comes in through cpal and feeds the wake-word detector; after a wake, a voice-activity gate cuts out the spoken request.",
+                "The request goes to OpenAI speech-to-text, then to a chat model that can call local tools, with a trimmed conversation history kept between turns.",
+                "A sentence splitter feeds streaming text-to-speech, and rodio plays the audio.",
+                "Tokio runs the network calls, and the egui interface reads shared state over channels."
+            ]
+        },
+        "toConfirm": [
+            "The old copy said it responds in about three seconds. Nothing in the repo measures this, so it’s left out; add it back if you’ve timed it.",
+            "The old copy mentioned 'Pico'. The current build targets a Raspberry Pi 4 or 5 and uses rustpotter for the wake word, not a Pico board or Picovoice. Confirm the hardware.",
+            "The GitHub repo description mentions reminders, but the code has timers, not reminders. Consider updating the repo description.",
+            "Repo history is a single commit ('Replace Python assistant with Rust rewrite', 15 August 2026). The year comes from that and the repo creation date (March 2026)."
+        ],
+        "featured": 5
+    },
+    {
+        "slug": "vehicle-service-booking",
+        "title": "Vehicle Service Booking API",
+        "summary": "Booking API for a vehicle service centre that enforces opening hours, VIN checks and no double bookings, built as a take-home exercise.",
+        "type": "other",
+        "category": "Backend API",
+        "year": "2026",
+        "role": "Solo engineer",
+        "stack": [
+            "C#",
+            "ASP.NET Core",
+            "Entity Framework Core",
+            "SQLite",
+            "NUnit",
+            "Moq"
+        ],
+        "links": {
+            "repo": "https://github.com/ellisthreader/VehicleServiceBooking"
+        },
+        "caseStudy": {
+            "brief": [
+                "This was a take-home technical exercise. I was given a .NET solution with empty API, application, data and test projects and a written brief, and built the booking system across those layers.",
+                "The API lists service types and lets a customer book, move or cancel an appointment. It enforces the brief’s rules: weekdays only, on the hour, between 08:00 and 17:00, a 17-character VIN, and no two bookings for the same service in the same slot."
+            ],
+            "built": [
+                {
+                    "title": "Booking rules",
+                    "body": "I put every rule in one validation method in the application service, shared by create and update, so the endpoints only turn results into HTTP responses. Updates skip the availability check when the slot hasn’t changed, so an appointment can’t clash with itself."
+                },
+                {
+                    "title": "Double-booking guard",
+                    "body": "A unique database index on service type and start time backs up the service-level check. If two requests race for the same slot, I catch the constraint failure and return the same ‘slot already booked’ message rather than a server error."
+                },
+                {
+                    "title": "Data layer",
+                    "body": "I wrote EF Core models with length limits, a check that durations are positive and a restricted foreign key, plus repositories with paging and no-tracking reads. A migration creates the schema, and seeding adds three service types only if the table is empty."
+                },
+                {
+                    "title": "Tests",
+                    "body": "Nine NUnit tests with Moq repository fakes cover the required cases (VIN length, business hours, weekends, taken slots, a valid booking and cancellation) and two I added: on-the-hour starts and unchanged updates."
+                }
+            ],
+            "architecture": [
+                "Four projects: API (minimal API endpoints and Swagger UI), Application (DTOs, services and validation), Data (EF Core, repositories, migrations and seeding) and Tests.",
+                "Endpoints return 201, 200, 204, 400 with a plain error message, or 404. Only DTOs leave the API; database entities stay inside.",
+                "On startup the app applies migrations to a local SQLite database and seeds it."
+            ],
+            "outcome": ["All nine tests pass on .NET 10."]
+        },
+        "toConfirm": [
+            "This is ECS Group’s pre-interview task: the repo is a public fork of ECS-Developers/VehicleServiceBooking, and the original README is titled ‘Pre-Interview Task’. I didn’t name them in the copy. Check you’re happy to show it and that they don’t mind solutions being public.",
+            "ECS supplied the solution layout, SQLite connection and Swagger set-up. The copy only credits you with what your commits added (about 500 hand-written lines plus a generated migration).",
+            "It’s API-only, so there are no screenshots. A diagram cover (request → validation → repository → SQLite) would suit it.",
+            "Type is set to ‘product’ because the schema has no option for exercises. You may prefer to hide it or show it lower down."
+        ]
+    },
+    {
+        "slug": "property-digital-twin",
+        "hidden": true,
+        "title": "Property Digital Twin",
+        "summary": "Prototype platform where estate agents upload 3D Gaussian-splat scans of homes, add rooms and hotspots, and publish them as web tours.",
+        "type": "product",
+        "category": "3D property tours",
+        "year": "2026",
+        "role": "Solo engineer and designer",
+        "stack": [
+            "React",
+            "TypeScript",
+            "NestJS",
+            "PostgreSQL",
+            "Three.js",
+            "Tauri"
+        ],
+        "caseStudy": {
+            "brief": [
+                "Estate agents mostly show a property through photos and a floor plan. A Gaussian splat, a 3D capture built from many photos, lets a buyer move through the rooms in a browser instead. This project is the workspace around that: capturing, processing, editing and publishing a tour.",
+                "It’s a prototype. The 3D viewer, tour editor, publishing and phone capture flow work; the step that turns photos into a splat is simulated for now, with COLMAP and Nerfstudio adapters planned."
+            ],
+            "built": [
+                {
+                    "title": "Tour editor",
+                    "body": "I built an editor where an agent uploads a splat model for a property, adds rooms, saves camera viewpoints and drops hotspots in the 3D scene, then publishes the property to a public tour page."
+                },
+                {
+                    "title": "Phone capture",
+                    "body": "An Expo app lists the agent’s properties and captures a room with the phone camera, uploading each image straight to storage through a signed URL."
+                },
+                {
+                    "title": "Processing jobs",
+                    "body": "Processing runs as queued jobs (BullMQ on Redis) that stream progress to the browser over server-sent events, with error handling and retry. A Python worker validates capture packages and defines the job contract that real reconstruction will use."
+                }
+            ],
+            "architecture": [
+                "A pnpm and Turborepo monorepo: web app (React, Vite, TanStack Query), API (NestJS on Fastify with Prisma and PostgreSQL), mobile capture app (Expo), desktop processor (Tauri) and a Python reconstruction worker.",
+                "Shared packages hold the types, validation, API client and the splat viewer (Three.js with gaussian-splats-3d).",
+                "Model files are served through signed URLs, and processing jobs go through a BullMQ queue that reports progress over server-sent events."
+            ]
+        },
+        "toConfirm": [
+            "https://ellisthreaderdemo.com is this project’s live deployment, but it’s branded as a concept demo for Gilbert & Rose (a real estate agency) and uses their logo. It’s not added as a live link because it could read as client work, and your own notes say not to imply they commissioned it. Decide whether to link it with a clear 'unsolicited concept' label, or deploy an unbranded version.",
+            "The private GitHub repo (RealEstate, 6 commits on 11 July 2026) doesn’t contain the Gilbert & Rose site, Leaflet property map or customer accounts that are on the live demo. That code seems to be on another machine.",
+            "Turning phone photos into a splat is simulated. The old copy said it 'transforms guided phone captures into photorealistic Gaussian-splat 3D tours'; this version says what actually works.",
+            "Type is set to ai-system as requested, but there’s no ML model in the code yet. 'product' may fit better until reconstruction is real."
+        ]
+    },
+    {
+        "slug": "service-priority-ai",
+        "hidden": true,
+        "title": "Service Priority AI",
+        "summary": "Machine-learning triage for council service requests: rates each one low, medium or high, explains why, and leaves the call to a person.",
+        "type": "ai-system",
+        "category": "MLOps",
+        "year": "2026",
+        "role": "Solo engineer",
+        "stack": [
+            "Python",
+            "scikit-learn",
+            "FastAPI",
+            "React",
+            "TypeScript",
+            "Azure Machine Learning"
+        ],
+        "links": {
+            "live": "https://azure-service-triage-ai-production.up.railway.app/docs",
+            "repo": "https://github.com/ellisthreader/Azure-Service-Triage-AI",
+            "liveLabel": "Try the live API"
+        },
+        "caseStudy": {
+            "brief": [
+                "Councils get more service requests than they can look at at once, and some, such as a fire risk in a home with children, need attention first. This project predicts a priority for each request and shows the reasons to an officer, who makes the final call.",
+                "It’s a portfolio project on synthetic data. I built the whole path around the model: data generation, training, an API, a dashboard, Azure deployment files, and the governance documents a public body would ask for."
+            ],
+            "built": [
+                {
+                    "title": "Model",
+                    "body": "A scikit-learn pipeline combines one-hot encoded case fields, scaled numbers such as days open and previous contacts, and TF-IDF features from the free-text description, feeding a class-balanced logistic regression. I trained it on 25,000 synthetic cases."
+                },
+                {
+                    "title": "Prediction API",
+                    "body": "A FastAPI service with typed schemas: /predict returns the priority, confidence scores and the factors behind it, and /chat is a grounded assistant that explains scoring and fairness without calling an external LLM. Health, metrics and batch-scoring endpoints are covered by pytest."
+                },
+                {
+                    "title": "Triage dashboard",
+                    "body": "A React app with a public service portal and an operator console showing live triage, model metrics, fairness checks, SHAP explanations, batch scoring and governance, with the assistant docked at the side."
+                },
+                {
+                    "title": "Azure MLOps and governance",
+                    "body": "Azure ML CLI v2 files define the training pipeline, environments and online and batch endpoints, with scripts to deploy them. A model card, a DPIA-lite, a Responsible AI assessment and a monitoring contract sit alongside the code."
+                }
+            ],
+            "architecture": [
+                "A synthetic data generator feeds a training script that saves the model with its metadata and evaluation results.",
+                "FastAPI serves the model (it can also run as an Azure Functions app), and the React dashboard calls it.",
+                "Azure ML pipeline and endpoint definitions cover managed online and batch scoring, and a Power BI export produces monitoring tables."
+            ],
+            "outcome": [
+                "On a held-out set of 5,000 synthetic cases the model scores 0.90 accuracy and 0.94 recall on high-priority cases (from the repo’s evaluation results).",
+                "The prediction API is live on Railway, with interactive docs at /docs."
+            ]
+        },
+        "toConfirm": [
+            "The Railway URL only hosts the API; its root returns {\"detail\":\"Not Found\"}, so the live link points to /docs. I couldn’t find the React dashboard hosted anywhere (the Azure Static Web App returns 404 and the Azure Functions host doesn’t resolve).",
+            "The repo has Azure ML assets and deployment scripts, but I couldn’t verify a running Azure deployment, so the copy says 'Azure ML files', not 'deployed on Azure'.",
+            "The public repo contains docs/essex-interview-prep.md. You may not want that public.",
+            "The metrics come from synthetic data; keep that caveat wherever the numbers appear."
+        ]
+    },
+    {
+        "slug": "focus",
+        "hidden": true,
+        "title": "Focus",
+        "summary": "Local-first desktop app for planning the day, timing focused work and tracking habits, health and money, with an optional local AI helper.",
+        "type": "product",
+        "category": "Desktop app",
+        "year": "2026",
+        "role": "Solo engineer",
+        "stack": [
+            "JavaScript",
+            "Electron",
+            "Node.js",
+            "Ollama",
+            "OpenAI API",
+            "MySQL"
+        ],
+        "links": {
+            "repo": "https://github.com/ellisthreader/focus"
+        },
+        "caseStudy": {
+            "brief": [
+                "Focus is a desktop app that puts planning, focused work and personal tracking in one place: calendar, tasks, a focus timer, habits, health check-ins, food, money and learning. Everything is stored in a file on the computer. There’s no account to create, and sync is optional.",
+                "It started in May 2026 as a small focus-session tracker and grew over about six weeks into a full personal organiser. I built the Electron shell, the data layer, every page and an AI helper that runs on a local model by default."
+            ],
+            "built": [
+                {
+                    "title": "Focus timer and pattern model",
+                    "body": "The timer stores start and resume times rather than counting ticks, so a running session survives the app closing. A deterministic model scores each finished session and uses the history to suggest the best hour to focus, the length of the next block and the break after it, with a plain-language reason for each suggestion."
+                },
+                {
+                    "title": "Focus AI",
+                    "body": "A side panel turns typed requests into a plan of calendar, task, reminder and logging changes. By default it runs qwen3:4b-instruct through Ollama on the same machine; OpenAI is an opt-in alternative that also handles voice. I check every returned action against a fixed list of 18 action types and show it as a preview, and nothing is applied until it’s approved."
+                },
+                {
+                    "title": "Personal areas and weekly review",
+                    "body": "There are pages for health check-ins, food logging with lookups against USDA FoodData Central and Open Food Facts, workouts, budgets and recurring bills, learning goals and habits. A weekly review adds these up with deterministic week-on-week totals, and the AI can write a short read-only summary on top."
+                },
+                {
+                    "title": "Safe storage and private records",
+                    "body": "I write data to a temporary file, flush it and rename it into place, keeping the previous version as a backup that the app recovers from if the main file can’t be read. Medical records are encrypted through the operating system’s keyring with Electron’s safeStorage and are kept out of sync, exports, search and the AI."
+                },
+                {
+                    "title": "Optional sync",
+                    "body": "Folder sync merges records by ID and last update, so two computers can share one folder without overwriting each other or a running timer. There’s also a MySQL option that stores the document per account, with passwords hashed using PBKDF2."
+                }
+            ],
+            "architecture": [
+                "The Electron main process owns the data file, backups, dialogs, notifications, stored credentials, sync and every AI call. A preload script exposes a narrow window.focusDesktop API; the page runs with context isolation and no Node access.",
+                "The interface is plain ES modules with no framework: one store and reducer hold a single versioned document, and each page renders a view of it.",
+                "A schema module migrates older documents forward, including the original tracker format, every time the app loads one.",
+                "The local AI path only talks to Ollama on 127.0.0.1 and asks for JSON that matches a fixed schema. The OpenAI path uses the Responses API and stays off unless chosen.",
+                "electron-builder is configured for AppImage, Windows installer and DMG builds."
+            ],
+            "outcome": [
+                "The repo’s 244 automated tests pass with Node’s built-in test runner."
+            ]
+        },
+        "toConfirm": [
+            "The public repo contains an interview question bank for an Essex County Council AI/ML Engineer role (src/features/interview-quiz-bank.mjs), and a ‘Quiz’ item appears in the sidebar of every screenshot. I left the quiz out of the copy; you may want it out of the public repo too.",
+            "No packaged release exists on GitHub. electron-builder is configured, but I couldn’t confirm a build was ever produced, so the copy doesn’t claim downloadable installers.",
+            "I haven’t said whether you use it day to day. The gym plan and interview quiz suggest it’s your own tool; add that if true.",
+            "Screenshots come from the app’s own renderer in headless Chrome (the same HTML and modules the Electron window loads) with fake demo data for a user called ‘Alex’. The Electron main process and AI weren’t running, so the AI panel and the PC Performance page aren’t shown.",
+            "The app also has a dark theme; all four screenshots use the light theme.",
+            "The held-back Uplifta entry mentions this repo. Focus is a separate project and isn’t Uplifta."
+        ]
+    },
+    {
+        "slug": "phone-preview",
+        "hidden": true,
+        "title": "Phone Preview",
+        "summary": "Electron developer tool that shows a mobile web app inside a realistic phone or tablet frame on the desktop, with a built-in console.",
+        "type": "product",
+        "category": "Developer tool",
+        "year": "2026",
+        "role": "Solo engineer",
+        "stack": ["JavaScript", "Electron", "Node.js"],
+        "links": {
+            "repo": "https://github.com/ellisthreader/phone-preview"
+        },
+        "caseStudy": {
+            "brief": [
+                "A full-width browser tab doesn’t show how a mobile web app will feel on a phone. Phone Preview opens a transparent, frameless window that draws a device frame and loads the app into a screen-sized view, so it floats on the desktop like a handset.",
+                "It’s a small tool: one Electron main file and a shell launcher, released under the MIT licence."
+            ],
+            "built": [
+                {
+                    "title": "Device presets",
+                    "body": "A dropdown holds 48 presets across iPhone, Pixel, Galaxy (including Fold and Flip screens) and iPad. Each one sets the CSS viewport, pixel ratio, corner radii and notch or Dynamic Island size, and I resize the window to fit the new frame, scaling it down if it won’t fit the screen."
+                },
+                {
+                    "title": "Clipped app view",
+                    "body": "The app loads in an Electron webview clipped to the screen shape, so modals and fixed navigation bars stay inside the phone instead of spilling across the desktop."
+                },
+                {
+                    "title": "Connect screen and console",
+                    "body": "A connect screen inside the phone takes any local or remote URL and has one-click buttons for common dev server ports such as Expo, Vite and Next. I forward the app’s console messages to a strip above the phone, with a panel that highlights warnings and errors."
+                }
+            ],
+            "architecture": [
+                "The main process builds the shell page (frame, controls and device data) as HTML and loads it into a transparent, frameless window that can’t be resized by hand.",
+                "The app under test runs in a webview inside that page, and its console events feed the shell’s log panel.",
+                "When the device changes, the page sends a tagged console message that the main process reads to resize the window.",
+                "Passing a PNG path on the command line makes it capture the window after seven seconds and quit."
+            ]
+        },
+        "toConfirm": [
+            "This is small: one Electron file of about 300 lines, written on 6 June 2026 across three commits. Drop it if you only want larger work on the site.",
+            "No screenshots saved. The tool is a transparent floating phone frame, so desktop and phone captures in the site’s frames would show a phone inside a phone. The repo’s README has two 510×1048 captures (the connect screen, and Vibyra loaded in the frame) that could work with the ‘image’ layout.",
+            "The commits are authored as ‘your-github-email@example.com’ (an unset git config). Harmless, but visible on GitHub."
+        ]
+    },
+    {
+        "slug": "uplifta",
+        "hidden": true,
+        "title": "Uplifta",
+        "summary": "Phone app for cutting down screen time and building healthier daily habits around focus, exercise and routine.",
+        "type": "product",
+        "category": "Wellness app",
+        "year": "2026",
+        "role": "Designer and developer",
+        "stack": ["React Native", "TypeScript"],
+        "caseStudy": {
+            "brief": [
+                "Uplifta is a lifestyle app for people who want to spend less time on their phone. It pairs a digital detox with regular exercise, better concentration and a steadier daily routine."
+            ],
+            "built": [
+                {
+                    "title": "Screen-time reduction",
+                    "body": "I designed the app around cutting down phone use and breaking habits like doomscrolling."
+                },
+                {
+                    "title": "Daily habits",
+                    "body": "Goals for exercise, focus and routine sit alongside the screen-time tools, so progress shows day to day."
+                }
+            ]
+        },
+        "toConfirm": [
+            "No source code found locally or on GitHub. This content is based only on the old portfolio description. Confirm the stack, the year, your role, and whether it was built or is a design concept.",
+            "The Uplifta images include lines like 'Block apps during Structured Tasks' and 'Trigger Blocks from Focus', which read like another product’s App Store marketing (Structured is a separate planner app). Check these are your own screens before publishing.",
+            "The public 'focus' repo (an Electron desktop planner) is not Uplifta. Confirm it isn’t meant to be listed instead."
+        ]
+    },
+    {
+        "slug": "ai-resume-builder",
+        "hidden": true,
+        "title": "AI Resume Builder",
+        "summary": "Tool that uses an AI model to write and structure CVs, aiming for wording that sounds like the person rather than a template.",
+        "type": "product",
+        "category": "Career tool",
+        "year": "2026",
+        "role": "Designer and developer",
+        "stack": ["React", "TypeScript"],
+        "caseStudy": {
+            "brief": [
+                "An AI resume builder that helps people write a CV. It drafts the wording and structure from the user’s details, aiming for text that reads as if they wrote it themselves."
+            ],
+            "built": [
+                {
+                    "title": "CV writing",
+                    "body": "I designed it to draft CV content in natural wording from the user’s experience and skills."
+                },
+                {
+                    "title": "Clear structure",
+                    "body": "Content is arranged into a standard CV layout that’s quick for a recruiter to scan."
+                }
+            ]
+        },
+        "toConfirm": [
+            "No source code found locally or on GitHub. Confirm the stack, which AI model or provider it uses, the year, and whether it was built or is a concept.",
+            "The current cover image (AIResume.webp) is an AI-generated render with garbled text and a 'trusted by' strip showing Google, Microsoft and Apple logos. That implies endorsements that don’t exist; replace it before publishing."
+        ]
+    },
+    {
+        "slug": "checkmate-ai",
+        "hidden": true,
+        "title": "Checkmate AI",
+        "summary": "Chess analysis tool for tracking your games, finding costly mistakes and seeing stronger moves you missed.",
+        "type": "product",
+        "category": "Chess analysis",
+        "year": "2026",
+        "role": "Designer and developer",
+        "stack": ["React", "TypeScript"],
+        "caseStudy": {
+            "brief": [
+                "A chess tool for players who want to improve. It tracks their games, points out costly mistakes and shows stronger lines they could have played."
+            ],
+            "built": [
+                {
+                    "title": "Game tracking",
+                    "body": "I designed it so players can record their games and review how they’re performing over time."
+                },
+                {
+                    "title": "Mistake review",
+                    "body": "It flags costly moves in a game and suggests stronger move sequences in their place."
+                }
+            ]
+        },
+        "toConfirm": [
+            "No source code found locally or on GitHub. Confirm the stack, which chess engine it uses (the old copy said 'chess engine tooling'), the year, and whether it was built or is a concept.",
+            "The cover image (ChessAI.webp) shows a play-against-the-AI screen rather than game analysis, and looks AI-generated (the board and evaluation don’t make sense). Replace it or confirm what the product actually does."
+        ]
+    },
+    {
+        "slug": "drone-scan",
+        "hidden": true,
+        "title": "Drone Scan Company",
+        "summary": "Business concept for capturing buildings and sites as 3D scans with drones and selling the scans for planning, design and marketing.",
+        "type": "product",
+        "category": "3D capture",
+        "year": "2026",
+        "role": "Concept and product design",
+        "stack": ["Photogrammetry", "Drone mapping"],
+        "caseStudy": {
+            "brief": [
+                "A business idea for a drone scanning company: capture real places as detailed 3D models, then package and sell those scans to people who need accurate spaces for planning, design, marketing or virtual walkthroughs."
+            ],
+            "built": [
+                {
+                    "title": "Capture service",
+                    "body": "Drone flights would photograph a building or site from many angles, and photogrammetry would turn the photos into an accurate 3D model."
+                },
+                {
+                    "title": "Scan marketplace",
+                    "body": "Finished scans would be listed in an online marketplace where customers can browse and buy them."
+                }
+            ]
+        },
+        "toConfirm": [
+            "Written as a concept, since no code, company records or live site were found. Confirm whether anything was built or whether any scans were captured.",
+            "The cover image (DroneScanAI.webp) is an AI-generated dashboard with made-up figures (for example '$128,540 total sales' and '142 scans'). Replace it or mark it clearly as a concept render, since it shows numbers that aren’t real.",
+            "The year is a placeholder based on when the project first appeared on the portfolio (June 2026)."
+        ]
+    }
+]

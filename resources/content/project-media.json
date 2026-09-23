@@ -1,0 +1,225 @@
+{
+    "hke-epos": {
+        "tone": "porcelain",
+        "cover": {
+            "layout": "browser-phone",
+            "desktop": "hke-epos/desktop-1",
+            "mobile": "hke-epos/mobile-1"
+        },
+        "gallery": [
+            {
+                "image": "hke-epos/desktop-2",
+                "frame": "browser",
+                "caption": "A dish page with preferences, frequently added extras and allergens."
+            },
+            {
+                "image": "hke-epos/desktop-3",
+                "frame": "browser",
+                "caption": "Allergen information customers can filter the menu by."
+            },
+            {
+                "image": "hke-epos/mobile-1",
+                "frame": "phone",
+                "caption": "Ordering on a phone: collection or delivery, then the menu."
+            },
+            {
+                "image": "hke-epos/mobile-2",
+                "frame": "phone",
+                "caption": "Adding a dish to the basket."
+            }
+        ]
+    },
+    "relayclarity": {
+        "tone": "mist",
+        "cover": {
+            "layout": "browser",
+            "desktop": "relayclarity/console-calls",
+            "url": "relayclarity.com/dashboard"
+        },
+        "spotlight": {
+            "points": [
+                "Answers customer calls and live chat as a trained support agent",
+                "Looks the caller up in the CRM and knowledge base before it replies",
+                "Flags when a person should take over, with the context ready"
+            ]
+        },
+        "diagram": {
+            "title": "How a support call is handled",
+            "steps": [
+                {
+                    "label": "Customer calls",
+                    "detail": "Through Zoom Contact Center or Twilio"
+                },
+                {
+                    "label": "Agent answers",
+                    "detail": "Realtime voice from OpenAI and ElevenLabs"
+                },
+                {
+                    "label": "Checks the systems",
+                    "detail": "CRM record, helpdesk and knowledge base"
+                },
+                {
+                    "label": "Resolves or hands off",
+                    "detail": "With intent, confidence and a summary"
+                }
+            ],
+            "caption": "Every call lands in the Calls console with its transcript"
+        },
+        "gallery": [
+            {
+                "image": "relayclarity/console-integrations",
+                "frame": "browser",
+                "caption": "Connected tools: Zoom Contact Center for telephony, HubSpot for customer records."
+            },
+            {
+                "image": "relayclarity/console-conversations",
+                "frame": "browser",
+                "caption": "The agent handling a live chat, with suggested replies and a one-click takeover."
+            },
+            {
+                "image": "relayclarity/console-followups",
+                "frame": "browser",
+                "caption": "Follow-ups: conversations the agent passed to a person, with the reason and owner."
+            },
+            {
+                "image": "relayclarity/site-home",
+                "frame": "browser",
+                "caption": "The public site at relayclarity.com."
+            }
+        ]
+    },
+    "bear-lane": {
+        "tone": "stone",
+        "cover": {
+            "layout": "browser-phone",
+            "desktop": "bear-lane/desktop-2",
+            "mobile": "bear-lane/mobile-2",
+            "url": "bear-lane.com"
+        },
+        "gallery": [
+            {
+                "image": "bear-lane/desktop-1",
+                "frame": "browser",
+                "caption": "The shop’s home page."
+            },
+            {
+                "image": "bear-lane/desktop-3",
+                "frame": "browser",
+                "caption": "A product page: pick a colour, size and print type, then start designing."
+            },
+            {
+                "image": "bear-lane/mobile-1",
+                "frame": "phone",
+                "caption": "The shop on a phone."
+            },
+            {
+                "image": "bear-lane/mobile-2",
+                "frame": "phone",
+                "caption": "The design tool on a phone, with the tools along the bottom."
+            }
+        ]
+    },
+    "vibyra": {
+        "tone": "graphite",
+        "cover": {
+            "layout": "browser-phone",
+            "desktop": "vibyra/desktop-2",
+            "mobile": "vibyra/mobile-1"
+        },
+        "gallery": [
+            {
+                "image": "vibyra/desktop-1",
+                "frame": "browser",
+                "caption": "The Vibyra site, with Windows and Linux downloads."
+            },
+            {
+                "image": "vibyra/mobile-1",
+                "frame": "phone",
+                "caption": "The desktop workspace, shown on the site as a live demo."
+            },
+            {
+                "image": "vibyra/mobile-2",
+                "frame": "phone",
+                "caption": "The companion iPhone app, announced on the site."
+            }
+        ]
+    },
+    "ai-voice-assistant": {
+        "tone": "mist",
+        "cover": {
+            "layout": "device",
+            "image": "ai-voice-assistant/screen-speaking"
+        },
+        "gallery": [
+            {
+                "image": "ai-voice-assistant/screen-idle",
+                "frame": "device",
+                "caption": "Idle: waiting for the wake word, with two timers running."
+            },
+            {
+                "image": "ai-voice-assistant/screen-listening",
+                "frame": "device",
+                "caption": "Listening: the ring follows the microphone level."
+            },
+            {
+                "image": "ai-voice-assistant/screen-thinking",
+                "frame": "device",
+                "caption": "Thinking: the model has called the timer tool."
+            }
+        ],
+        "diagram": {
+            "title": "From wake word to spoken answer",
+            "steps": [
+                {
+                    "label": "Wake word",
+                    "detail": "rustpotter, offline on the Pi"
+                },
+                {
+                    "label": "Listen",
+                    "detail": "Adaptive silence gate"
+                },
+                {
+                    "label": "Transcribe",
+                    "detail": "gpt-4o-mini-transcribe"
+                },
+                {
+                    "label": "Answer",
+                    "detail": "gpt-4o-mini with local tools"
+                },
+                {
+                    "label": "Speak",
+                    "detail": "Streamed sentence by sentence"
+                }
+            ],
+            "caption": "Rust on a Raspberry Pi with a touchscreen"
+        }
+    },
+    "vehicle-service-booking": {
+        "tone": "porcelain",
+        "cover": {
+            "layout": "diagram",
+            "diagram": {
+                "title": "What happens when a booking comes in",
+                "steps": [
+                    {
+                        "label": "Request",
+                        "detail": "REST endpoint, create or move"
+                    },
+                    {
+                        "label": "Validate",
+                        "detail": "Weekdays, 08:00–17:00, on the hour, 17-character VIN"
+                    },
+                    {
+                        "label": "Check slot",
+                        "detail": "One booking per service per slot"
+                    },
+                    {
+                        "label": "Save",
+                        "detail": "EF Core, backed by a unique index"
+                    }
+                ],
+                "caption": "ASP.NET Core API, with every rule covered by NUnit tests"
+            }
+        }
+    }
+}

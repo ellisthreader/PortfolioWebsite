@@ -1,67 +1,30 @@
-# Ellis Threader Portfolio
+# Ellis Threader — Portfolio
 
 [![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20?logo=laravel&logoColor=white)](https://laravel.com)
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=0B0F19)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38BDF8?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 
-A production portfolio for [Ellis Threader](https://ellisthreader.com), built to present full-stack engineering, AI product work, polished interaction design, and a growing archive of client and personal software projects.
+The source for [ellisthreader.com](https://ellisthreader.com): selected work, a case study for every project, and a contact form that emails me directly.
 
-![Portfolio social preview](docs/social-preview.png)
+![Portfolio home page](docs/social-preview.png)
 
-## Live Site
-
-**Production:** https://ellisthreader.com
-
-This repository powers the public portfolio, project archive, contact flow, authenticated dashboard shell, and interactive 3D/animated presentation layer.
-
-## Screenshots
-
-| Home | Projects | Contact |
+| Home | Work | Case study |
 | --- | --- | --- |
-| ![Portfolio home page](docs/screenshots/home.png) | ![Portfolio projects page](docs/screenshots/projects.png) | ![Portfolio contact page](docs/screenshots/contact.png) |
+| ![Home](docs/screenshots/home.png) | ![Work index](docs/screenshots/work.png) | ![Case study](docs/screenshots/case-study.png) |
 
-## What This Shows
+## How it's built
 
-- **Full-stack delivery:** Laravel, Inertia, React, TypeScript, Vite, Tailwind CSS, and Railway deployment.
-- **Polished frontend engineering:** responsive layouts, scroll-led sections, motion design, 3D scenes, and carefully staged product visuals.
-- **Product thinking:** project cards describe real business value, technical scope, and user outcomes rather than only listing tools.
-- **Production awareness:** HTTPS-ready URL generation, route caching support, deployment scripts, contact form validation, and database-backed sessions/queues.
-- **AI and automation focus:** examples include voice assistants, LLM business platforms, AI resume tooling, accounting automation, and agent-assisted workflow apps.
+- **Laravel 13 + Inertia 3 + React 19.** Laravel serves every page and its metadata; React renders it. Titles, descriptions, Open Graph cards and JSON-LD are rendered on the server so link previews work without JavaScript.
+- **Content as data.** Projects live in `resources/content/projects.json` (words) and `resources/content/project-media.json` (how each cover is staged). A project marked `"hidden": true` stays in the file but is left off the site.
+- **Real screens, consistent frames.** Covers are real screenshots staged in the same browser and phone frames on a tone "plate". Work without a screen, such as the Raspberry Pi assistant, gets a diagram of how the system fits together instead.
+- **One typeface.** Mona Sans (variable weight and width), self-hosted and preloaded. The only animation that isn't a response to the visitor is the name settling from condensed to expanded on first load.
+- **Light and dark** themes from the same tokens, following the visitor's system setting.
+- **Small.** No WebGL, no animation libraries, no UI kit: under 110 KB of JavaScript (gzip) including React.
 
-## Featured Work
+## Local development
 
-| Project | Category | Stack |
-| --- | --- | --- |
-| Bear Lane Ecommerce | Luxury e-commerce | Laravel, React, TypeScript, Tailwind CSS, MySQL |
-| EPOS Software | Hospitality system | Laravel, React, TypeScript, POS integrations, automation |
-| AI Voice Assistant | Voice AI system | Python, speech-to-text, LLMs, text-to-speech, Pico |
-| Uplifta App | Wellness platform | React Native, TypeScript, UX design, habit tracking |
-| Vibyra App | AI workflow command center | React Native, Expo, Laravel, desktop bridge, AI agents |
-| RelayClarity | Voice agent deployment platform | React, TypeScript, voice AI, enterprise integrations, evaluation |
-
-## Tech Stack
-
-| Area | Tools |
-| --- | --- |
-| Backend | Laravel 13, PHP 8.3+, Fortify, database sessions, queues, mail |
-| Frontend | React 19, Inertia 3, TypeScript, Vite 8, Tailwind CSS 4 |
-| Interaction | Framer Motion, Three.js, React Three Fiber, Drei, model-viewer |
-| UI | Radix UI primitives, Lucide icons, custom portfolio components |
-| Deployment | Railway, Railpack/FrankenPHP, cached Laravel bootstrap, custom domain |
-| Quality | ESLint, Prettier, TypeScript checks, Laravel Pint, Pest/PHPUnit |
-
-## Local Development
-
-### Requirements
-
-- PHP 8.3 or newer
-- Composer
-- Node.js 22-24
-- npm
-- SQLite, MySQL, or another Laravel-supported database
-
-### Setup
+Requirements: PHP 8.3+, Composer, Node 22–24.
 
 ```bash
 composer install
@@ -69,44 +32,41 @@ npm install
 cp .env.example .env
 php artisan key:generate
 php artisan migrate
-npm run build
+composer dev        # or: php artisan serve + npm run dev
 ```
 
-### Run Locally
+## Adding or updating a project
 
-```bash
-php artisan serve
-npm run dev
-```
+1. Add the words to `resources/content/projects.json`.
+2. Put screenshots in `resources/images/work/<slug>/` (desktop at 2880×1800, phone at 1170×2532) and describe the cover in `resources/content/project-media.json`.
+3. `npm run images` renders AVIF/WebP at several widths into `public/images/work/` and updates the manifest.
+4. `npm run og` renders the 1200×630 link-preview cards into `public/og/`.
 
-Open http://127.0.0.1:8000.
-
-## Useful Commands
+## Commands
 
 | Command | Purpose |
 | --- | --- |
-| `npm run build` | Build production frontend assets |
-| `npm run lint:check` | Run ESLint checks |
-| `npm run format:check` | Check frontend formatting |
-| `npm run types:check` | Run TypeScript type checks |
-| `php artisan test` | Run Laravel tests |
-| `composer lint:check` | Run Laravel Pint in check mode |
+| `npm run build` | Production frontend build |
+| `npm run images` | Rebuild responsive project images |
+| `npm run og` | Rebuild link-preview cards (needs Chrome) |
+| `npm run types:check` / `lint:check` / `format:check` | Frontend checks |
+| `php artisan test` | Feature tests (pages, case studies, contact form, GitHub activity) |
+| `composer lint:check` | Laravel Pint |
 
-## Deployment Notes
+## Deployment (Railway)
 
-The Railway deployment uses the pre-deploy script in `railway/init-app.sh` to run migrations, link storage, clear stale cache, and cache Laravel configuration/routes/views for production.
-
-Recommended Railway variables:
+`railway/init-app.sh` runs migrations and caches config, routes and views before each deploy. Variables:
 
 | Variable | Value |
 | --- | --- |
-| `APP_ENV` | `production` |
-| `APP_DEBUG` | `false` |
+| `APP_NAME` | `Ellis Threader` |
+| `APP_ENV` / `APP_DEBUG` | `production` / `false` |
 | `APP_URL` | `https://ellisthreader.com` |
-| `PORT` | `8080` |
+| `MAIL_MAILER`, `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_FROM_ADDRESS` | SMTP details for contact-form delivery (see `.env.railway.example`) |
+| `PORTFOLIO_LINKEDIN_URL` | LinkedIn profile; hidden when empty |
+| `PORTFOLIO_CV_PATH` | e.g. `/Ellis-Threader-CV.pdf` in `public/`; hidden when empty |
+| `PORTFOLIO_AVAILABLE` | `true` shows the availability line |
 
 ## Contact
 
-- Website: https://ellisthreader.com
-- GitHub: https://github.com/ellisthreader
-- Email: ellis.threader3001@gmail.com
+[ellisthreader.com](https://ellisthreader.com) · [GitHub](https://github.com/ellisthreader) · ellis.threader3001@gmail.com

@@ -17,16 +17,6 @@ class HandleInertiaRequests extends Middleware
     protected $rootView = 'app';
 
     /**
-     * Determines the current asset version.
-     *
-     * @see https://inertiajs.com/asset-versioning
-     */
-    public function version(Request $request): ?string
-    {
-        return parent::version($request);
-    }
-
-    /**
      * Define the props that are shared by default.
      *
      * @see https://inertiajs.com/shared-data
@@ -37,11 +27,26 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
-            'name' => config('app.name'),
-            'auth' => [
-                'user' => $request->user(),
-            ],
-            'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'site' => self::site(),
+        ];
+    }
+
+    /**
+     * Site details every page needs. Also used by the error pages, which can
+     * render before this middleware runs (for example, on an unknown URL).
+     *
+     * @return array<string, mixed>
+     */
+    public static function site(): array
+    {
+        return [
+            'name' => config('portfolio.name'),
+            'role' => config('portfolio.role'),
+            'location' => config('portfolio.location'),
+            'email' => config('portfolio.email'),
+            'availability' => config('portfolio.availability'),
+            'links' => config('portfolio.links'),
+            'cv' => config('portfolio.cv'),
         ];
     }
 }

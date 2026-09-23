@@ -2,58 +2,48 @@
 
 namespace App\Mail;
 
-use Illuminate\Bus\Queueable;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Address;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
-use Illuminate\Queue\SerializesModels;
 
 class ContactMessageMail extends Mailable
 {
-    use Queueable, SerializesModels;
-
     /**
-     * @param  array<int, UploadedFile>  $attachments
+     * @param  array<int, UploadedFile>  $files
      */
     public function __construct(
-        public string $title,
-        public string $email,
+        public string $senderName,
+        public string $senderEmail,
+        public string $topic,
         public string $body,
-        public array $attachments = [],
-    ) {
-    }
+        public array $files = [],
+    ) {}
 
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Portfolio contact: '.$this->title,
-            replyTo: [new Address($this->email)],
+            subject: "Portfolio enquiry from {$this->senderName}: {$this->topic}",
+            replyTo: [new Address($this->senderEmail, $this->senderName)],
         );
     }
 
     public function content(): Content
     {
-        return new Content(
-            view: 'emails.contact-message',
-        );
+        return new Content(view: 'emails.contact-message');
     }
 
-    public function build(): static
+    /**
+     * @return array<int, Attachment>
+     */
+    public function attachments(): array
     {
-        $mail = $this->view('emails.contact-message');
-
-        foreach ($this->attachments as $attachment) {
-            $mail->attach(
-                $attachment->getRealPath(),
-                [
-                    'as' => $attachment->getClientOriginalName(),
-                    'mime' => $attachment->getMimeType(),
-                ],
-            );
-        }
-
-        return $mail;
+        return collect($this->files)
+            ->map(fn (UploadedFile $file): Attachment => Attachment::fromPath($file->getRealPath())
+                ->as($file->getClientOriginalName())
+                ->withMime((string) $file->getMimeType()))
+            ->all();
     }
 }

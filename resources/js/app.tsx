@@ -1,42 +1,17 @@
 import { createInertiaApp } from '@inertiajs/react';
-import { Toaster } from '@/components/ui/sonner';
-import { TooltipProvider } from '@/components/ui/tooltip';
-import { initializeTheme } from '@/hooks/use-appearance';
-import AppLayout from '@/layouts/app-layout';
-import AuthLayout from '@/layouts/auth-layout';
-import SettingsLayout from '@/layouts/settings/layout';
+import SiteLayout from '@/layouts/site-layout';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const siteName = 'Ellis Threader';
 
 createInertiaApp({
-    title: (title) => (title ? `${title} - ${appName}` : appName),
-    layout: (name) => {
-        switch (true) {
-            case name === 'welcome':
-            case name === 'projects':
-            case name === 'contact':
-                return null;
-            case name.startsWith('auth/'):
-                return AuthLayout;
-            case name.startsWith('settings/'):
-                return [AppLayout, SettingsLayout];
-            default:
-                return AppLayout;
-        }
-    },
+    title: (title) =>
+        title
+            ? `${title} — ${siteName}`
+            : `${siteName} — Software engineer, London`,
+    layout: () => SiteLayout,
     strictMode: true,
-    withApp(app) {
-        return (
-            <TooltipProvider delayDuration={0}>
-                {app}
-                <Toaster />
-            </TooltipProvider>
-        );
-    },
     progress: {
-        color: '#4B5563',
+        color: '#0e5a45',
+        delay: 200,
     },
 });
-
-// This will set light / dark mode on load...
-initializeTheme();

@@ -1,28 +1,21 @@
 <?php
 
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\WorkController;
 use Illuminate\Support\Facades\Route;
-use Laravel\Fortify\Features;
 
-Route::get('/home-model', function () {
-    return response()->file(storage_path('assets/ModelRigFix.glb'), [
-        'Content-Type' => 'model/gltf-binary',
-        'Cache-Control' => 'public, max-age=3600',
-    ]);
-})->name('home.model');
+Route::get('/', [PageController::class, 'home'])->name('home');
+Route::get('/about', [PageController::class, 'about'])->name('about');
 
-Route::inertia('/', 'welcome', [
-    'canRegister' => Features::enabled(Features::registration()),
-    'modelUrl' => url('/home-model'),
-])->name('home');
+Route::get('/work', [WorkController::class, 'index'])->name('work.index');
+Route::get('/work/{slug}', [WorkController::class, 'show'])->name('work.show');
+Route::permanentRedirect('/projects', '/work');
 
 Route::get('/contact', [ContactController::class, 'create'])->name('contact.create');
-Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+Route::post('/contact', [ContactController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('contact.store');
 
-Route::inertia('/projects', 'projects')->name('projects');
-
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('dashboard', 'dashboard')->name('dashboard');
-});
-
-require __DIR__.'/settings.php';
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');

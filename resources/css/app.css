@@ -1,13 +1,942 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
-@import './partials/theme.css';
-@import './partials/base.css';
-@import './partials/timeline-animations.css';
-@import './partials/tech-animations.css';
-@import './partials/flow-background.css';
-@import './partials/loader-animations.css';
+@import 'tailwindcss' source(none);
 
 @source '../views';
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../js';
 
-@custom-variant dark (&:is(.dark *));
+/* ---------------------------------------------------------------------------
+   Type: Mona Sans, one variable file with weight (200–900) and width (75–125).
+   --------------------------------------------------------------------------- */
+
+@font-face {
+    font-family: 'Mona Sans';
+    src: url('../fonts/mona-sans-latin-wdth.woff2') format('woff2-variations');
+    font-weight: 200 900;
+    font-stretch: 75% 125%;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* ---------------------------------------------------------------------------
+   Colour. Light is the default; dark follows the visitor's system setting.
+   --------------------------------------------------------------------------- */
+
+:root {
+    --canvas: #f4f5f3;
+    --paper: #ffffff;
+    --ink: #15171a;
+    --muted: #5c6168;
+    --rule: #dfe1dd;
+    --rule-strong: #c9ccc6;
+    --accent: #0e5a45;
+    --accent-soft: #d6e7df;
+    --danger: #a3261b;
+
+    /* Plate tones sit behind project screens. */
+    --plate-porcelain: #e8eae6;
+    --plate-mist: #dfe5e9;
+    --plate-stone: #e6e3de;
+    --plate-graphite: #1c1f22;
+    --plate-moss: #173f33;
+
+    --shadow-window:
+        0 1px 2px rgb(21 23 26 / 0.06), 0 12px 32px -8px rgb(21 23 26 / 0.18),
+        0 40px 80px -24px rgb(21 23 26 / 0.22);
+    --shadow-plate: 0 1px 0 rgb(21 23 26 / 0.04);
+    --phone-ring: transparent;
+
+    color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --canvas: #121416;
+        --paper: #1a1d20;
+        --ink: #ecedea;
+        --muted: #9ba1a6;
+        --rule: #2a2e32;
+        --rule-strong: #3a3f44;
+        --accent: #5bc49e;
+        --accent-soft: #173a2f;
+        --danger: #f08a7e;
+
+        --plate-porcelain: #1d2023;
+        --plate-mist: #1b2126;
+        --plate-stone: #211f1d;
+        --plate-graphite: #0d0f10;
+        --plate-moss: #10271f;
+
+        --shadow-window:
+            0 1px 2px rgb(0 0 0 / 0.3), 0 12px 32px -8px rgb(0 0 0 / 0.5),
+            0 40px 80px -24px rgb(0 0 0 / 0.6);
+        --shadow-plate: 0 0 0 1px rgb(255 255 255 / 0.04);
+        --phone-ring: rgb(255 255 255 / 0.14);
+
+        color-scheme: dark;
+    }
+}
+
+@theme inline {
+    --font-sans:
+        'Mona Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
+        sans-serif;
+
+    --color-canvas: var(--canvas);
+    --color-paper: var(--paper);
+    --color-ink: var(--ink);
+    --color-muted: var(--muted);
+    --color-rule: var(--rule);
+    --color-rule-strong: var(--rule-strong);
+    --color-accent: var(--accent);
+    --color-accent-soft: var(--accent-soft);
+    --color-danger: var(--danger);
+
+    --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------------------------------------------------------------------------
+   Base
+   --------------------------------------------------------------------------- */
+
+@layer base {
+    html {
+        -webkit-text-size-adjust: 100%;
+        text-rendering: optimizeLegibility;
+        scroll-padding-top: 5rem;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        html {
+            scroll-behavior: smooth;
+        }
+    }
+
+    body {
+        background: var(--canvas);
+        color: var(--ink);
+        font-family: var(--font-sans);
+        font-size: 1.0625rem;
+        line-height: 1.6;
+        font-weight: 400;
+        font-stretch: 100%;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    ::selection {
+        background: var(--accent);
+        color: var(--canvas);
+    }
+
+    :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 3px;
+        border-radius: 4px;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+        font-weight: 600;
+        text-wrap: balance;
+    }
+
+    p {
+        text-wrap: pretty;
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   Type scale (Elements of Typographic Style: few sizes, clear steps).
+   --------------------------------------------------------------------------- */
+
+@layer components {
+    /*
+     * The name fills the grid: at this width and weight "Threader" measures
+     * 4.54em, so a font size of 1/4.62 of the container sets it edge to edge.
+     */
+    .name-fit {
+        container-type: inline-size;
+        /* A wider fallback font, before Mona Sans arrives, must never scroll the page. */
+        overflow-x: clip;
+        overflow-clip-margin: 0.1em;
+    }
+
+    .kinetic {
+        font-size: calc(100cqi / 4.62);
+        font-stretch: 125%;
+        font-weight: 640;
+        letter-spacing: -0.045em;
+        line-height: 0.84;
+    }
+
+    .kinetic-line {
+        display: block;
+        white-space: nowrap;
+    }
+
+    .type-title {
+        font-size: clamp(2.625rem, 6.4vw, 5rem);
+        font-stretch: 116%;
+        font-weight: 620;
+        letter-spacing: -0.035em;
+        line-height: 0.98;
+    }
+
+    .type-heading {
+        font-size: clamp(1.75rem, 3.2vw, 2.375rem);
+        font-stretch: 108%;
+        font-weight: 600;
+        letter-spacing: -0.022em;
+        line-height: 1.1;
+    }
+
+    .type-subheading {
+        font-size: 1.3125rem;
+        font-stretch: 104%;
+        font-weight: 600;
+        letter-spacing: -0.012em;
+        line-height: 1.25;
+    }
+
+    .type-lead {
+        font-size: clamp(1.1875rem, 1.9vw, 1.4375rem);
+        line-height: 1.45;
+        letter-spacing: -0.008em;
+    }
+
+    .type-meta {
+        font-size: 0.875rem;
+        line-height: 1.5;
+        font-weight: 450;
+        color: var(--muted);
+        font-variant-numeric: tabular-nums;
+    }
+
+    .measure {
+        max-width: 68ch;
+    }
+
+    /* Inline text links: quiet underline that picks up the accent on hover. */
+    .link {
+        text-decoration-line: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 0.22em;
+        text-decoration-color: var(--rule-strong);
+        transition: text-decoration-color 150ms ease;
+    }
+
+    .link:hover {
+        text-decoration-color: var(--accent);
+    }
+
+    /* Rich text in case studies. */
+    .prose-case p + p {
+        margin-top: 1em;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   The one orchestrated moment. Each letter of the name arrives narrow, light
+   and out of focus, and settles wide and heavy, left to right. Then the rule
+   draws across and the introduction follows. Everything else on the site
+   moves only when the visitor does something.
+   --------------------------------------------------------------------------- */
+
+@keyframes char-in {
+    from {
+        opacity: 0;
+        top: 0.3em;
+        filter: blur(14px);
+        font-stretch: 75%;
+        font-weight: 200;
+    }
+
+    55% {
+        opacity: 1;
+        filter: blur(0);
+    }
+
+    to {
+        opacity: 1;
+        top: 0;
+        filter: blur(0);
+        font-stretch: 125%;
+        font-weight: 640;
+    }
+}
+
+@keyframes rule-draw {
+    from {
+        transform: scaleX(0);
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+}
+
+@keyframes rise-in {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.kinetic-char {
+    position: relative;
+    animation: char-in 1250ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(150ms + var(--i) * 48ms);
+    /* Used by the pointer lens once the entrance has finished. */
+    transition:
+        font-weight 520ms cubic-bezier(0.22, 1, 0.36, 1),
+        top 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.kinetic.is-settled .kinetic-char {
+    animation: none;
+}
+
+.hero-rule {
+    height: 1px;
+    background: var(--rule-strong);
+    transform-origin: left;
+    animation: rule-draw 1100ms cubic-bezier(0.65, 0, 0.35, 1) 700ms both;
+}
+
+.hero-follow {
+    animation: rise-in 900ms cubic-bezier(0.22, 1, 0.36, 1) 1000ms both;
+}
+
+.hero-status {
+    animation: rise-in 900ms cubic-bezier(0.22, 1, 0.36, 1) 850ms both;
+}
+
+/*
+ * As the hero scrolls away, the settled name condenses back along the width
+ * axis it arrived on. Browsers without scroll-driven animations keep it still.
+ */
+@keyframes name-condense {
+    to {
+        font-stretch: 92%;
+        letter-spacing: -0.03em;
+        opacity: 0.35;
+    }
+}
+
+@supports (animation-timeline: view()) {
+    .kinetic.is-settled {
+        animation: name-condense linear both;
+        animation-timeline: view();
+        animation-range: exit 10% exit 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .kinetic-char,
+    .kinetic.is-settled,
+    .hero-rule,
+    .hero-follow,
+    .hero-status {
+        animation: none;
+    }
+
+    *,
+    *::before,
+    *::after {
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   Plates: a tone field behind a real product screen.
+   --------------------------------------------------------------------------- */
+
+.plate {
+    container-type: inline-size;
+    position: relative;
+    overflow: hidden;
+    border-radius: 14px;
+    isolation: isolate;
+    box-shadow: var(--shadow-plate);
+}
+
+.plate[data-tone='porcelain'] {
+    background: var(--plate-porcelain);
+}
+
+.plate[data-tone='mist'] {
+    background: var(--plate-mist);
+}
+
+.plate[data-tone='stone'] {
+    background: var(--plate-stone);
+}
+
+.plate[data-tone='graphite'] {
+    background: var(--plate-graphite);
+}
+
+.plate[data-tone='moss'] {
+    background: var(--plate-moss);
+}
+
+/* A browser window, sized in container units so it scales with the plate. */
+.window {
+    position: absolute;
+    overflow: hidden;
+    background: var(--paper);
+    border-radius: max(6px, 0.9cqw) max(6px, 0.9cqw) 0 0;
+    box-shadow: var(--shadow-window);
+}
+
+.window-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: max(18px, 2.6cqw);
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+}
+
+.window-url {
+    font-size: max(8px, 0.95cqw);
+    line-height: 1;
+    color: var(--muted);
+    font-weight: 500;
+    letter-spacing: 0;
+    padding: 0.35em 1.4em;
+    border-radius: 999px;
+    background: var(--canvas);
+}
+
+/* ---------------------------------------------------------------------------
+   Spotlight: one project in an inverted band. The theme tokens are redefined
+   inside it, so every component (buttons, links, meta text) flips with it.
+   --------------------------------------------------------------------------- */
+
+.spotlight {
+    --canvas: #15171a;
+    --paper: #1d2024;
+    --ink: #ecedea;
+    --muted: #a3a9ae;
+    --rule: #2a2e32;
+    --rule-strong: #34393e;
+    --accent: #5bc49e;
+    --accent-soft: #173a2f;
+    --shadow-window:
+        0 1px 2px rgb(0 0 0 / 0.3), 0 24px 64px -16px rgb(0 0 0 / 0.6);
+
+    background: var(--canvas);
+    color: var(--ink);
+    color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+    .spotlight {
+        --canvas: #f4f5f3;
+        --paper: #ffffff;
+        --ink: #15171a;
+        --muted: #5c6168;
+        --rule: #dfe1dd;
+        --rule-strong: #c9ccc6;
+        --accent: #0e5a45;
+        --accent-soft: #d6e7df;
+        --shadow-window:
+            0 1px 2px rgb(21 23 26 / 0.08),
+            0 24px 64px -16px rgb(21 23 26 / 0.3);
+
+        color-scheme: light;
+    }
+}
+
+.spotlight-screen {
+    container-type: inline-size;
+}
+
+.spotlight-screen .window {
+    border-radius: max(6px, 0.9cqw);
+}
+
+/* Transparent product shots (already framed) stand straight on the plate. */
+.cutout {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    /* The shots are cropped at the bottom, so they sit on the plate's edge. */
+    align-items: flex-end;
+    justify-content: center;
+    gap: 5cqw;
+    padding-top: 7%;
+}
+
+.cutout > picture {
+    display: contents;
+}
+
+.cutout img {
+    height: 100%;
+    width: auto;
+    max-width: none;
+}
+
+/* A Raspberry Pi touchscreen: a plain black bezel around a 5:3 display. */
+.device {
+    position: relative;
+    background: #0b0c0d;
+    border-radius: max(10px, 2.4cqw);
+    padding: 3.4%;
+    box-shadow:
+        var(--shadow-window),
+        0 0 0 1px var(--phone-ring);
+}
+
+.device > picture > img {
+    display: block;
+    width: 100%;
+    border-radius: max(3px, 0.6cqw);
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.07);
+}
+
+/* Dark products get dark window chrome, so the frame never outshines the screen. */
+.plate[data-tone='graphite'] .window,
+.plate[data-tone='moss'] .window,
+.plate[data-tone='graphite'] .window-bar,
+.plate[data-tone='moss'] .window-bar {
+    background: #1d2024;
+    border-color: rgb(255 255 255 / 0.08);
+}
+
+.plate[data-tone='graphite'] .window-url,
+.plate[data-tone='moss'] .window-url {
+    background: rgb(255 255 255 / 0.07);
+    color: rgb(236 237 234 / 0.62);
+}
+
+.phone {
+    position: absolute;
+    overflow: hidden;
+    background: #0b0c0d;
+    border-radius: 13.5% / 6.3%;
+    padding: 1.6%;
+    box-shadow:
+        var(--shadow-window),
+        0 0 0 1px var(--phone-ring);
+}
+
+.phone > picture > img,
+.phone > img {
+    border-radius: 12% / 5.6%;
+}
+
+/* ---------------------------------------------------------------------------
+   Diagram covers: for work without a screen (hardware, pipelines),
+   the plate shows how the system actually fits together.
+   --------------------------------------------------------------------------- */
+
+.diagram {
+    --node-bg: var(--paper);
+    --node-border: var(--rule);
+    --node-text: var(--ink);
+    --node-muted: var(--muted);
+    --wire: var(--rule-strong);
+
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5cqw;
+    padding: 6cqw;
+    color: var(--node-text);
+}
+
+.plate[data-tone='graphite'] .diagram,
+.plate[data-tone='moss'] .diagram {
+    --node-bg: rgb(255 255 255 / 0.06);
+    --node-border: rgb(255 255 255 / 0.12);
+    --node-text: #ecedea;
+    --node-muted: rgb(236 237 234 / 0.62);
+    --wire: rgb(255 255 255 / 0.28);
+}
+
+.diagram-title {
+    font-size: max(11px, 1.7cqw);
+    font-weight: 500;
+    color: var(--node-muted);
+}
+
+.diagram-flow {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    gap: 2.6cqw;
+}
+
+.diagram-node {
+    position: relative;
+    padding: 2.3cqw 2.2cqw;
+    border: 1px solid var(--node-border);
+    border-radius: max(8px, 1.1cqw);
+    background: var(--node-bg);
+}
+
+.diagram-node + .diagram-node::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    width: 2.6cqw;
+    height: 1px;
+    background: var(--wire);
+}
+
+.diagram-node + .diagram-node::after {
+    content: '';
+    position: absolute;
+    top: calc(50% - 0.45cqw);
+    left: -0.2cqw;
+    border-block: 0.45cqw solid transparent;
+    border-left: 0.7cqw solid var(--wire);
+    transform: translateX(-100%);
+}
+
+.diagram-label {
+    display: block;
+    font-size: max(12px, 2.3cqw);
+    line-height: 1.2;
+    font-weight: 600;
+    font-stretch: 106%;
+    letter-spacing: -0.01em;
+}
+
+.diagram-detail {
+    display: block;
+    margin-top: 0.8cqw;
+    font-size: max(10px, 1.6cqw);
+    line-height: 1.35;
+    color: var(--node-muted);
+}
+
+.diagram-caption {
+    display: flex;
+    align-items: center;
+    gap: 1.6cqw;
+    font-size: max(11px, 1.7cqw);
+    color: var(--node-muted);
+}
+
+.diagram-caption::before {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--wire);
+}
+
+.diagram-caption::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--wire);
+}
+
+@container (max-width: 560px) {
+    .diagram {
+        gap: 5cqw;
+        padding: 6cqw;
+    }
+
+    .diagram-flow {
+        grid-auto-flow: row;
+        grid-template-columns: 1fr 1fr;
+        gap: 3cqw;
+    }
+
+    .diagram-node::before,
+    .diagram-node::after {
+        display: none;
+    }
+
+    .diagram-node {
+        padding: 2.8cqw 3cqw;
+    }
+
+    .diagram-label {
+        font-size: max(12px, 3.4cqw);
+    }
+
+    .diagram-detail {
+        display: none;
+    }
+
+    .diagram-title,
+    .diagram-caption {
+        font-size: max(11px, 2.8cqw);
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   Home work grid: cards lift their screens a touch on hover.
+   --------------------------------------------------------------------------- */
+
+.work-card :is(.window, .phone, .device) {
+    transition: transform 420ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .work-card:hover :is(.window, .phone, .device) {
+        transform: translateY(-1.2cqw);
+    }
+}
+
+.work-tag {
+    display: inline-flex;
+    align-items: center;
+    height: 1.5rem;
+    padding: 0 0.6rem;
+    border-radius: 999px;
+    border: 1px solid var(--rule-strong);
+    font-size: 0.75rem;
+    font-weight: 550;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+}
+
+.work-tag-accent {
+    border-color: transparent;
+    background: var(--accent-soft);
+    color: var(--accent);
+}
+
+.work-chip {
+    font-size: 0.8125rem;
+    line-height: 1;
+    padding: 0.45rem 0.6rem;
+    border-radius: 6px;
+    background: color-mix(in oklab, var(--ink) 6%, transparent);
+    color: var(--muted);
+}
+
+/* ---------------------------------------------------------------------------
+   Contact band: a quiet card with one soft light source, and brand logos
+   sat on white tiles so they read the same in either theme.
+   --------------------------------------------------------------------------- */
+
+.contact-band {
+    position: relative;
+    overflow: hidden;
+    border-radius: 28px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    isolation: isolate;
+}
+
+.contact-band::before {
+    content: '';
+    position: absolute;
+    inset: -40% -20% auto auto;
+    width: 70%;
+    aspect-ratio: 1;
+    z-index: -1;
+    border-radius: 50%;
+    background: radial-gradient(
+        closest-side,
+        color-mix(in oklab, var(--accent) 11%, transparent),
+        transparent
+    );
+    filter: blur(20px);
+    pointer-events: none;
+}
+
+.channels-panel {
+    padding: 0.5rem;
+    border-radius: 20px;
+    border: 1px solid var(--rule);
+    background: color-mix(in oklab, var(--canvas) 70%, transparent);
+    backdrop-filter: blur(8px);
+}
+
+.channels > li + li {
+    margin-top: 0.25rem;
+    padding-top: 0.25rem;
+    border-top: 1px solid var(--rule);
+}
+
+.logo-tile {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 14px;
+    background: #fff;
+    color: #181717;
+    box-shadow:
+        0 0 0 1px rgb(21 23 26 / 0.08),
+        0 6px 16px -6px rgb(21 23 26 / 0.25);
+    transition: transform 200ms ease;
+}
+
+.logo-tile svg {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.group:hover .logo-tile {
+    transform: scale(1.05) rotate(-3deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .group:hover .logo-tile {
+        transform: none;
+    }
+}
+
+/* Social icons stay monochrome until hovered, then show their brand colour. */
+.social-icon svg {
+    filter: grayscale(1);
+    opacity: 0.8;
+    transition:
+        filter 200ms ease,
+        opacity 200ms ease;
+}
+
+.social-icon:hover svg,
+.social-icon:focus-visible svg {
+    filter: none;
+    opacity: 1;
+}
+
+/* ---------------------------------------------------------------------------
+   Panels: the quiet card used for grouped content on the home page.
+   --------------------------------------------------------------------------- */
+
+.panel {
+    padding: 1.75rem;
+    border-radius: 20px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    transition:
+        border-color 200ms ease,
+        transform 300ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .panel:hover {
+        border-color: var(--rule-strong);
+        transform: translateY(-2px);
+    }
+}
+
+/* A timeline: a dot per step on one hairline, the latest step filled. */
+.journey-step {
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.journey-step::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.45rem;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    border: 1.5px solid var(--rule-strong);
+    background: var(--canvas);
+}
+
+.journey-step::after {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 1.2rem;
+    bottom: -1.5rem;
+    width: 1px;
+    background: var(--rule);
+}
+
+.journey-step:last-child::after {
+    display: none;
+}
+
+.journey-step[data-current]::before {
+    border-color: var(--accent);
+    background: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+@media (min-width: 40rem) {
+    .journey-step {
+        padding-left: 0;
+        padding-top: 1.75rem;
+    }
+
+    .journey-step::before {
+        top: 0;
+    }
+
+    .journey-step::after {
+        left: 1.25rem;
+        right: -1rem;
+        top: 4px;
+        bottom: auto;
+        width: auto;
+        height: 1px;
+    }
+}
+
+/* Capability plates: one rendered object, lit from behind by a soft glow. */
+.capability-plate::before {
+    content: '';
+    position: absolute;
+    inset: 12% 18% 18%;
+    z-index: -1;
+    border-radius: 50%;
+    background: radial-gradient(
+        closest-side,
+        color-mix(in oklab, var(--accent) 14%, transparent),
+        transparent
+    );
+}
+
+.capability-plate > picture {
+    display: contents;
+}
+
+.capability-art {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 84%;
+    height: auto;
+    translate: -50% -50%;
+    filter: drop-shadow(0 18px 28px rgb(0 0 0 / 0.18));
+    transition: transform 500ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.capability-index {
+    position: absolute;
+    top: 1rem;
+    left: 1.1rem;
+    z-index: 1;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    li:hover > .capability-plate .capability-art {
+        transform: translateY(-2%) scale(1.03);
+    }
+}
