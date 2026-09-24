@@ -7,7 +7,9 @@ const output = new URL('../public/', import.meta.url);
 
 const png = (svg, size) => sharp(svg).resize(size, size).png().toBuffer();
 
-await writeFile(new URL('favicon.png', output), await png(source, 192));
+const searchIcon = await png(source, 192);
+await writeFile(new URL('favicon.png', output), searchIcon);
+await writeFile(new URL('ellis-threader-icon.png', output), searchIcon);
 
 // iOS applies its own corner mask to touch icons.
 const touchSource = Buffer.from(source.toString().replace('rx="14"', 'rx="0"'));
