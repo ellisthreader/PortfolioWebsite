@@ -17,6 +17,7 @@
         "lint:check": "eslint .",
         "types:check": "tsc --noEmit",
         "images": "node scripts/build-work-images.mjs",
+        "favicon": "node scripts/build-favicons.mjs",
         "og": "node scripts/build-og-images.mjs"
     },
     "devDependencies": {
