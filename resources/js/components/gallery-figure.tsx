@@ -15,6 +15,10 @@ export function GalleryFigure({
     alt: string;
     className?: string;
 }) {
+    const screenSizes = item.half
+        ? '(min-width: 1320px) 540px, (min-width: 640px) 44vw, 88vw'
+        : '(min-width: 1320px) 1100px, 88vw';
+
     return (
         <figure className={className}>
             <div
@@ -22,6 +26,9 @@ export function GalleryFigure({
                     'plate flex justify-center',
                     (item.frame === 'browser' || item.frame === 'app') &&
                         'px-[6%] pt-[6%]',
+                    item.half &&
+                        (item.frame === 'browser' || item.frame === 'app') &&
+                        'aspect-[4/3] items-start',
                     item.frame === 'phone' &&
                         'aspect-[4/5] items-start pt-[8%]',
                     item.frame === 'device' && 'items-center p-[9%]',
@@ -29,12 +36,12 @@ export function GalleryFigure({
                 data-tone={tone}
             >
                 {item.frame === 'browser' && (
-                    <div className="window !relative w-full">
+                    <div className="window !relative h-fit w-full">
                         <div className="window-bar" aria-hidden />
                         <Picture
                             image={item.image}
                             alt={alt}
-                            sizes="(min-width: 1320px) 1100px, 88vw"
+                            sizes={screenSizes}
                             className="block w-full"
                         />
                     </div>
@@ -53,8 +60,8 @@ export function GalleryFigure({
                     <AppWindow
                         image={item.image}
                         alt={alt}
-                        sizes="(min-width: 1320px) 1100px, 88vw"
-                        className="!relative w-full"
+                        sizes={screenSizes}
+                        className="!relative h-fit w-full"
                     />
                 )}
                 {item.frame === 'device' && (

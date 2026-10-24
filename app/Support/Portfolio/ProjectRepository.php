@@ -57,25 +57,6 @@ class ProjectRepository
     }
 
     /**
-     * Everything the home page doesn't show as a card, for its compact index.
-     *
-     * @return Collection<int, array<string, mixed>>
-     */
-    public function others(): Collection
-    {
-        return $this->all()
-            ->reject(fn (array $project): bool => isset($project['featured']) || isset($project['media']['spotlight']))
-            ->values()
-            ->map(fn (array $project): array => [
-                'slug' => $project['slug'],
-                'title' => $project['title'],
-                'type' => $project['type'],
-                'category' => $project['category'] ?? null,
-                'year' => $project['year'],
-            ]);
-    }
-
-    /**
      * The one project the home page gives its own section to.
      *
      * @return array<string, mixed>|null
@@ -121,6 +102,7 @@ class ProjectRepository
             'gallery' => collect($media['gallery'] ?? [])
                 ->map(fn (array $item): array => [
                     'frame' => $item['frame'] ?? 'browser',
+                    'half' => $item['half'] ?? false,
                     'caption' => $item['caption'] ?? null,
                     'image' => $this->images->resolve($item['image']),
                 ])

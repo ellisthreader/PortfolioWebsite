@@ -4,34 +4,7 @@ import { ButtonLink, buttonClasses } from '@/components/button';
 import { Container } from '@/components/container';
 import { DownloadIcon } from '@/components/icons';
 import { SocialIcons } from '@/components/social-links';
-
-const EXPERIENCE = [
-    {
-        years: '2026 – now',
-        title: 'Independent products',
-        body: 'Building my own software: Vibyra, a desktop workspace and iPhone app for running AI coding agents, and RelayClarity, a platform for taking voice agents from pilot to launch.',
-    },
-    {
-        years: '2025 – now',
-        title: 'Freelance full-stack engineer',
-        body: 'Complete systems for clients, from the database to the interface: ordering, till, kitchen display and delivery dispatch for a takeaway, and a printed-clothing shop with a design tool and its own admin panel.',
-    },
-    {
-        years: '2024',
-        title: 'AI engineering',
-        body: 'Chatbots, agents and API integrations, and the first Python version of my voice assistant.',
-    },
-    {
-        years: '2023',
-        title: 'Started programming properly',
-        body: 'Python fundamentals through small tools and games, then data, automation and APIs.',
-    },
-    {
-        years: '2021 – 2022',
-        title: 'Roblox development and design',
-        body: 'Lua scripting for Roblox games, early freelance work for other creators, then graphic design and 3D work.',
-    },
-];
+import { EXPERIENCE } from '@/content/experience';
 
 const TOOLS = [
     {
@@ -79,20 +52,22 @@ const TOOLS = [
         group: 'AI and machine learning',
         items: [
             'OpenAI Realtime',
+            'Voice agents over SIP',
+            'OpenRouter',
+            'MCP',
             'Speech APIs',
-            'ElevenLabs',
             'scikit-learn',
-            'Azure Machine Learning',
         ],
     },
     {
         group: 'Infrastructure and services',
         items: [
             'Railway',
+            'Fly.io',
             'Docker',
             'GitHub Actions',
-            'Linux',
-            'Stripe',
+            'Cloudflare',
+            'Stripe Connect',
             'Twilio',
         ],
     },
@@ -120,11 +95,11 @@ export default function About() {
                             Most of my work sits where web platforms meet AI.
                             For clients that has meant a takeaway’s ordering,
                             till, kitchen and delivery system, and a
-                            printed-clothing shop with its own design tool. For
-                            myself it has meant a platform for voice agents, a
-                            Raspberry Pi assistant written in Rust, and a
-                            workspace for running AI coding agents from a desk
-                            or a phone.
+                            printed-clothing shop with its own design tool. That
+                            takeaway system grew into Relay Clarity, my own
+                            platform for independent restaurants. I also build
+                            Vibyra, a workspace for running AI coding agents
+                            from a desk, a phone or the cloud.
                         </p>
                         <p className="measure text-muted">
                             I work across the stack by choice. Owning the whole
@@ -219,20 +194,17 @@ export default function About() {
                 <h2 id="tools" className="type-heading">
                     Tools I use
                 </h2>
-                <dl className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+                <dl className="mt-10 border-t border-rule">
                     {TOOLS.map((tool) => (
-                        <div key={tool.group} className="panel">
-                            <dt className="font-[600] [font-stretch:104%]">
+                        <div
+                            key={tool.group}
+                            className="grid gap-2 border-b border-rule py-5 md:grid-cols-12 md:gap-8"
+                        >
+                            <dt className="font-[600] [font-stretch:104%] md:col-span-4">
                                 {tool.group}
                             </dt>
-                            <dd className="mt-4">
-                                <ul className="flex flex-wrap gap-1.5">
-                                    {tool.items.map((item) => (
-                                        <li key={item} className="work-chip">
-                                            {item}
-                                        </li>
-                                    ))}
-                                </ul>
+                            <dd className="text-muted md:col-span-8">
+                                {tool.items.join(', ')}
                             </dd>
                         </div>
                     ))}

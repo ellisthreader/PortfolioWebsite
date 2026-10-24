@@ -9,7 +9,7 @@ namespace App\Support\Portfolio;
 class Seo
 {
     /** Share of the plate each lead screen fills. Mirrors FRAME_SHARE in plate.tsx. */
-    public const FRAME_SHARE = ['browser' => 0.86, 'app' => 0.86, 'browser-phone' => 0.76, 'device' => 0.66];
+    public const FRAME_SHARE = ['browser' => 0.86, 'app' => 0.86, 'browser-phone' => 0.76, 'app-phone' => 0.76, 'device' => 0.66, 'image' => 1.0];
 
     /** The `sizes` of a full-width plate (home lead project and case study cover). */
     public const WIDE_PLATE_SIZES = '(min-width: 1320px) 1224px, 94vw';

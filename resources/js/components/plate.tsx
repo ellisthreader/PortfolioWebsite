@@ -94,9 +94,20 @@ export function Plate({
                 </div>
             )}
 
-            {cover.layout === 'browser-phone' && (
+            {cover.layout === 'app-phone' && cover.desktop && (
+                <AppWindow
+                    image={cover.desktop}
+                    alt={`${title} on desktop`}
+                    sizes={scaleSizes(sizes, FRAME_SHARE.browserBesidePhone)}
+                    priority={priority}
+                    className="top-[7cqw] left-[6cqw] w-[76cqw]"
+                />
+            )}
+
+            {(cover.layout === 'browser-phone' ||
+                cover.layout === 'app-phone') && (
                 <>
-                    {cover.desktop && (
+                    {cover.layout === 'browser-phone' && cover.desktop && (
                         <BrowserWindow
                             image={cover.desktop}
                             url={cover.url}

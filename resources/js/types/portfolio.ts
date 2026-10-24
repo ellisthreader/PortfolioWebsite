@@ -13,6 +13,7 @@ export type ProjectType = 'client' | 'product' | 'ai-system' | 'other';
 export type CoverLayout =
     | 'browser'
     | 'browser-phone'
+    | 'app-phone'
     | 'app'
     | 'cutout'
     | 'phones'
@@ -62,6 +63,8 @@ export type CaseStudy = {
 
 export type GalleryItem = {
     frame: 'browser' | 'app' | 'phone' | 'device' | 'image';
+    /** Screens that sit in pairs rather than full width. */
+    half: boolean;
     caption: string | null;
     image: ImageSet;
 };

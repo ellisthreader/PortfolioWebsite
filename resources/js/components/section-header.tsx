@@ -16,18 +16,14 @@ export function SectionHeader({
     return (
         <div
             className={cn(
-                'grid gap-5 border-t border-ink pt-6 lg:grid-cols-12 lg:items-end',
+                'flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 border-t border-ink pt-5',
                 className,
             )}
         >
-            <h2 id={id} className="type-title lg:col-span-7">
+            <h2 id={id} className="type-heading">
                 {title}
             </h2>
-            {aside && (
-                <div className="flex flex-wrap items-baseline gap-x-5 gap-y-1 lg:col-span-5 lg:justify-end">
-                    {aside}
-                </div>
-            )}
+            {aside}
         </div>
     );
 }

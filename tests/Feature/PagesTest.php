@@ -6,7 +6,7 @@ use Inertia\Testing\AssertableInertia as Assert;
 test('the home page shows the featured work', function () {
     $projects = app(ProjectRepository::class);
     $featured = $projects->featured()->count();
-    $others = $projects->others()->count();
+    $total = $projects->all()->count();
 
     expect($featured)->toBeGreaterThanOrEqual(4);
 
@@ -20,8 +20,8 @@ test('the home page shows the featured work', function () {
             ->where('spotlight.slug', 'relayclarity')
             ->has('spotlight.points', 3)
             ->has('featured.0.links')
-            ->has('others', $others)
-            ->where('projectCount', $featured + $others + 1)
+            ->missing('others')
+            ->where('projectCount', $total)
             ->where('site.name', 'Ellis Threader')
             ->missing('latestPush'));
 });

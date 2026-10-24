@@ -2,7 +2,7 @@
     {
         "slug": "hke-epos",
         "title": "Hong Kong Express EPOS",
-        "summary": "Ordering website, iPhone app, till, kitchen display and delivery dispatch for a Chinese takeaway, all run from one backend.",
+        "summary": "Ordering website, iPhone app, till, kitchen display, delivery dispatch and AI phone line for a Chinese takeaway, all run from one backend.",
         "type": "client",
         "category": "Restaurant EPOS",
         "year": "2026",
@@ -16,10 +16,7 @@
             "React Native",
             "Tauri"
         ],
-        "links": {
-            "live": "https://web-production-40aa8.up.railway.app",
-            "liveLabel": "Visit the ordering site"
-        },
+        "links": {},
         "caseStudy": {
             "brief": [
                 "Hong Kong Express is a Chinese takeaway in Broomfield, Chelmsford. It needed one system to take orders from a website, a phone app and the counter, get them to the kitchen and out to drivers, and give the manager a view of the whole shop.",
@@ -28,7 +25,7 @@
             "built": [
                 {
                     "title": "Counter till",
-                    "body": "Staff take counter and phone orders on the till, charge cards through a Stripe Terminal reader and print receipts on the shop’s Epson printers. Dish names print in English and Chinese: I render the Chinese text as raster images because the printers can’t print Unicode."
+                    "body": "Staff take counter and phone orders on the till, charge cards through a Stripe Terminal reader and print receipts on the shop’s Epson printers. Dish names print in English and Chinese: I render the Chinese text as raster images because the printers can’t print Unicode. The till installs on a Windows 11 touchscreen from a branded installer and keeps itself up to date with signed updates."
                 },
                 {
                     "title": "Kitchen display",
@@ -40,90 +37,100 @@
                 },
                 {
                     "title": "Ordering website and iPhone app",
-                    "body": "Customers browse the live menu with allergen filters, pay with Stripe or Apple Pay, collect loyalty rewards and track their order. On iPhone, order progress also shows as a Live Activity on the lock screen."
+                    "body": "Customers browse the live menu with allergen filters, pay with Stripe or Apple Pay, collect loyalty rewards and track their order. Owners set collection and delivery wait times once, and the website and app quote the same estimate. On iPhone, order progress also shows as a Live Activity on the lock screen."
                 },
                 {
                     "title": "AI phone assistant",
-                    "body": "I built a voice assistant on the OpenAI Realtime API that answers calls about the menu, prices, opening hours, delivery postcodes and collection times, pulling each answer from live backend data through tool calls. It can’t take payment or change orders, so it points callers to the website or the staff, and the till shows who is ringing by matching the number against past orders. The same assistant is available by voice on the website’s support page."
+                    "body": "Calls go from Twilio to OpenAI’s live voice model. The assistant answers questions about the menu, prices, opening hours and delivery areas from live backend data, and can build a collection or delivery order and text the caller a one-time Stripe checkout link, so no card details are taken over the phone. Callers can check on an order after confirming a code sent to their mobile, and requests to change or refund an order go to staff as cases. The till shows who is ringing by matching the number against past orders."
                 }
             ],
             "architecture": [
                 "One Rust backend (Axum and SQLx) serves the website, the mobile app and the in-shop software, and supervises background workers for orders, payments, notifications, delivery and loyalty.",
                 "Laravel handles migrations, seeding and part of the test suite. MySQL is the hosted database; the in-shop software can run against a local SQLite database.",
-                "The staff desktop app is a Tauri shell that starts the backend as a sidecar and only allows staff routes. An Electron build is kept as a fallback.",
-                "Calls reach the public site through an OpenAI Realtime webhook. The till in the shop pulls ringing calls from the live site and looks the caller up in its own customer records.",
-                "CI runs Rust formatting, Clippy and tests, PHP tests on SQLite and MySQL, dependency audits, a secret scan, and the mobile and Tauri checks on every push."
+                "The staff desktop app is a Tauri shell that starts the backend as a sidecar and only allows staff routes. New staff get a one-use, 24-hour setup link by email.",
+                "The phone line is a small Node service between Twilio and OpenAI that calls the backend for menu data, baskets and checkout links.",
+                "CI runs Rust formatting, Clippy and tests, PHP tests on SQLite and MySQL, dependency audits, a secret scan, the mobile checks, and builds and install-tests the Windows installer on every push."
             ],
-            "outcome": ["The customer ordering website is live on Railway."]
+            "outcome": [
+                "Built and tested end to end, from the website to the kitchen printer.",
+                "The system became the starting point for Relay Clarity, which turns it into a product any takeaway can run."
+            ]
         },
         "toConfirm": [
-            "No custom domain found. hongkongexpress.co.uk belongs to an unrelated Isle of Wight restaurant, and orders.hke.co.uk only appears in test fixtures, so the Railway URL is used.",
-            "The live site responds as PHP/Laravel (x-powered-by: PHP/8.3, and /health/ready isn’t served), but the repo’s railway.json starts the Rust backend. The live deployment is probably an older build than the code described here.",
+            "The Railway URL (web-production-40aa8.up.railway.app) returned 404 'Application not found' on 24 Oct 2026, so the live link was removed. Add one back if the site is redeployed.",
+            "Phone ordering with SMS checkout links is built (services/mei-phone) but a real paid phone order hasn't been proven; the copy describes it as built, not as in use.",
+            "Windows kiosk installer is unsigned and not yet tested on the shop's hardware.",
             "The repo is private under the LunaTMT GitHub account and has commits from a second author ('taylor'). Confirm the role wording.",
-            "Whether the AI phone line is switched on for real calls at the restaurant.",
-            "Whether the iOS app is on the App Store. The repo has a 1.0.0 candidate prepared for App Review in September 2026; not claimed here.",
-            "Whether the Stripe card reader and Epson printers are in daily use in the shop, and whether you still provide ongoing setup and support (the old description said so).",
-            "Deliveroo integration code exists with a simulator, but your plan marks it as test-only, so it’s left out."
+            "Uncommitted work (self-order kiosk, live driver map, driver drive mode) is not described."
         ],
         "featured": 1
     },
     {
         "slug": "relayclarity",
-        "title": "RelayClarity",
-        "summary": "Web platform for setting up, testing and launching AI voice agents for customer support, with CRM, helpdesk and phone integrations.",
+        "title": "Relay Clarity",
+        "summary": "Restaurant software that gives each takeaway its own ordering website, apps, till, kitchen screens and AI phone line, all run from one platform.",
         "type": "product",
-        "category": "Voice agent platform",
+        "category": "Restaurant platform",
         "year": "2026",
         "role": "Solo engineer and designer",
         "stack": [
+            "Rust",
             "React",
             "TypeScript",
-            "Express",
-            "SQLite",
-            "OpenAI API",
-            "ElevenLabs"
+            "Tauri",
+            "Expo",
+            "Stripe Connect",
+            "OpenAI",
+            "Twilio"
         ],
         "links": {
-            "live": "https://relayclarity.com",
-            "repo": "https://github.com/ellisthreader/test-zoom-project"
+            "live": "https://relayclarity.com"
         },
         "caseStudy": {
             "brief": [
-                "Companies trialling AI phone agents often get stuck between a working pilot and a real launch. The agent has to be connected to their CRM, helpdesk and phone system, tested, and signed off. RelayClarity is a product for that step.",
-                "I designed and built it as a working product with its own backend, not only a landing page."
+                "Independent takeaways usually stitch together a till from one company, a website from another and a delivery app that takes a cut of every order. Relay Clarity gives each business one system instead: its own branded ordering website and app, a till, kitchen screens, a manager dashboard, delivery dispatch and an AI receptionist that answers the phone.",
+                "It grew out of the system I built for Hong Kong Express. I turned that single-restaurant build into a platform where every business is set up from a pack of its own menu, branding and settings, with no business-specific code in the product."
             ],
             "built": [
                 {
-                    "title": "Support agent with real lookups",
-                    "body": "The agent looks the customer up in the CRM, searches the knowledge base and opens a helpdesk ticket when it can’t resolve something. Each turn returns a reply along with the detected intent, a confidence score and whether to escalate to a person."
+                    "title": "One system per restaurant",
+                    "body": "Each business gets a hosted ordering website, an iPhone app built from the same Expo codebase, and the RelayClarity Business desktop app for the till, kitchen screen, manager dashboard and receipt printing. Customers pay into the restaurant’s own Stripe account through Stripe Connect, so the money never passes through the platform."
                 },
                 {
-                    "title": "Voice and phone calls",
-                    "body": "Browser voice sessions use the OpenAI Realtime API, with short-lived keys issued by the server. Demo outbound calls go through Twilio, with the agent’s speech generated by ElevenLabs and Twilio’s own voice as a fallback."
+                    "title": "A till that keeps working offline",
+                    "body": "If the internet drops, the till keeps taking cash orders. They are written to an append-only log encrypted with AES-256-GCM and replayed with their original idempotency keys when the connection returns, so each order lands exactly once."
                 },
                 {
-                    "title": "Integrations",
-                    "body": "A workspace can connect and test CRM, helpdesk and knowledge-base providers from an integrations catalogue, and a Zoom Contact Center webhook receives call events."
+                    "title": "Updates that never interrupt service",
+                    "body": "Installed tills update themselves from signed packages, with a beta channel, staged rollouts, a minimum version and a kill switch. Each device keeps a fixed rollout bucket, so widening a rollout never drops devices that already have it. The app won’t restart while a receipt is printing, and if a new version fails to start twice it rolls itself back and reports it."
                 },
                 {
-                    "title": "Accounts and billing",
-                    "body": "Email and Google sign-in, onboarding, saved projects, and Stripe Checkout for monthly or annual plans."
+                    "title": "AI receptionist",
+                    "body": "Calls go from Twilio to OpenAI’s live voice model over SIP. The receptionist answers questions about the menu, opening hours and delivery, and the till shows who is ringing alongside their past orders. Every call is checked against a kill switch, daily cost caps per business and for the whole platform, and a limit on simultaneous calls; refused calls go to the restaurant or voicemail. Taking orders by phone is off by default."
+                },
+                {
+                    "title": "Kitchen and delivery",
+                    "body": "Orders arrive on the kitchen screen as timed tickets. The manager assigns delivery orders to drivers on a live map, drivers get their jobs and directions in the staff app, and customers follow their order from the kitchen to their door."
                 }
             ],
             "architecture": [
-                "React 19 and Vite front end; TypeScript Express 5 API; SQLite through better-sqlite3.",
-                "An orchestrator combines CRM, knowledge-base and helpdesk adapters with structured JSON responses from OpenAI. Each adapter can run against mock data or a live provider.",
-                "OpenAI Realtime handles browser voice, ElevenLabs generates speech, and Twilio places phone calls.",
-                "The launch video is rendered from code with Remotion."
+                "A Rust backend (Axum and SQLx, on MySQL or SQLite) serves every business from one deployment, with tenant hosts, an encrypted secret store, usage metering, custom domains, backups and scheduled deletion.",
+                "Each business is described by a pack: menu, branding, opening hours, delivery zones and which features are on. Build checks fail if one business’s name or branding leaks into shared code.",
+                "Refactoring the original takeaway build into this template was checked screen by screen: 416 of 416 screenshots stayed pixel-identical across desktop, phone, light and dark.",
+                "The desktop app is Tauri and only works once paired to a business with a one-time setup code; each staff role sees only its own pages.",
+                "The phone line runs as a separate Node service between Twilio and OpenAI, and a prepaid gateway in Rust admits and bills each call."
             ],
-            "outcome": ["Live at relayclarity.com."]
+            "outcome": [
+                "The product site is live at relayclarity.com, and restaurants can apply for a quote.",
+                "The hosted platform is in pre-launch testing."
+            ]
         },
         "toConfirm": [
-            "The public repo is named 'test-zoom-project' and has about 80 dev log files committed at the root. Consider renaming and cleaning it before linking.",
-            "The old copy listed 'scripted and adversarial evaluation gates' and 'handoff reporting'. These only appear in the front end, not as backend features, so they’re left out.",
-            "Your notes say production sign-in, payments and integrations weren’t verified. Confirm what works on relayclarity.com today.",
-            "Your notes record a Lighthouse mobile score going from 40 to 79 but mark it 'rerun before using externally', so it’s not included.",
-            "GitHub was last updated on 9 July 2026; newer code may be on another machine."
+            "Product code now lives in the NeighbourPlate folder (no git remote); the RelayClarity repo is the marketing site and release server. The old public repo link (test-zoom-project) was removed because it shows the retired voice-agent prototype.",
+            "No paying restaurants found. Chelmsford restaurants appear only as proposals, so none are named.",
+            "app.relayclarity.com was not responding on 24 Oct 2026; outcome says pre-launch.",
+            "The earlier voice-agent screenshots are kept in resources/images/work/_held-back/relayclarity-voice-agents/.",
+            "The cover image (relayclarity/hero) was generated with Codex image_gen on 24 Oct 2026 from the real till, kitchen and phone screens as references; it is a staged scene, not a photo of a restaurant. The gallery screens are the real interface (Example Takeaway sample data)."
         ],
         "featured": 2
     },
@@ -160,15 +167,19 @@
                 },
                 {
                     "title": "Checkout and shipping",
-                    "body": "Checkout takes card and wallet payments through Stripe, as well as PayPal, and applies discount codes. Shipping rates come from Shippo, using a parcel size estimated from what’s in the basket, and the admin can buy the postage label for an order without leaving the panel."
+                    "body": "Checkout takes card and wallet payments through Stripe, as well as PayPal, and applies discount codes. Shipping rates come from Shippo, using a parcel size estimated from what’s in the basket. Before payment, checkout re-checks the delivery price and availability, and the accepted quote is stored with the order, so the admin can buy the postage label without leaving the panel."
                 },
                 {
                     "title": "Admin panel",
-                    "body": "The owner manages products, categories, prices, delivery options, discount codes, tax settings, the size guide and the homepage layout. The same panel handles orders and returns, and shows sales, refunds, best-selling products and reviews for a chosen date range."
+                    "body": "The owner manages products, nested categories, prices, carriers and parcel sizes, discount codes, tax settings and the size guide. The homepage is edited in place: any text, image or section can be changed, moved, added or removed, with undo, and goes live on save. The same panel handles orders and returns, and shows sales, refunds, best-selling products and reviews for a chosen date range."
                 },
                 {
                     "title": "Accounts, chat and moderation",
                     "body": "Customers sign in with email or with Google, Apple or Facebook, and keep addresses, saved designs, a wishlist and order history. Live chat with the shop runs over Pusher, and chat messages and any text added to a design are checked with OpenAI’s moderation API before they’re accepted."
+                },
+                {
+                    "title": "Every request reaches the owner",
+                    "body": "Support messages, quote requests, chat, returns, restock alerts and newsletter sign-ups all reach the owner’s inbox through a mail queue on Resend that retries failed sends."
                 }
             ],
             "architecture": [
@@ -193,7 +204,7 @@
     {
         "slug": "vibyra",
         "title": "Vibyra",
-        "summary": "Desktop workspace and iPhone app for running AI coding agents like Claude Code and Codex on your own computer, even from your phone.",
+        "summary": "Workspace for running AI coding agents like Claude Code and Codex side by side on your own computer, then picking the work up from an iPhone or handing it to the cloud.",
         "type": "product",
         "category": "Developer tools",
         "year": "2026",
@@ -203,59 +214,61 @@
             "Tauri",
             "React",
             "TypeScript",
-            "React Native",
-            "Laravel"
+            "Laravel",
+            "Expo",
+            "Fly.io",
+            "Stripe"
         ],
         "links": {
-            "live": "https://vibyra-production.up.railway.app",
-            "repo": "https://github.com/ellisthreader/Vibyra",
-            "liveLabel": "Visit the Vibyra site"
+            "live": "https://vibyra.net",
+            "repo": "https://github.com/ellisthreader/Vibyra"
         },
         "caseStudy": {
             "brief": [
-                "Coding agents like Claude Code and Codex run in a terminal on your own machine, which ties you to your desk. Vibyra puts several of them in one desktop workspace and lets you check on or continue that work from a phone.",
-                "It has three parts: Vibyra Desktop, a terminal workspace for running agents side by side; Vibyra Host, a Rust service that pairs a phone with a computer; and an iPhone app that connects to it."
+                "Coding agents like Claude Code and Codex run in a terminal on your own machine, which ties you to your desk. Vibyra puts several of them in one desktop workspace, lets you check on or continue that work from a phone, and can hand a project to a cloud computer so it keeps going while your laptop is shut.",
+                "It has four parts: the desktop app for Mac, Windows and Linux; a Rust host that pairs a phone with a computer; an iPhone app; and Vibyra Cloud, with accounts, billing and model access run from a Laravel backend."
             ],
             "built": [
                 {
-                    "title": "Terminal grid",
-                    "body": "Vibyra Desktop runs Claude Code, Codex, Gemini or any other command-line agent side by side in a grid of real terminals, with a file browser, SSH sessions and start, stop and restart for each terminal."
+                    "title": "Many agents, no lag",
+                    "body": "The desktop app runs Claude Code, Codex, Gemini CLI or any other command-line agent side by side in a grid of real terminals. Each terminal has its own reader thread in Rust and one shared flusher batches output for all of them: keystrokes echo straight away, heavy output is grouped into 16 ms batches, and hidden terminals buffer into a scrollback that replays when you come back."
                 },
                 {
-                    "title": "Many terminals without lag",
-                    "body": "I gave each terminal its own reader thread in Rust and one shared flusher thread that batches output for all of them. A keystroke echoes straight away while heavy output is grouped into 16 ms batches; hidden terminals update every 250 ms, and hibernated ones buffer into a 4 MB scrollback that replays when you come back."
+                    "title": "Phone pairing, end-to-end encrypted",
+                    "body": "A phone pairs with a computer through a one-time invitation, and nothing is trusted until you approve the device’s key on the computer. Every frame is encrypted with the Noise protocol, compiled to WebAssembly for the phone, so the relay in between forwards traffic it can’t read. Only one device can type into a terminal at a time."
                 },
                 {
-                    "title": "Phone pairing",
-                    "body": "The Host pairs a phone through a one-time invitation or local network discovery, and nothing is trusted until you approve the device’s key on the computer. Sessions open read-only; 'Take control' asks for an exclusive input lease, so only one device types into a terminal at a time."
+                    "title": "Handing work to the cloud",
+                    "body": "To move a project to Vibyra Cloud, the desktop app snapshots it into a shadow git repository, builds an incremental bundle and encrypts it so only that account’s cloud computer can open it. Changes coming back go through a three-way review before they touch your files. The server wakes the cloud machine when work arrives and stops it after five idle minutes, so you only pay for time in use."
                 },
                 {
-                    "title": "Encrypted relay",
-                    "body": "When the phone isn’t on the same network, the computer connects out to a relay and the phone joins through it. Every frame is encrypted end to end with the Noise protocol, so the relay forwards traffic it can’t read and only reports which computers are online."
+                    "title": "Models, routing and billing",
+                    "body": "Pro plans include credit for every major model through OpenRouter, sold at cost. An Auto option sorts each prompt (front end, large codebase, review and so on) and picks a suitable model allowed by the plan. Billing runs on Stripe with integer units and signed compute leases, and free usage has a platform-wide daily cap."
                 },
                 {
-                    "title": "Previews, memory and routines",
-                    "body": "Desktop works out how a project runs, starts its dev server and shows it in a device frame. Agent 'teammates' keep a brief, approved memory notes and assigned skills that carry into new chats, and scheduled routines run while the app is open."
+                    "title": "Agents and benchmarks",
+                    "body": "Agent ‘teammates’ keep a brief, notes and skills, and scheduled routines run on their own. A remote MCP gateway lets agents use outside tools while blocking requests to private networks. The public benchmarks page combines 23 independent leaderboards into one score per model, compared at matching reasoning effort."
                 }
             ],
             "architecture": [
-                "Vibyra Desktop: a Tauri 2 shell with a React 19 and xterm.js interface. The native logic (terminal sessions, agent detection, file watching, previews) lives in a Rust crate with no webview dependency.",
-                "Vibyra Host: a Rust workspace (transport, server and engine crates) that runs terminals and agent sessions on the computer. The transport is also compiled to WebAssembly for the phone app.",
-                "Relay: a small Node.js WebSocket service that matches phones to the computers they name and forwards Noise-encrypted frames without reading them.",
-                "Backend: a Laravel app for the website, accounts and the API that issues relay access.",
-                "iPhone app: Expo and React Native, using xterm.js for terminal output and keeping device keys in SecureStore."
+                "Desktop: Tauri 2 with a React 19 and xterm.js interface. Terminal sessions, agent detection, previews and cloud sync live in Rust crates with no webview dependency.",
+                "Host: a Rust workspace (transport, server and engine) that runs terminals and agent sessions on the computer; a small Node relay matches phones to computers.",
+                "Backend: Laravel on Railway with PostgreSQL, serving the website, accounts, billing, downloads, the model gateway and the benchmarks page.",
+                "Cloud: one Fly.io machine per account in London, with an encrypted volume and S3-compatible storage for project bundles.",
+                "iPhone: Expo and React Native, keeping device keys in SecureStore."
             ],
             "outcome": [
-                "Vibyra Desktop 0.6.3 is published on GitHub Releases for Windows (installer) and Linux (AppImage and .deb), with signed in-app updates.",
-                "The website and downloads page are live on Railway."
+                "Vibyra Desktop is available from vibyra.net for Mac, Windows and Linux, with signed in-app updates.",
+                "Free and Pro plans are live, with Pro billed through Stripe.",
+                "The iPhone app is in testing and not yet on the App Store."
             ]
         },
         "toConfirm": [
-            "The live site presents Vibyra as a desktop workspace with an 'upcoming phone companion', while the repo’s main branch now centres on the iPhone app. The summary covers both; confirm which to lead with.",
-            "The iPhone app runs in Expo Go and development builds; the README says App Store delivery is still open, so it isn’t described as released.",
-            "macOS isn’t a published desktop target (per the 0.6.3 release notes).",
-            "The old description mentioned reviewing code changes and applying or discarding agent work. I couldn’t find that on main, so it’s left out.",
-            "Six local worktrees (Vibyra-web, -phone, -launch, -attachments, -terminal-fullscreen) are on unmerged branches. This content is based on main and the latest release."
+            "Live code is on origin/railway-production in the Vibyra repo; the main working tree is on an old branch.",
+            "vibyra.app serves a parking page; vibyra.net is canonical, so links use vibyra.net.",
+            "No usage figures are public, so none are claimed.",
+            "Desktop screens are captured from vibyra.net on 24 Oct 2026; phone screens are from the 13 Oct iOS simulator gallery (sample data).",
+            "Public GitHub repo may not reflect the current code; confirm the repo link is still wanted."
         ],
         "featured": 4
     },

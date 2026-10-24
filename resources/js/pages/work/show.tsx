@@ -105,7 +105,9 @@ export default function WorkShow({ project, next }: WorkShowProps) {
                         aspect={
                             project.cover.layout === 'diagram'
                                 ? 'aspect-[4/3] sm:aspect-[2/1]'
-                                : 'aspect-[4/3] sm:aspect-[16/9]'
+                                : project.cover.layout === 'image'
+                                  ? 'aspect-[3/2]'
+                                  : 'aspect-[4/3] sm:aspect-[16/9]'
                         }
                         sizes="(min-width: 1320px) 1224px, 94vw"
                         priority
@@ -152,7 +154,11 @@ export default function WorkShow({ project, next }: WorkShowProps) {
                                         key={item.image.src}
                                         item={item}
                                         tone={project.tone}
-                                        className={GALLERY_SPAN[item.frame]}
+                                        className={
+                                            item.half
+                                                ? 'sm:col-span-3'
+                                                : GALLERY_SPAN[item.frame]
+                                        }
                                         alt={
                                             item.caption ??
                                             `${project.title}, screen ${index + 1}`
@@ -254,7 +260,9 @@ function CaseSection({
 }) {
     return (
         <section className="grid gap-5 lg:grid-cols-12 lg:gap-8">
-            <h2 className="type-heading lg:col-span-4">{title}</h2>
+            <h2 className="type-heading self-start lg:sticky lg:top-28 lg:col-span-4">
+                {title}
+            </h2>
             <div className="max-w-[68ch] lg:col-span-8">{children}</div>
         </section>
     );

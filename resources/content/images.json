@@ -44,21 +44,6 @@
         "height": 2532,
         "widths": [480, 960, 1170]
     },
-    "capabilities/ai-systems": {
-        "width": 1024,
-        "height": 1024,
-        "widths": [480, 960, 1024]
-    },
-    "capabilities/apps-devices": {
-        "width": 1024,
-        "height": 1024,
-        "widths": [480, 960, 1024]
-    },
-    "capabilities/web-platforms": {
-        "width": 1024,
-        "height": 1024,
-        "widths": [480, 960, 1024]
-    },
     "hke-epos/desktop-1": {
         "width": 2880,
         "height": 1800,
@@ -84,30 +69,55 @@
         "height": 2532,
         "widths": [480, 960, 1170]
     },
-    "relayclarity/console-calls": {
-        "width": 2880,
-        "height": 1800,
-        "widths": [480, 960, 1440, 1920, 2560]
+    "relayclarity/app-track": {
+        "width": 780,
+        "height": 1688,
+        "widths": [480, 780]
     },
-    "relayclarity/console-conversations": {
-        "width": 2880,
-        "height": 1800,
-        "widths": [480, 960, 1440, 1920, 2560]
+    "relayclarity/dispatch": {
+        "width": 2400,
+        "height": 1500,
+        "widths": [480, 960, 1440, 1920, 2400]
     },
-    "relayclarity/console-followups": {
-        "width": 2880,
-        "height": 1800,
-        "widths": [480, 960, 1440, 1920, 2560]
+    "relayclarity/hero": {
+        "width": 1536,
+        "height": 1024,
+        "widths": [480, 960, 1440, 1536]
     },
-    "relayclarity/console-integrations": {
-        "width": 2880,
-        "height": 1800,
-        "widths": [480, 960, 1440, 1920, 2560]
+    "relayclarity/kitchen": {
+        "width": 2400,
+        "height": 1350,
+        "widths": [480, 960, 1440, 1920, 2400]
     },
-    "relayclarity/site-home": {
-        "width": 2880,
-        "height": 1800,
-        "widths": [480, 960, 1440, 1920, 2560]
+    "relayclarity/manager-today": {
+        "width": 2400,
+        "height": 1500,
+        "widths": [480, 960, 1440, 1920, 2400]
+    },
+    "relayclarity/mobile-menu": {
+        "width": 780,
+        "height": 1688,
+        "widths": [480, 780]
+    },
+    "relayclarity/till-call": {
+        "width": 2400,
+        "height": 1799,
+        "widths": [480, 960, 1440, 1920, 2400]
+    },
+    "relayclarity/till-order": {
+        "width": 2400,
+        "height": 1799,
+        "widths": [480, 960, 1440, 1920, 2400]
+    },
+    "relayclarity/web-menu": {
+        "width": 2400,
+        "height": 1500,
+        "widths": [480, 960, 1440, 1920, 2400]
+    },
+    "relayclarity/web-track": {
+        "width": 2400,
+        "height": 1500,
+        "widths": [480, 960, 1440, 1920, 2400]
     },
     "vibyra/desktop-1": {
         "width": 2880,
@@ -119,14 +129,19 @@
         "height": 1800,
         "widths": [480, 960, 1440, 1920, 2560]
     },
+    "vibyra/desktop-3": {
+        "width": 2880,
+        "height": 1800,
+        "widths": [480, 960, 1440, 1920, 2560]
+    },
     "vibyra/mobile-1": {
-        "width": 1170,
-        "height": 2532,
-        "widths": [480, 960, 1170]
+        "width": 1206,
+        "height": 2622,
+        "widths": [480, 960, 1206]
     },
     "vibyra/mobile-2": {
-        "width": 1170,
-        "height": 2532,
-        "widths": [480, 960, 1170]
+        "width": 1206,
+        "height": 2622,
+        "widths": [480, 960, 1206]
     }
 }

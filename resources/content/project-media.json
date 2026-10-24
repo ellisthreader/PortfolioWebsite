@@ -30,61 +30,90 @@
         ]
     },
     "relayclarity": {
-        "tone": "mist",
+        "tone": "porcelain",
         "cover": {
-            "layout": "browser",
-            "desktop": "relayclarity/console-calls",
-            "url": "relayclarity.com/dashboard"
+            "layout": "image",
+            "image": "relayclarity/hero",
+            "focus": "center 40%"
         },
         "spotlight": {
             "points": [
-                "Answers customer calls and live chat as a trained support agent",
-                "Looks the caller up in the CRM and knowledge base before it replies",
-                "Flags when a person should take over, with the context ready"
+                "Ordering website and app, till, kitchen screens and dispatch for every restaurant",
+                "Tills keep taking orders offline and update themselves without interrupting service",
+                "An AI receptionist answers the phone, with cost caps and a kill switch"
             ]
         },
         "diagram": {
-            "title": "How a support call is handled",
+            "title": "How an order moves through a restaurant",
             "steps": [
                 {
-                    "label": "Customer calls",
-                    "detail": "Through Zoom Contact Center or Twilio"
+                    "label": "Customer orders",
+                    "detail": "Website, app, phone or counter"
                 },
                 {
-                    "label": "Agent answers",
-                    "detail": "Realtime voice from OpenAI and ElevenLabs"
+                    "label": "Paid to the restaurant",
+                    "detail": "Its own Stripe account"
                 },
                 {
-                    "label": "Checks the systems",
-                    "detail": "CRM record, helpdesk and knowledge base"
+                    "label": "Kitchen cooks",
+                    "detail": "Timed tickets on the kitchen screen"
                 },
                 {
-                    "label": "Resolves or hands off",
-                    "detail": "With intent, confidence and a summary"
+                    "label": "Out the door",
+                    "detail": "Collection, or a driver on the live map"
                 }
             ],
-            "caption": "Every call lands in the Calls console with its transcript"
+            "caption": "One platform, set up per restaurant from its own business pack"
         },
         "gallery": [
             {
-                "image": "relayclarity/console-integrations",
-                "frame": "browser",
-                "caption": "Connected tools: Zoom Contact Center for telephony, HubSpot for customer records."
+                "image": "relayclarity/manager-today",
+                "frame": "app",
+                "caption": "The manager’s Today screen: what needs attention, live orders and the day’s sales."
             },
             {
-                "image": "relayclarity/console-conversations",
-                "frame": "browser",
-                "caption": "The agent handling a live chat, with suggested replies and a one-click takeover."
+                "image": "relayclarity/till-order",
+                "frame": "app",
+                "caption": "The till: tap dishes into the basket, then take payment by card reader or cash."
             },
             {
-                "image": "relayclarity/console-followups",
-                "frame": "browser",
-                "caption": "Follow-ups: conversations the agent passed to a person, with the reason and owner."
+                "image": "relayclarity/kitchen",
+                "frame": "app",
+                "caption": "The kitchen screen: timed tickets, with ready orders on the right.",
+                "half": true
             },
             {
-                "image": "relayclarity/site-home",
+                "image": "relayclarity/till-call",
+                "frame": "app",
+                "caption": "An incoming call on the till, with the caller’s order history ready.",
+                "half": true
+            },
+            {
+                "image": "relayclarity/mobile-menu",
+                "frame": "phone",
+                "caption": "Ordering on a phone."
+            },
+            {
+                "image": "relayclarity/app-track",
+                "frame": "phone",
+                "caption": "The customer app following an order through the kitchen."
+            },
+            {
+                "image": "relayclarity/dispatch",
+                "frame": "app",
+                "caption": "Dispatch: assign delivery orders to drivers on a live map."
+            },
+            {
+                "image": "relayclarity/web-menu",
                 "frame": "browser",
-                "caption": "The public site at relayclarity.com."
+                "caption": "The restaurant’s own ordering website.",
+                "half": true
+            },
+            {
+                "image": "relayclarity/web-track",
+                "frame": "browser",
+                "caption": "Live delivery tracking on the website.",
+                "half": true
             }
         ]
     },
@@ -123,24 +152,30 @@
         "tone": "graphite",
         "cover": {
             "layout": "browser-phone",
-            "desktop": "vibyra/desktop-2",
-            "mobile": "vibyra/mobile-1"
+            "desktop": "vibyra/desktop-1",
+            "mobile": "vibyra/mobile-1",
+            "url": "vibyra.net"
         },
         "gallery": [
             {
-                "image": "vibyra/desktop-1",
+                "image": "vibyra/desktop-2",
                 "frame": "browser",
-                "caption": "The Vibyra site, with Windows and Linux downloads."
+                "caption": "Agents side by side, and teammates that work through a schedule."
+            },
+            {
+                "image": "vibyra/desktop-3",
+                "frame": "browser",
+                "caption": "The iPhone app, shown on the site: continue a chat from your phone while Vibyra Cloud keeps working."
             },
             {
                 "image": "vibyra/mobile-1",
                 "frame": "phone",
-                "caption": "The desktop workspace, shown on the site as a live demo."
+                "caption": "The iPhone app with a cloud session running."
             },
             {
                 "image": "vibyra/mobile-2",
                 "frame": "phone",
-                "caption": "The companion iPhone app, announced on the site."
+                "caption": "Choosing which projects to send, encrypted, to Vibyra Cloud."
             }
         ]
     },
